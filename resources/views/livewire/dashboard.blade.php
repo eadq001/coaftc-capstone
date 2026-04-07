@@ -43,16 +43,16 @@
         </flux:sidebar.header>
 
         <flux:sidebar.nav class="text-zinc-800">
-            <flux:sidebar.item icon="home" href="#" current class="bg-primary text-white aria-selected:bg-primary">Home</flux:sidebar.item>
+            <flux:sidebar.item icon="home" wire:navigate href="{{ route('dashboard.home') }}" current class="bg-primary text-white aria-selected:bg-primary">Home</flux:sidebar.item>
             <flux:sidebar.item icon="chart-bar-square" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
-            <flux:sidebar.item icon="cube" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Products</flux:sidebar.item>
+            <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 hover:bg-primary hover:text-white">Products</flux:sidebar.item>
             <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
             <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
             <flux:sidebar.item icon="user" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Users</flux:sidebar.item>
             <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
 
             <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 [&_[data-flux-sidebar-heading]]:text-primary">
-                <flux:sidebar.item href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Account</flux:sidebar.item>
+                <flux:sidebar.item href="" class="text-zinc-800 hover:bg-primary hover:text-white">Account</flux:sidebar.item>
                 <flux:sidebar.item href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Notifications</flux:sidebar.item>
                 <flux:sidebar.item href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Security</flux:sidebar.item>
             </flux:sidebar.group>
@@ -65,12 +65,12 @@
         </flux:sidebar.nav>
 
         <flux:dropdown position="top" align="start" class="max-lg:hidden">
-            <flux:sidebar.profile avatar="https://fluxui.dev/img/demo/user.png" name="Olivia Martin" />
+            <flux:sidebar.profile avatar="https://fluxui.dev/img/demo/user.png" name="{{ $username }}" />
 
             <flux:menu>
                 <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
+                    <flux:menu.radio checked>{{ $username }}</flux:menu.radio>
+{{--                    <flux:menu.radio>Truly Delta</flux:menu.radio>--}}
                 </flux:menu.radio.group>
 
                 <flux:menu.separator />
@@ -89,10 +89,9 @@
             <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
 
             <flux:menu>
-                <flux:menu.radio.group>
-                    <flux:menu.radio checked>Olivia Martin</flux:menu.radio>
-                    <flux:menu.radio>Truly Delta</flux:menu.radio>
-                </flux:menu.radio.group>
+{{--                <flux:menu.radio.group>--}}
+{{--                    <flux:menu.radio checked>{{ $username }}</flux:menu.radio>--}}
+{{--                </flux:menu.radio.group>--}}
 
                 <flux:menu.separator />
 
@@ -102,36 +101,6 @@
     </flux:header>
 
     <flux:main>
-        <div class="mb-6">
-            <flux:heading size="xl" level="1">Welcome back</flux:heading>
-            <flux:text class="mt-1 text-zinc-600">Here's an overview of your dashboard</flux:text>
-        </div>
-
-        <div class="grid gap-6 lg:grid-cols-3 mb-8">
-            <flux:card class="border border-zinc-300 border-t-4 border-t-primary rounded-lg shadow-sm bg-white">
-                <flux:heading size="sm" class="text-zinc-800">Total Revenue</flux:heading>
-                <flux:text class="text-2xl font-semibold mt-2 text-primary">$12,450</flux:text>
-                <flux:badge color="primary" class="mt-2">+12.5%</flux:badge>
-            </flux:card>
-
-            <flux:card class="border border-zinc-300 border-t-4 border-t-primary rounded-lg shadow-sm bg-white">
-                <flux:heading size="sm" class="text-zinc-800">Active Users</flux:heading>
-                <flux:text class="text-2xl font-semibold mt-2 text-primary">1,234</flux:text>
-                <flux:badge color="primary" class="mt-2">+5.2%</flux:badge>
-            </flux:card>
-
-            <flux:card class="border border-zinc-300 border-t-4 border-t-primary rounded-lg shadow-sm bg-white">
-                <flux:heading size="sm" class="text-zinc-800">Tasks Completed</flux:heading>
-                <flux:text class="text-2xl font-semibold mt-2 text-primary">89</flux:text>
-                <flux:badge color="primary" class="mt-2">+3.1%</flux:badge>
-            </flux:card>
-        </div>
-
-        <flux:separator variant="subtle" />
-
-        <div class="mt-6 flex items-center gap-3">
-            <flux:button variant="primary" icon="plus">New Project</flux:button>
-            <flux:button variant="outline" icon="arrow-down-tray" class="border-primary text-primary hover:bg-primary hover:text-white">Export</flux:button>
-        </div>
+       {{ $slot }}
     </flux:main>
 </div>

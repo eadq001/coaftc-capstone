@@ -20,7 +20,7 @@ class Login extends Component
 
         if (auth()->attempt($user)) {
             request()->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard/home');
         }
 
         $this->addError('loginFailed', 'The records you entered do not on our records.');

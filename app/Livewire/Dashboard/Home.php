@@ -1,13 +1,11 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Dashboard;
 
-use Livewire\Attributes\On;
 use Livewire\Component;
 
-class Dashboard extends Component
+class Home extends Component
 {
-    public bool $sidebarCollapsed = false;
     public $username;
 
     public function mount()
@@ -17,6 +15,6 @@ class Dashboard extends Component
 
     public function render()
     {
-        return view('layouts.dashboard');
+        return view('livewire.dashboard.home')->layout('layouts.dashboard');
     }
 }
