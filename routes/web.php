@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\RegisterUsersController;
+use App\Livewire\Dashboard;
 use App\Livewire\Login;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,9 @@ Route::get('/', function () {
 });
 
 
-Route::get('/register', [RegisterUsersController::class, 'show'])->name('password.request');
-Route::get('/login', Login::class)->name('login');
-Route::get('/rasdsad', [RegisterUsersController::class, 'show'])->name('register');
+Route::livewire('/login', Login::class)->name('login');
+
+Route::middleware('auth')->group(function () {
+Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
+
+});

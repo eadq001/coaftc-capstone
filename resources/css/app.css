@@ -1,3 +1,4 @@
+/* Dashboard Theme v3 */
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
@@ -9,4 +10,12 @@
 
 @theme {
     --font-sans: Inter, sans-serif;
+    --color-primary: #59CA4E;
+    --color-primary-hover: #4CAF50;
+    --color-primary-dark: #4CAF50;
+}
+
+.dark {
+    --color-primary: #4CAF50;
+    --color-primary-hover: #59CA4E;
 }
