@@ -364,7 +364,7 @@ Total Inventory Value <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false }">
+                <div class="flex flex-wrap items-center gap-2" x-data="{show:false}">
                     <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['icon' => 'plus','variant' => 'primary','@click' => 'show=true']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -377,7 +377,6 @@ Total Inventory Value <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['icon' => 'plus','variant' => 'primary','@click' => 'show=true']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                        Add Product
                      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
@@ -388,16 +387,11 @@ Total Inventory Value <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-
-                    <div x-show="show" x-transition.duration.300ms
-                         class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-                        <div class="bg-white p-4 w-2xl rounded-lg">
-
-                            <?php
+                    <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('components.product-form-add', []);
+[$__name, $__params] = $__split('components.product-form', []);
 
 $__keyOuter = $__key ?? null;
 
@@ -419,9 +413,6 @@ unset($__params);
 unset($__componentSlots);
 unset($__split);
 ?>
-
-                        </div>
-                    </div>
                 </div>
             </div>
 

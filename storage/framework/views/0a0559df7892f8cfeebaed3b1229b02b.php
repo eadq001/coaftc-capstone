@@ -130,7 +130,8 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                 <div class="flex items-center justify-between">
                     <label class="flex items-center">
                         <input type="checkbox" name="remember"
-                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-5 w-5">
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-5 w-5"
+                               wire:model.boolean="remember">
                         <span class="ml-2 text-base text-gray-600 dark:text-gray-400">Remember me</span>
                     </label>
                     <a href="<?php echo e(Route::has('password.request') ?? '#'); ?>" class="text-sm text-blue-600 hover:text-blue-500">

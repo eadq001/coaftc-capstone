@@ -10,10 +10,17 @@
 
         @livewireStyles
         @fluxAppearance
+        <script>
+            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        </script>
     </head>
     <body>
 
-    <div class="min-h-screen bg-white antialiased">
+    <div class="min-h-screen bg-white dark:bg-zinc-900 antialiased">
         <style>
             [data-flux-sidebar] {
                 transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1),
@@ -40,9 +47,9 @@
             }
         </style>
 
-        <flux:sidebar sticky collapsible class="bg-white border-r border-zinc-300 text-zinc-800">
+        <flux:sidebar sticky collapsible class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
 
-            <flux:sidebar.header class="border-b border-zinc-300">
+            <flux:sidebar.header class="border-b border-zinc-300 dark:border-zinc-700">
                 <flux:sidebar.brand
                     href="#"
                     disabled
@@ -62,26 +69,26 @@
                 <flux:sidebar.collapse class="hidden lg:flex" />
             </flux:sidebar.header>
 
-            <flux:sidebar.nav class="text-zinc-800">
-                <flux:sidebar.item icon="home" wire:navigate href="{{ route('dashboard.home') }}" class=" text-zinc-800 hover:bg-primary hover:text-white">Home</flux:sidebar.item>
-                <flux:sidebar.item icon="chart-bar-square" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
-                <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 hover:bg-primary hover:text-white">Products</flux:sidebar.item>
-                <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
-                <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
-                <flux:sidebar.item icon="user" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Users</flux:sidebar.item>
-                <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
+            <flux:sidebar.nav class="text-zinc-800 dark:text-zinc-200">
+                <flux:sidebar.item icon="home" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Home</flux:sidebar.item>
+                <flux:sidebar.item icon="chart-bar-square" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
+                <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
+                <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
+                <flux:sidebar.item icon="user" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
+                <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
 
-                <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 [&_[data-flux-sidebar-heading]]:text-primary">
-                    <flux:sidebar.item href="" class="text-zinc-800 hover:bg-primary hover:text-white">Account</flux:sidebar.item>
-                    <flux:sidebar.item href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Notifications</flux:sidebar.item>
-                    <flux:sidebar.item href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Security</flux:sidebar.item>
+                <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 dark:text-zinc-200 [&_[data-flux-sidebar-heading]]:text-primary dark:[&_[data-flux-sidebar-heading]]:text-primary">
+                    <flux:sidebar.item href="" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Account</flux:sidebar.item>
+                    <flux:sidebar.item href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Notifications</flux:sidebar.item>
+                    <flux:sidebar.item href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Security</flux:sidebar.item>
                 </flux:sidebar.group>
             </flux:sidebar.nav>
 
             <flux:sidebar.spacer />
 
             <flux:sidebar.nav>
-                <flux:sidebar.item icon="information-circle" href="#" class="text-zinc-800 hover:bg-primary hover:text-white">Help</flux:sidebar.item>
+                <flux:sidebar.item icon="information-circle" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Help</flux:sidebar.item>
             </flux:sidebar.nav>
 
             <flux:dropdown position="top" align="start" class="max-lg:hidden">
@@ -100,7 +107,7 @@
             </flux:dropdown>
         </flux:sidebar>
 
-        <flux:header class="lg:hidden bg-white border-b border-zinc-300">
+        <flux:header class="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-300 dark:border-zinc-700">
             <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
 
             <flux:spacer />
@@ -124,9 +131,8 @@
             {{ $slot }}
         </flux:main>
     </div>
-
     @livewireScripts
-        @fluxScripts
+    @fluxScripts
 
     </body>
 </html>

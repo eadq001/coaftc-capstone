@@ -388,16 +388,12 @@ Total Inventory Value <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-
-                    <div x-show="show" x-transition.duration.300ms
-                         class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-                        <div class="bg-white p-4 w-2xl rounded-lg">
-
-                            <?php
+                    <div x-show="show" x-transition.duration.1000ms>
+                    <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('components.product-form-add', []);
+[$__name, $__params] = $__split('components.product-form', []);
 
 $__keyOuter = $__key ?? null;
 
@@ -419,8 +415,6 @@ unset($__params);
 unset($__componentSlots);
 unset($__split);
 ?>
-
-                        </div>
                     </div>
                 </div>
             </div>

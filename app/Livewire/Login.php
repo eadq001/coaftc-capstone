@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -14,12 +13,15 @@ class Login extends Component
     #[Validate('string|required|min:8')]
     public string $password = '';
 
+    public bool $remember = false;
+
     public function login()
     {
         $user = $this->validate();
 
-        if (auth()->attempt($user)) {
+        if (auth()->attempt($user, $this->remember)) {
             request()->session()->regenerate();
+
             return redirect()->intended('/dashboard/home');
         }
 

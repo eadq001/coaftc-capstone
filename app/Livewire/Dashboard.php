@@ -2,21 +2,18 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\On;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
+#[Layout('layouts.dashboard')]
 class Dashboard extends Component
 {
     public bool $sidebarCollapsed = false;
+
     public $username;
 
     public function mount()
     {
         $this->username = auth()->user()->name;
-    }
-
-    public function render()
-    {
-        return view('layouts.dashboard');
     }
 }

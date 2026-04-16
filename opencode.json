@@ -5,7 +5,7 @@
             "type": "local",
             "enabled": true,
             "command": [
-                "php",
+                "C:\\Users\\eadq.DESKTOP-EPHFA89\\.config\\herd\\bin\\php.bat",
                 "artisan",
                 "boost:mcp"
             ]

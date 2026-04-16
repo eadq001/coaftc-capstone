@@ -1,0 +1,4 @@
+[mcp_servers.laravel-boost]
+command = "C:\\Users\\eadq.DESKTOP-EPHFA89\\.config\\herd\\bin\\php.bat"
+args = ["artisan", "boost:mcp"]
+cwd = "C:\\Herd\\coaftcorig"
