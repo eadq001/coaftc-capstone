@@ -9,11 +9,10 @@ use App\Livewire\Dashboard\Products;
 use App\Livewire\Login;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('livewire.auth.login');
-});
 
 
+
+Route::livewire('/', Login::class)->name('home')->middleware('guest');
 Route::livewire('/login', Login::class)->name('login')->middleware('guest');
 Route::livewire('/register', Register::class)->name('register')->middleware('guest');
 
