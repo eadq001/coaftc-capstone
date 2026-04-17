@@ -102,30 +102,17 @@
 
                     <flux:menu.separator />
 
-                    <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
+                    <form action="/logout" method="POST" class="w-full">
+                        @csrf
+                        @method('DELETE')
+                        <flux:button class="border-none! cursor-pointer hover:text-white-200 text-sm" icon="arrow-right-start-on-rectangle" type="submit">Logout</flux:button>
+                    </form>
+                    <flux:menu.separator />
+
+
                 </flux:menu>
             </flux:dropdown>
         </flux:sidebar>
-
-        <flux:header class="lg:hidden bg-white dark:bg-zinc-900 border-b border-zinc-300 dark:border-zinc-700">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
-
-            <flux:spacer />
-
-            <flux:dropdown position="top" align="start">
-                <flux:profile avatar="https://fluxui.dev/img/demo/user.png" />
-
-                <flux:menu>
-                    {{--                <flux:menu.radio.group>--}}
-                    {{--                    <flux:menu.radio checked>{{ $username }}</flux:menu.radio>--}}
-                    {{--                </flux:menu.radio.group>--}}
-
-                    <flux:menu.separator />
-
-                    <flux:menu.item icon="arrow-right-start-on-rectangle">Logout</flux:menu.item>
-                </flux:menu>
-            </flux:dropdown>
-        </flux:header>
 
         <flux:main>
             {{ $slot }}

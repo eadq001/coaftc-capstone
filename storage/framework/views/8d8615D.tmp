@@ -581,14 +581,14 @@ Help <?php echo $__env->renderComponent(); ?>
                         <?php echo method_field('DELETE'); ?>
                         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['class' => 'border-none! cursor-pointer hover:text-white-200 text-sm','icon' => 'arrow-right-start-on-rectangle','type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['class' => 'border-none! cursor-pointer hover:text-white-200','icon' => 'arrow-right-start-on-rectangle','type' => 'submit']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'border-none! cursor-pointer hover:text-white-200 text-sm','icon' => 'arrow-right-start-on-rectangle','type' => 'submit']); ?>
+<?php $component->withAttributes(['class' => 'border-none! cursor-pointer hover:text-white-200','icon' => 'arrow-right-start-on-rectangle','type' => 'submit']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 Logout <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>

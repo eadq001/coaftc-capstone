@@ -5,6 +5,8 @@ namespace App\Livewire\Dashboard;
 use App\Livewire\Dashboard;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Session;
@@ -25,7 +27,7 @@ class Products extends Dashboard
     #[Session]
     public bool $lowStockOnly = false;
 
-    public function mount()
+    public function mount(): void
     {
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
@@ -43,7 +45,7 @@ class Products extends Dashboard
     }
 
     #[Computed]
-    public function products()
+    public function products(): LengthAwarePaginator|array
     {
         if ($this->lowStockOnly) {
             $this->resetPage('products-page');
@@ -53,17 +55,17 @@ class Products extends Dashboard
         return Product::paginate(5, pageName: 'products-page');
     }
 
-    public function updatedSearchText($value)
+    public function updatedSearchText($value): void
     {
         $this->searchResults = Product::where('name', 'like', "$value%" )->get();
     }
 
-    public function clearSearchText()
+    public function clearSearchText(): void
     {
         $this->reset('searchText');
     }
 
-    public function toggleLowStockOnly()
+    public function toggleLowStockOnly(): void
     {
         $this->lowStockOnly = !$this->lowStockOnly;
     }
