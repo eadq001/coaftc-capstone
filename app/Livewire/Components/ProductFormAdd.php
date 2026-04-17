@@ -35,11 +35,11 @@ class ProductFormAdd extends Component
 
         Product::create($validated);
 
-        $this->reset('name', 'stock_level', 'price', 'category', 'subcategory', 'unit');
+        $this->reset();
 
         $this->successMessage = 'Product added';
 
-        $this->dispatch('add-product-success') ;
+        $this->dispatch('add-product-success');
     }
 
     public function cancel(): void
