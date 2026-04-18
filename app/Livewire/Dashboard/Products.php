@@ -4,13 +4,10 @@ namespace App\Livewire\Dashboard;
 
 use App\Livewire\Dashboard;
 use App\Models\Product;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Session;
-use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
 
 class Products extends Dashboard
@@ -26,6 +23,8 @@ class Products extends Dashboard
 
     #[Session]
     public bool $lowStockOnly = false;
+
+    public int $productId;
 
     public function mount(): void
     {
@@ -68,6 +67,12 @@ class Products extends Dashboard
     public function toggleLowStockOnly(): void
     {
         $this->lowStockOnly = !$this->lowStockOnly;
+    }
+
+    public function cancel(): void
+    {
+        $this->reset('productId');
+        $this->resetValidation();
     }
 
     public function render()

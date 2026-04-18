@@ -70,13 +70,13 @@
             </flux:sidebar.header>
 
             <flux:sidebar.nav class="text-zinc-800 dark:text-zinc-200">
-                <flux:sidebar.item icon="home" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Home</flux:sidebar.item>
-                <flux:sidebar.item icon="chart-bar-square" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
-                <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
-                <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
-                <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
-                <flux:sidebar.item icon="user" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
-                <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
+                <flux:sidebar.item icon="home" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Home</flux:sidebar.item>
+                <flux:sidebar.item icon="chart-bar-square" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
+                <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
+                <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
+                <flux:sidebar.item icon="user" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
+                <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
 
                 <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 dark:text-zinc-200 [&_[data-flux-sidebar-heading]]:text-primary dark:[&_[data-flux-sidebar-heading]]:text-primary">
                     <flux:sidebar.item href="" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Account</flux:sidebar.item>
@@ -87,9 +87,6 @@
 
             <flux:sidebar.spacer />
 
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="information-circle" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Help</flux:sidebar.item>
-            </flux:sidebar.nav>
 
             <flux:dropdown position="top" align="start" class="max-lg:hidden">
                 <flux:sidebar.profile name="{{ auth()->user()->name }}" />
@@ -114,7 +111,7 @@
             </flux:dropdown>
         </flux:sidebar>
 
-        <flux:main>
+        <flux:main class="!bg-green-300">
             {{ $slot }}
         </flux:main>
     </div>

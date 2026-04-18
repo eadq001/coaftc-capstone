@@ -1,9 +1,7 @@
 <?php
 
 use App\Http\Controllers\LogoutController;
-use App\Http\Controllers\RegisterUsersController;
 use App\Livewire\Auth\Register;
-use App\Livewire\Dashboard;
 use App\Livewire\Dashboard\Home;
 use App\Livewire\Dashboard\Products;
 use App\Livewire\Login;

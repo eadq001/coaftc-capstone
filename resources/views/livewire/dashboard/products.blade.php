@@ -51,15 +51,17 @@
                 <div class="flex gap-x-2 flex-1 max-w-md relative">
                     <flux:input
                             icon="magnifying-glass"
-                            placeholder="Search by name, QR code, or category..."
+                            placeholder="Search by product name..."
                             class="w-full"
+                            autocomplete="off"
                             wire:model.live.debounce.500ms="searchText"
                     />
 
                     @if($searchText)
                         <div class="absolute z-50 bg-gray-100 p-2 w-full rounded-lg mt-12">
                             @forelse($searchResults as $result)
-                                <div class="flex justify-between text-sm text-zinc-600 text-left">
+                                <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"
+                                     wire:key="{{ $result->id }}" wire:click="$set('productId', {{ $result->id }})">
                                     <p>{{ $result->name }}</p>
                                     <p>stock: {{ $result->stock_level }}</p>
                                     <p>price: {{ $result->price }}</p>
@@ -84,8 +86,10 @@
                     </flux:button>
 
                     <div x-show="show" x-transition.duration.300ms
-                         class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-                        <div class="bg-white p-4 w-2xl rounded-lg">
+                         class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
+                         wire:cloak>
+                        <div class="bg-white p-4 w-2xl rounded-lg"
+                        >
 
                             <livewire:components.product-form-add/>
 
@@ -94,32 +98,17 @@
                 </div>
             </div>
 
-{{--                -----for categories----  --}}
-{{--            <div class="flex flex-wrap items-center gap-3 mt-4">--}}
-{{--                <flux:select placeholder="All Categories" class="min-w-[160px]">--}}
-{{--                    <flux:select.option>Electronics</flux:select.option>--}}
-{{--                    <flux:select.option>Clothing</flux:select.option>--}}
-{{--                    <flux:select.option>Food & Beverages</flux:select.option>--}}
-{{--                    <flux:select.option>Office Supplies</flux:select.option>--}}
-{{--                </flux:select>--}}
+            <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
+                    @class([
+                    'mt-2',
+                   '!bg-green-400 !text-white' => $lowStockOnly,
+                ])>
+                View Low Stock Products
+            </flux:button>
 
-{{--                <flux:select placeholder="All Classifications" class="min-w-[180px]">--}}
-{{--                    <flux:select.option>Class A</flux:select.option>--}}
-{{--                    <flux:select.option>Class B</flux:select.option>--}}
-{{--                </flux:select>--}}
-
-                <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
-                        @class([
-                        'mt-2',
-                       '!bg-green-400 !text-white' => $lowStockOnly,
-                    ])>
-                    Low Stock Only
-                </flux:button>
-
-                {{--                <flux:badge color="zinc" variant="filled" class="px-3 py-1">--}}
-                {{--                    {{ $filteredCount ?? '0' }} results--}}
-                {{--                </flux:badge>--}}
-{{--            </div>--}}
+            {{--                            <flux:badge color="zinc" variant="filled" class="px-3 py-1">--}}
+            {{--                                {{ $filteredCount ?? '0' }} results--}}
+            {{--                            </flux:badge>--}}
         </div>
 
         <flux:table>
@@ -134,7 +123,9 @@
             </flux:table.columns>
 
             @foreach($this->products as $product)
-                <flux:table.row>
+                <flux:table.row wire:key="{{ $product->id }}" class="cursor-pointer"
+                                wire:click="$set('productId', {{ $product->id }})"
+                >
                     <flux:table.cell>
                         <div class="font-medium text-zinc-900">{{ $product->name }}</div>
                     </flux:table.cell>
@@ -171,23 +162,23 @@
                     <flux:table.cell>
                         <flux:badge color="zinc" variant="subtle">{{ $product->subcategory }}</flux:badge>
                     </flux:table.cell>
+
+                    <flux:table.cell>
+                        <flux:button variant="ghost" size="sm" icon="eye" class="text-primary">View</flux:button>
+
+                    </flux:table.cell>
+
                 </flux:table.row>
             @endforeach
-
-            {{--                <flux:table.cell>--}}
-            {{--                    <div class="flex items-center gap-1">--}}
-            {{--                        <flux:button variant="ghost" size="sm" icon="eye" class="text-primary">--}}
-            {{--                            View--}}
-            {{--                        </flux:button>--}}
-            {{--                        <flux:button variant="ghost" size="sm" icon="pencil" class="text-zinc-600">--}}
-            {{--                            Edit--}}
-            {{--                        </flux:button>--}}
-            {{--                    </div>--}}
-            {{--                </flux:table.cell>--}}
 
         </flux:table>
         <div class="p-6 border-t border-zinc-200">
             {{ $this->products->links(data: ['scrollTo' => false ]) }}
         </div>
     </flux:card>
+
+    @if($productId)
+
+            <livewire:components.product-form-edit :productId="$productId"/>
+    @endif
 </div>

@@ -3,11 +3,15 @@
 namespace App\Livewire\Components;
 
 use App\Models\Product;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-class ProductFormAdd extends Component
+class ProductFormEdit extends Component
 {
+    public int $productId;
+
+
     #[Validate('required|string|max:255')]
     public string $name = '';
 
@@ -28,32 +32,17 @@ class ProductFormAdd extends Component
 
     public string $successMessage = '';
 
-    public function save(): void
+    public function mount(): void
     {
-        $validated = $this->validate();
+        $product = Product::find($this->productId);
 
-        Product::create($validated);
-
-        $this->reset();
-
-        $this->successMessage = 'Product added';
-
-        $this->dispatch('add-product-success');
+        $this->name = $product->name;
+        $this->price = $product->price;
     }
 
-    public function cancel(): void
-    {
-        $this->reset();
-        $this->resetValidation();
-    }
-
-    public function updated($property): void
-    {
-        $this->validateOnly($property);
-    }
 
     public function render()
     {
-        return view('livewire.components.product-form-add');
+        return view('livewire.components.product-form-edit');
     }
 }
