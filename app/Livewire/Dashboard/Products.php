@@ -83,7 +83,7 @@ class Products extends Dashboard
     public function resetProductToEdit(): void
     {
         sleep(1);
-        $this->reset();
+        $this->reset('productToEdit');
     }
 
     public function render()

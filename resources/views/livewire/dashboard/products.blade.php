@@ -58,10 +58,10 @@
                     />
 
                     @if($searchText)
-                        <div class="absolute z-50 bg-gray-100 p-2 w-full rounded-lg mt-12" wire:transition>
+                        <div class="absolute z-50 bg-gray-50 p-2 w-full rounded-lg mt-12" wire:transition>
                             @forelse($searchResults as $result)
                                 <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"
-                                     wire:key="{{ $result->id }}" wire:click="$set('productId', {{ $result->id }})">
+                                     wire:key="{{ $result->id }}" wire:click="$set('productToEdit', {{ $result->id }})">
                                     <p>{{ $result->name }}</p>
                                     <p>stock: {{ $result->stock_level }}</p>
                                     <p>price: {{ $result->price }}</p>

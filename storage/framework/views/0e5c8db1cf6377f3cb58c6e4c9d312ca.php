@@ -346,10 +346,10 @@ Total Inventory Value <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($searchText): ?>
-                        <div class="absolute z-50 bg-gray-100 p-2 w-full rounded-lg mt-12" wire:transition>
+                        <div class="absolute z-50 bg-gray-50 p-2 w-full rounded-lg mt-12" wire:transition>
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $searchResults; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $result): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"
-                                     <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($result->id).''; ?>wire:key="<?php echo e($result->id); ?>" wire:click="$set('productId', <?php echo e($result->id); ?>)">
+                                     <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($result->id).''; ?>wire:key="<?php echo e($result->id); ?>" wire:click="$set('productToEdit', <?php echo e($result->id); ?>)">
                                     <p><?php echo e($result->name); ?></p>
                                     <p>stock: <?php echo e($result->stock_level); ?></p>
                                     <p>price: <?php echo e($result->price); ?></p>
