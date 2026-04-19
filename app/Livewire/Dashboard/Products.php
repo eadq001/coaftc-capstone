@@ -15,16 +15,19 @@ class Products extends Dashboard
     use WithPagination;
 
     public int $totalProducts;
+
     public int $lowStockItems;
+
     public int $totalInventoryValue;
 
     public string $searchText = '';
+
     public $searchResults = [];
 
     #[Session]
     public bool $lowStockOnly = false;
 
-    public int $productId;
+    public int $productToEdit;
 
     public function mount(): void
     {
@@ -48,15 +51,16 @@ class Products extends Dashboard
     {
         if ($this->lowStockOnly) {
             $this->resetPage('products-page');
+
             return Product::where('stock_level', '<', 20)->paginate(5, pageName: 'products-page');
         }
 
-        return Product::paginate(5, pageName: 'products-page');
+        return Product::paginate(7, pageName: 'products-page');
     }
 
     public function updatedSearchText($value): void
     {
-        $this->searchResults = Product::where('name', 'like', "$value%" )->get();
+        $this->searchResults = Product::where('name', 'like', "$value%")->get();
     }
 
     public function clearSearchText(): void
@@ -66,13 +70,20 @@ class Products extends Dashboard
 
     public function toggleLowStockOnly(): void
     {
-        $this->lowStockOnly = !$this->lowStockOnly;
+        $this->lowStockOnly = ! $this->lowStockOnly;
     }
 
     public function cancel(): void
     {
-        $this->reset('productId');
+        $this->reset('productToEdit');
         $this->resetValidation();
+    }
+
+    #[On('add-edit-product-success')]
+    public function resetProductToEdit(): void
+    {
+        sleep(1);
+        $this->reset();
     }
 
     public function render()

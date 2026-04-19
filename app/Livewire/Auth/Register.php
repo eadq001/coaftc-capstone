@@ -3,20 +3,20 @@
 namespace App\Livewire\Auth;
 
 use App\Models\User;
+use Illuminate\Contracts\View\Factory;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
-use View;
 
 class Register extends Component
 {
     #[Validate('required')]
-    public string $name ='';
+    public string $name = '';
 
     #[Validate('required|email|unique:users,email')]
-    public string $email ='';
+    public string $email = '';
 
     #[Validate('required|min:8')]
-    public string $password ='';
+    public string $password = '';
 
     public function save(): void
     {
@@ -24,7 +24,8 @@ class Register extends Component
 
         $this->redirect('/login', true);
     }
-    public function render(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+
+    public function render(): \Illuminate\Contracts\View\View|Factory|\Illuminate\View\View
     {
         return view('livewire.auth.register');
     }

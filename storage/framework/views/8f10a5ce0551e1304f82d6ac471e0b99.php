@@ -29,7 +29,7 @@ foreach ($attributes->all() as $__key => $__value) {
 unset($__defined_vars, $__key, $__value); ?>
 
 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($successMessage): ?>
-    <div x-data="{show:false}" x-on:add-product-success.window="show=true; setTimeout(()=> show = false, 2500)" x-show="show"
+    <div x-data="{show:false}" x-on:add-edit-product-success.window="show=true; setTimeout(()=> show = false, 2500)" x-show="show"
          class="text-sm bg-green-400 px-3 py-1.5 rounded-lg flex gap-x-2 items-center"
          x-transition.enter.duration.200ms x-transition.leave.duration.400ms
          >

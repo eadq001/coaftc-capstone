@@ -58,7 +58,7 @@
                     />
 
                     @if($searchText)
-                        <div class="absolute z-50 bg-gray-100 p-2 w-full rounded-lg mt-12">
+                        <div class="absolute z-50 bg-gray-100 p-2 w-full rounded-lg mt-12" wire:transition>
                             @forelse($searchResults as $result)
                                 <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"
                                      wire:key="{{ $result->id }}" wire:click="$set('productId', {{ $result->id }})">
@@ -85,7 +85,7 @@
                         Add Product
                     </flux:button>
 
-                    <div x-show="show" x-transition.duration.300ms
+                    <div x-show="show" x-transition
                          class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
                          wire:cloak>
                         <div class="bg-white p-4 w-2xl rounded-lg"
@@ -119,12 +119,12 @@
                 <flux:table.column sortable>Unit</flux:table.column>
                 <flux:table.column sortable>Category</flux:table.column>
                 <flux:table.column>Subcategory</flux:table.column>
-                <flux:table.column>Action</flux:table.column>
+                <flux:table.column>Sizes</flux:table.column>
             </flux:table.columns>
 
             @foreach($this->products as $product)
                 <flux:table.row wire:key="{{ $product->id }}" class="cursor-pointer"
-                                wire:click="$set('productId', {{ $product->id }})"
+                                wire:click="$set('productToEdit', {{ $product->id }} )"
                 >
                     <flux:table.cell>
                         <div class="font-medium text-zinc-900">{{ $product->name }}</div>
@@ -177,8 +177,7 @@
         </div>
     </flux:card>
 
-    @if($productId)
-
-            <livewire:components.product-form-edit :productId="$productId"/>
+    @if($productToEdit)
+        <livewire:components.product-form-edit :productToEdit="$productToEdit"/>
     @endif
 </div>
