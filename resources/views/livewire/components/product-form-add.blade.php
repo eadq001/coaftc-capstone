@@ -1,7 +1,7 @@
 <div class="relative">
-    <form wire:submit="save()" class="space-y-3 text-sm">
+    <form wire:submit="save" class="space-y-3 text-sm">
         <div class="absolute top-0 right-0" title="exit this form">
-            <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="cancel()" @click="show=false"/>
+            <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="cancel" @click="show=false"/>
         </div>
         <p class="text-center">Add Product</p>
         <flux:field>

@@ -3,12 +3,17 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Product;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
+
 class ProductForm extends Form
 {
+    #[Locked]
+    public ?int $id = null;
+
     #[Validate('required|string|max:255')]
     public string $name = '';
 
@@ -40,6 +45,7 @@ class ProductForm extends Form
     public function set(int $productToEdit): void
     {
         $product = Product::find($productToEdit);
+        $this->id = $product->id;
         $this->name = $product->name;
         $this->stock_level = $product->stock_level;
         $this->unit = $product->unit;

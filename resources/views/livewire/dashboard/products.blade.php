@@ -91,10 +91,11 @@
                         <div class="bg-white p-4 w-2xl rounded-lg"
                         >
 
-                            <livewire:components.product-form-add/>
+                            <livewire:components.product-form-add @add-edit-product-success="refreshData('add')"/>
 
                         </div>
                     </div>
+
                 </div>
             </div>
 
@@ -111,9 +112,9 @@
             {{--                            </flux:badge>--}}
         </div>
 
-        <flux:table>
-            <flux:table.columns>
-                <flux:table.column sortable>Product Name</flux:table.column>
+        <flux:table x-data x-transition class="border! border-gray-200! px-2">
+            <flux:table.columns >
+                <flux:table.column sortable >Product Name</flux:table.column>
                 <flux:table.column sortable>Price</flux:table.column>
                 <flux:table.column sortable>Stock Level</flux:table.column>
                 <flux:table.column sortable>Unit</flux:table.column>
@@ -127,17 +128,17 @@
                                 wire:click="$set('productToEdit', {{ $product->id }} )"
                 >
                     <flux:table.cell>
-                        <div class="font-medium text-zinc-900">{{ $product->name }}</div>
+                        <div class="font-small text-zinc-900">{{ $product->name }}</div>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <span class="font-semibold text-zinc-900">{{ $product->price }}</span>
+                        <span class="font-small text-zinc-900">{{ $product->price }}</span>
                     </flux:table.cell>
 
                     <flux:table.cell>
                         <div class="flex items-center gap-2">
                             <flux:badge color="{{ $product->stock_level < 20 ? 'red' : 'green' }}" variant="subtle"
-                                        class="font-semibold">
+                                        class="font-small">
                                 {{ $product->stock_level }}
                             </flux:badge>
 
@@ -152,19 +153,19 @@
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <span class="font-semibold text-zinc-900">{{ $product->unit}}</span>
+                        <span class="font-small! text-zinc-900">{{ $product->unit}}</span>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge color="primary" variant="subtle">{{ $product->category }}</flux:badge>
+                        <flux:badge color="primary" class="font-small!" variant="subtle">{{ $product->category }}</flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge color="zinc" variant="subtle">{{ $product->subcategory }}</flux:badge>
+                        <flux:badge color="zinc" class="font-small!" variant="subtle">{{ $product->subcategory }}</flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:button variant="ghost" size="sm" icon="eye" class="text-primary">View</flux:button>
+                        <flux:button variant="ghost" size="sm" icon="eye" class="font-small!">View</flux:button>
 
                     </flux:table.cell>
 
@@ -178,6 +179,6 @@
     </flux:card>
 
     @if($productToEdit)
-        <livewire:components.product-form-edit :productToEdit="$productToEdit"/>
+        <livewire:components.product-form-edit :productToEdit="$productToEdit" @add-edit-product-success="refreshData; $refresh"/>
     @endif
 </div>

@@ -36,10 +36,17 @@ class Products extends Dashboard
         $this->totalInventoryValue = Product::sum('price');
     }
 
-    #[On('add-product-success')]
-    public function refresh(): void
+    #[On('add-edit-product-success')]
+    public function jj()
     {
-        unset($this->products);
+        dd('hello');
+    }
+
+    public function refreshData(?string $action = null): void
+    {
+        if ($action) {
+            unset($this->products);
+        }
 
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();

@@ -1,3 +1,4 @@
+@php use App\QrGenerator;use BaconQrCode\Encoder\QrCode; @endphp
 <div class="fixed inset-0 z-50 bg-green-300/50 flex items-center justify-center backdrop-blur-xs ease-in-out"
      wire:transition wire:cloak x-data="{ active: false }">
     <div class=" bg-white p-4 w-2xl rounded-lg relative">
@@ -9,7 +10,8 @@
             <p class="text-center" x-text="active ? 'Edit Product' : 'View Product'"></p>
             <flux:field>
                 <flux:label class="mb-0.5!">Product Name</flux:label>
-                <flux:input type="text" wire:model="productForm.name" placeholder="Product Name" x-bind:readonly="!active"/>
+                <flux:input type="text" wire:model="productForm.name" placeholder="Product Name"
+                            x-bind:readonly="!active"/>
                 <flux:error name="productForm.name"/>
             </flux:field>
             <flux:field>
@@ -23,22 +25,31 @@
                 <flux:input type="text" wire:model="productForm.unit" placeholder="Unit" x-bind:readonly="!active"/>
                 <flux:error name="productForm.unit"/>
             </flux:field>
-            <flux:field>
-                <flux:label class="mb-0.5!">Price</flux:label>
-                <flux:input type="number" wire:model="productForm.price" placeholder="Price" x-bind:readonly="!active"/>
-                <flux:error name="productForm.price"/>
-            </flux:field>
-            <flux:field>
-                <flux:label class="mb-0.5!">Category</flux:label>
-                <flux:input type="text" wire:model="productForm.category" placeholder="Category" x-bind:readonly="!active"/>
-                <flux:error name="productForm.category"/>
-            </flux:field>
-            <flux:field>
-                <flux:label class="mb-0.5!">Subcategory</flux:label>
-                <flux:input type="text" wire:model="productForm.subcategory"
-                            placeholder="Subcategory" x-bind:readonly="!active"/>
-                <flux:error name="productForm.subcategory"/>
-            </flux:field>
+            <div class="flex items-center gap-x-2">
+                <div class="flex-7">
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Price</flux:label>
+                        <flux:input type="number" wire:model="productForm.price" placeholder="Price"
+                                    x-bind:readonly="!active"/>
+                        <flux:error name="productForm.price"/>
+                    </flux:field>
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Category</flux:label>
+                        <flux:input type="text" wire:model="productForm.category" placeholder="Category"
+                                    x-bind:readonly="!active"/>
+                        <flux:error name="productForm.category"/>
+                    </flux:field>
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Subcategory</flux:label>
+                        <flux:input type="text" wire:model="productForm.subcategory"
+                                    placeholder="Subcategory" x-bind:readonly="!active"/>
+                        <flux:error name="productForm.subcategory"/>
+                    </flux:field>
+                </div>
+                <div class="justify-self-stretch">
+                    <img alt="qr-code" src="data:image/png;base64,{{ QrGenerator::generate($productForm->id) }}">
+                </div>
+            </div>
 
             <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
                 <div>

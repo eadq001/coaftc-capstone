@@ -3,9 +3,6 @@
 namespace App\Livewire\Components;
 
 use App\Livewire\Forms\ProductForm;
-use App\Models\Product;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class ProductFormEdit extends Component
@@ -23,10 +20,7 @@ class ProductFormEdit extends Component
     {
         $this->productForm->update();
         $this->dispatch('add-edit-product-success');
-        $this->productForm->successMessage = 'Product updated';
-
     }
-
 
     public function render()
     {

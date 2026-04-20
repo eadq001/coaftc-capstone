@@ -16,6 +16,7 @@ class ProductFormAdd extends Component
         $this->productForm->successMessage = 'Product added';
 
         $this->dispatch('add-edit-product-success');
+
     }
 
     public function updated($property): void
@@ -27,7 +28,6 @@ class ProductFormAdd extends Component
     {
         $this->productForm->cancel();
     }
-
 
     public function render()
     {
