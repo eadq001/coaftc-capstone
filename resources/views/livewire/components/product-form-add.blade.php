@@ -24,11 +24,27 @@
             <flux:input type="number" wire:model.live.debounce.1000ms="productForm.price" placeholder="Price"/>
             <flux:error name="productForm.price"/>
         </flux:field>
+
+
+
         <flux:field>
             <flux:label class="mb-0.5!">Category</flux:label>
-            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.category" placeholder="Category"/>
+        <flux:select wire:model.live.debounce.1000ms="productForm.category" class="mb-0.5!"  placeholder="Choose a category">
+            @forelse($this->categories as $category)
+            <flux:select.option>{{ $category->category_name }}</flux:select.option>
+            @empty
+                <flux:select.option>No category added yet</flux:select.option>
+            @endforelse
+        </flux:select>
             <flux:error name="productForm.category"/>
         </flux:field>
+
+{{--        <flux:field>--}}
+{{--            <flux:label class="mb-0.5!">Category</flux:label>--}}
+{{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.category" placeholder="Category"/>--}}
+{{--            <flux:error name="productForm.category"/>--}}
+{{--        </flux:field>--}}
+
         <flux:field>
             <flux:label class="mb-0.5!">Subcategory</flux:label>
             <flux:input type="text" wire:model.live.debounce.1000ms="productForm.subcategory" placeholder="Subcategory"/>

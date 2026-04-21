@@ -19,7 +19,7 @@ new class extends Component {
 
         Category::create($validated);
 
-        $this->dispatch('add-product-category-success');
+        $this->dispatch('add-edit-product-category-success');
         $this->successMessage = 'Category Successfully added';
     }
 };
@@ -44,7 +44,7 @@ new class extends Component {
                     type="submit">Add
             </button>
 
-            <x-success-message event="add-product-category-success" successMessage="{{$successMessage ?? ''}}"/>
+            <x-success-message event="add-edit-product-category-success" successMessage="{{$successMessage ?? ''}}"/>
 
         </div>
     </form>

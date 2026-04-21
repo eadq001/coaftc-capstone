@@ -3,6 +3,7 @@
 namespace App\Livewire\Dashboard;
 
 use App\Livewire\Dashboard;
+use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
@@ -29,17 +30,13 @@ class Products extends Dashboard
 
     public int $productToEdit;
 
+    public int $categoryToEdit;
+
     public function mount(): void
     {
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
         $this->totalInventoryValue = Product::sum('price');
-    }
-
-    #[On('add-edit-product-success')]
-    public function jj()
-    {
-        dd('hello');
     }
 
     public function refreshData(?string $action = null): void
@@ -51,6 +48,12 @@ class Products extends Dashboard
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
         $this->totalInventoryValue = Product::sum('price');
+    }
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::paginate(9, ['id', 'category_name'], 'category-table');
     }
 
     #[Computed]
@@ -67,7 +70,7 @@ class Products extends Dashboard
 
     public function updatedSearchText($value): void
     {
-        $this->searchResults = Product::where('name', 'like', "$value%")->get();
+        $this->searchResults = Product::where('name', 'like', "$value%")->limit(10)->get();
     }
 
     public function clearSearchText(): void
@@ -82,7 +85,7 @@ class Products extends Dashboard
 
     public function cancel(): void
     {
-        $this->reset('productToEdit');
+        $this->reset('productToEdit', 'categoryToEdit');
         $this->resetValidation();
     }
 
@@ -91,6 +94,13 @@ class Products extends Dashboard
     {
         sleep(1);
         $this->reset('productToEdit');
+    }
+
+    #[On('add-edit-product-category-success')]
+    public function resetCategoryToEdit(): void
+    {
+        sleep(1);
+        $this->reset('categoryToEdit');
     }
 
     public function render()

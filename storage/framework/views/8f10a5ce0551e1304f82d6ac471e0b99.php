@@ -28,7 +28,6 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($successMessage): ?>
     <div x-data="{show:false}" x-on:<?php echo e($event); ?>.window="show=true; setTimeout(()=> show = false, 2500)" x-show="show"
          class="text-xs bg-green-400 px-3 py-1.5 rounded-lg flex gap-x-2 items-center"
          x-transition.enter.duration.200ms x-transition.leave.duration.400ms
@@ -58,4 +57,4 @@ unset($__defined_vars, $__key, $__value); ?>
         <?php echo e($successMessage); ?>
 
     </div>
-<?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?><?php /**PATH C:\Herd\coaftcorig\resources\views/components/success-message.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Herd\coaftcorig\resources\views/components/success-message.blade.php ENDPATH**/ ?>

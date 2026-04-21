@@ -3,6 +3,9 @@
 namespace App\Livewire\Components;
 
 use App\Livewire\Forms\ProductForm;
+use App\Models\Category;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class ProductFormAdd extends Component
@@ -17,6 +20,18 @@ class ProductFormAdd extends Component
 
         $this->dispatch('add-edit-product-success');
 
+    }
+
+    #[On('add-edit-product-category-success')]
+    public function clearCategoriesValue(): void
+    {
+        unset($this->categories);
+    }
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::get('category_name');
     }
 
     public function updated($property): void

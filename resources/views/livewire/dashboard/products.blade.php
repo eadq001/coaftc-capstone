@@ -187,6 +187,43 @@
         </div>
     </flux:card>
 
+{{--    Product Categories and Subcategories grid display --}}
+    <div class="mt-5 text-sm flex gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
+        <div class="p-8 bg-white rounded-lg w-full">
+            <div class="mb-4 text-lg">Categories</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->categories as $category)
+                    <p class="bg-green-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('categoryToEdit', {{ $category->id }})">{{ $category->category_name }}</p>
+                @empty
+                    <p>No categories added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->categories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+
+        <div class="p-8 bg-white rounded-lg w-full">
+            <div class="mb-4 text-lg">Subcategories</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->categories as $category)
+                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center">{{ $category->category_name }}</p>
+                @empty
+                    <p>No categories added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->categories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+    </div>
+
+    @if($categoryToEdit)
+        <livewire:dashboard.forms.product-category-form-edit :categoryToEdit="$categoryToEdit" />
+    @endif
+
     @if($productToEdit)
         <livewire:components.product-form-edit :productToEdit="$productToEdit" @add-edit-product-success="refreshData; $refresh"/>
     @endif
