@@ -80,20 +80,29 @@
 
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false }">
+                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false, showCategoryForm:false }">
                     <flux:button icon="plus" variant="primary" @click="show=true">
                         Add Product
+                    </flux:button>
+
+                    <flux:button icon="plus" variant="primary" @click="showCategoryForm=true">
+                        Add Product Category
+                    </flux:button>
+
+                    <flux:button icon="plus" variant="primary" @click="show=true">
+                        Add Product Subcategory
                     </flux:button>
 
                     <div x-show="show" x-transition
                          class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
                          wire:cloak>
-                        <div class="bg-white p-4 w-2xl rounded-lg"
-                        >
-
+                        <div class="bg-white p-4 w-2xl rounded-lg">
                             <livewire:components.product-form-add @add-edit-product-success="refreshData('add')"/>
-
                         </div>
+                    </div>
+
+                    <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+                        <livewire:dashboard.forms.product-category-form-add/>
                     </div>
 
                 </div>
