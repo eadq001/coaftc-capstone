@@ -80,7 +80,7 @@
 
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false, showCategoryForm:false }">
+                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false }">
                     <flux:button icon="plus" variant="primary" @click="show=true">
                         Add Product
                     </flux:button>
@@ -89,7 +89,7 @@
                         Add Product Category
                     </flux:button>
 
-                    <flux:button icon="plus" variant="primary" @click="show=true">
+                    <flux:button icon="plus" variant="primary" @click="showSubcategoryForm=true">
                         Add Product Subcategory
                     </flux:button>
 
@@ -103,6 +103,10 @@
 
                     <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
                         <livewire:dashboard.forms.product-category-form-add/>
+                    </div>
+
+                    <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+                        <livewire:dashboard.forms.product-subcategory-form-add/>
                     </div>
 
                 </div>
@@ -204,25 +208,31 @@
             </div>
         </div>
 
+
         <div class="p-8 bg-white rounded-lg w-full">
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-3 gap-4">
-                @forelse($this->categories as $category)
-                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center">{{ $category->category_name }}</p>
+                @forelse($this->subcategories as $subcategory)
+                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})">{{ $subcategory->subcategory_name }}</p>
                 @empty
-                    <p>No categories added yet</p>
+                    <p>No subcategory added yet</p>
                 @endforelse
             </div>
 
             <div class="mt-8!">
-                {{ $this->categories->links(data:['scrollTo' => false])}}
+                {{ $this->subcategories->links(data:['scrollTo' => false])}}
             </div>
         </div>
     </div>
 
+    @if($subcategoryToEdit)
+        <livewire:dashboard.forms.product-subcategory-form-edit :subcategoryToEdit="$subcategoryToEdit" />
+    @endif
+
     @if($categoryToEdit)
         <livewire:dashboard.forms.product-category-form-edit :categoryToEdit="$categoryToEdit" />
     @endif
+
 
     @if($productToEdit)
         <livewire:components.product-form-edit :productToEdit="$productToEdit" @add-edit-product-success="refreshData; $refresh"/>

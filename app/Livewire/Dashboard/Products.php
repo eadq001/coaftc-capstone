@@ -5,6 +5,7 @@ namespace App\Livewire\Dashboard;
 use App\Livewire\Dashboard;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Subcategory;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -30,7 +31,9 @@ class Products extends Dashboard
 
     public int $productToEdit;
 
-    public int $categoryToEdit;
+    public ?int $categoryToEdit = null;
+
+    public int $subcategoryToEdit;
 
     public function mount(): void
     {
@@ -55,6 +58,14 @@ class Products extends Dashboard
     {
         return Category::paginate(9, ['id', 'category_name'], 'category-table');
     }
+
+    #[Computed]
+    public function subcategories()
+    {
+        return Subcategory::paginate(9, ['id', 'subcategory_name'], 'subcategory-table');
+    }
+
+
 
     #[Computed]
     public function products(): LengthAwarePaginator|array
@@ -85,7 +96,7 @@ class Products extends Dashboard
 
     public function cancel(): void
     {
-        $this->reset('productToEdit', 'categoryToEdit');
+        $this->reset('productToEdit', 'categoryToEdit', 'subcategoryToEdit');
         $this->resetValidation();
     }
 
@@ -103,8 +114,11 @@ class Products extends Dashboard
         $this->reset('categoryToEdit');
     }
 
-    public function render()
+    #[On('add-edit-product-subcategory-success')]
+    public function resetSubcategoryToEdit(): void
     {
-        return view('livewire.dashboard.products');
+        sleep(1);
+        $this->reset('subcategoryToEdit');
     }
+
 }

@@ -39,17 +39,30 @@
             <flux:error name="productForm.category"/>
         </flux:field>
 
+
+        <flux:field>
+            <flux:label class="mb-0.5!">Subcategory</flux:label>
+        <flux:select wire:model.live.debounce.1000ms="productForm.subcategory" class="mb-0.5!"  placeholder="Choose a subcategory">
+            @forelse($this->subcategories as $subcategory)
+            <flux:select.option>{{ $subcategory->category_name }}</flux:select.option>
+            @empty
+                <flux:select.option>No subcategory added yet</flux:select.option>
+            @endforelse
+        </flux:select>
+            <flux:error name="productForm.subcategory"/>
+        </flux:field>
+
 {{--        <flux:field>--}}
 {{--            <flux:label class="mb-0.5!">Category</flux:label>--}}
 {{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.category" placeholder="Category"/>--}}
 {{--            <flux:error name="productForm.category"/>--}}
 {{--        </flux:field>--}}
 
-        <flux:field>
-            <flux:label class="mb-0.5!">Subcategory</flux:label>
-            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.subcategory" placeholder="Subcategory"/>
-            <flux:error name="productForm.subcategory"/>
-        </flux:field>
+{{--        <flux:field>--}}
+{{--            <flux:label class="mb-0.5!">Subcategory</flux:label>--}}
+{{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.subcategory" placeholder="Subcategory"/>--}}
+{{--            <flux:error name="productForm.subcategory"/>--}}
+{{--        </flux:field>--}}
 
         <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
 

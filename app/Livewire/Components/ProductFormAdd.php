@@ -4,6 +4,7 @@ namespace App\Livewire\Components;
 
 use App\Livewire\Forms\ProductForm;
 use App\Models\Category;
+use App\Models\Subcategory;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -28,10 +29,23 @@ class ProductFormAdd extends Component
         unset($this->categories);
     }
 
+    #[On('add-edit-product-subcategory-success')]
+    public function clearSubcategoriesValue(): void
+    {
+        unset($this->subcategories);
+    }
+
+
     #[Computed]
     public function categories()
     {
         return Category::get('category_name');
+    }
+
+    #[Computed]
+    public function subcategories()
+    {
+        return Subcategory::get('subcategory_name');
     }
 
     public function updated($property): void
