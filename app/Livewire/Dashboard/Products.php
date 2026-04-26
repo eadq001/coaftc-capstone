@@ -24,7 +24,7 @@ class Products extends Dashboard
 
     public string $searchText = '';
 
-    public $searchResults = [];
+//    public $searchResults = [];
 
     #[Session]
     public bool $lowStockOnly = false;
@@ -65,24 +65,27 @@ class Products extends Dashboard
         return Subcategory::paginate(9, ['id', 'subcategory_name'], 'subcategory-table');
     }
 
-
-
     #[Computed]
     public function products(): LengthAwarePaginator|array
     {
-        if ($this->lowStockOnly) {
-            $this->resetPage('products-page');
-
-            return Product::where('stock_level', '<', 20)->paginate(5, pageName: 'products-page');
+        if ($this->searchText) {
+            $this->resetPage('products-table');
+            return Product::where('name', 'like', "$this->searchText%")->paginate(5, pageName: 'products-table');
         }
 
-        return Product::paginate(7, pageName: 'products-page');
+        elseif ($this->lowStockOnly) {
+            $this->resetPage('products-page');
+
+            return Product::where('stock_level', '<', 20)->paginate(5, pageName: 'products-table');
+        }
+
+        return Product::paginate(5, pageName: 'products-table');
     }
 
-    public function updatedSearchText($value): void
-    {
-        $this->searchResults = Product::where('name', 'like', "$value%")->limit(10)->get();
-    }
+//    public function updatedSearchText($value): void
+//    {
+//        $this->searchResults = Product::where('name', 'like', "$value%")->limit(10)->get();
+//    }
 
     public function clearSearchText(): void
     {
@@ -92,6 +95,7 @@ class Products extends Dashboard
     public function toggleLowStockOnly(): void
     {
         $this->lowStockOnly = ! $this->lowStockOnly;
+        $this->resetPage('products-table');
     }
 
     public function cancel(): void
@@ -120,5 +124,4 @@ class Products extends Dashboard
         sleep(1);
         $this->reset('subcategoryToEdit');
     }
-
 }

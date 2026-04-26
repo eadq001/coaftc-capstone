@@ -47,7 +47,7 @@
             }
         </style>
 
-        <flux:sidebar sticky collapsible wire:cloak class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
+        <flux:sidebar sticky collapsible class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
 
             <flux:sidebar.header class="border-b border-zinc-300 dark:border-zinc-700">
                 <flux:sidebar.brand
@@ -75,7 +75,7 @@
                 <flux:sidebar.item icon="cube" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
                 <flux:sidebar.item icon="currency-dollar" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
                 <flux:sidebar.item icon="document-text" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
-                <flux:sidebar.item icon="user" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
+                <flux:sidebar.item icon="user"  wire:navigate href="{{ route('dashboard.users') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
                 <flux:sidebar.item icon="user-group" href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
 
                 <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 dark:text-zinc-200 [&_[data-flux-sidebar-heading]]:text-primary dark:[&_[data-flux-sidebar-heading]]:text-primary">

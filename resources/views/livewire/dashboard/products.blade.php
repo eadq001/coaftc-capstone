@@ -57,20 +57,21 @@
                             wire:model.live.debounce.500ms="searchText"
                     />
 
-                    @if($searchText)
-                        <div class="absolute z-50 bg-gray-50 p-2 w-full rounded-lg mt-12" wire:transition>
-                            @forelse($searchResults as $result)
-                                <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"
-                                     wire:key="{{ $result->id }}" wire:click="$set('productToEdit', {{ $result->id }})">
-                                    <p>{{ $result->name }}</p>
-                                    <p>stock: {{ $result->stock_level }}</p>
-                                    <p>price: {{ $result->price }}</p>
-                                </div>
-                            @empty
-                                <p class="text-sm">No results found</p>
-                            @endforelse
-                        </div>
-                    @endif
+{{--                    search results display --}}
+{{--                    @if($searchText)--}}
+{{--                        <div class="absolute z-50 bg-gray-50 p-2 w-full rounded-lg mt-12" wire:transition>--}}
+{{--                            @forelse($searchResults as $result)--}}
+{{--                                <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"--}}
+{{--                                     wire:key="{{ $result->id }}" wire:click="$set('productToEdit', {{ $result->id }})">--}}
+{{--                                    <p>{{ $result->name }}</p>--}}
+{{--                                    <p>stock: {{ $result->stock_level }}</p>--}}
+{{--                                    <p>price: {{ $result->price }}</p>--}}
+{{--                                </div>--}}
+{{--                            @empty--}}
+{{--                                <p class="text-sm">No results found</p>--}}
+{{--                            @endforelse--}}
+{{--                        </div>--}}
+{{--                    @endif--}}
 
                     <button type="button"
                             class="hover:bg-green-300  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5"
@@ -136,9 +137,9 @@
                 <flux:table.column>Sizes</flux:table.column>
             </flux:table.columns>
 
-            @foreach($this->products as $product)
+            @forelse($this->products as $product)
                 <flux:table.row wire:key="{{ $product->id }}" class="cursor-pointer"
-                                wire:click="$set('productToEdit', {{ $product->id }} )"
+                                wire:click="$set('productToEdit', {{ $product->id }} )" title="click to edit"
                 >
                     <flux:table.cell>
                         <div class="font-small text-zinc-900">{{ $product->name }}</div>
@@ -183,7 +184,15 @@
                     </flux:table.cell>
 
                 </flux:table.row>
-            @endforeach
+            @empty
+                <flux:table.row>
+                    <flux:table.cell>
+
+                    <div class="w-full">No results found</div>
+                    </flux:table.cell>
+
+                </flux:table.row>
+            @endforelse
 
         </flux:table>
         <div class="p-6 border-t border-zinc-200">
@@ -197,7 +206,7 @@
             <div class="mb-4 text-lg">Categories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->categories as $category)
-                    <p class="bg-green-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('categoryToEdit', {{ $category->id }})">{{ $category->category_name }}</p>
+                    <p class="bg-green-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('categoryToEdit', {{ $category->id }})" title="click to edit">{{ $category->category_name }}</p>
                 @empty
                     <p>No categories added yet</p>
                 @endforelse
@@ -213,7 +222,7 @@
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->subcategories as $subcategory)
-                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})">{{ $subcategory->subcategory_name }}</p>
+                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})" title="click to edit"v>{{ $subcategory->subcategory_name }}</p>
                 @empty
                     <p>No subcategory added yet</p>
                 @endforelse

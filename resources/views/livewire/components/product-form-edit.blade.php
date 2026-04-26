@@ -33,18 +33,40 @@
                                     x-bind:readonly="!active"/>
                         <flux:error name="productForm.price"/>
                     </flux:field>
+
+
+{{--                    <flux:field>--}}
+{{--                        <flux:label class="mb-0.5!">Category</flux:label>--}}
+{{--                        <flux:input type="text" wire:model="productForm.category" placeholder="Category"--}}
+{{--                                    x-bind:readonly="!active"/>--}}
+{{--                        <flux:error name="productForm.category"/>--}}
+{{--                    </flux:field>--}}
+{{--                    --}}
+
                     <flux:field>
                         <flux:label class="mb-0.5!">Category</flux:label>
-                        <flux:input type="text" wire:model="productForm.category" placeholder="Category"
-                                    x-bind:readonly="!active"/>
+                        <flux:select wire:model.live.debounce.1000ms="productForm.category" class="mb-0.5!"  placeholder="Choose a category" x-bind:disabled="!active">
+                            @forelse($this->categories as $category)
+                                <flux:select.option>{{ $category->category_name }}</flux:select.option>
+                            @empty
+                                <flux:select.option>No category added yet</flux:select.option>
+                            @endforelse
+                        </flux:select>
                         <flux:error name="productForm.category"/>
                     </flux:field>
+
                     <flux:field>
                         <flux:label class="mb-0.5!">Subcategory</flux:label>
-                        <flux:input type="text" wire:model="productForm.subcategory"
-                                    placeholder="Subcategory" x-bind:readonly="!active"/>
+                        <flux:select wire:model.live.debounce.1000ms="productForm.subcategory" class="mb-0.5!"  placeholder="Choose a subcategory" x-bind:disabled="!active">
+                            @forelse($this->subcategories as $subcategory)
+                                <flux:select.option>{{ $subcategory->subcategory_name }}</flux:select.option>
+                            @empty
+                                <flux:select.option>No subcategory added yet</flux:select.option>
+                            @endforelse
+                        </flux:select>
                         <flux:error name="productForm.subcategory"/>
                     </flux:field>
+
                 </div>
                 <div class="justify-self-stretch">
                     <img alt="qr-code" src="data:image/png;base64,{{ QrGenerator::generate($productForm->id) }}">

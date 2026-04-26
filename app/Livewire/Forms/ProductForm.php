@@ -4,10 +4,8 @@ namespace App\Livewire\Forms;
 
 use App\Models\Product;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
-
 
 class ProductForm extends Form
 {
@@ -59,7 +57,7 @@ class ProductForm extends Form
     public function update(): void
     {
         $this->product->update($this->validate());
-        $this->reset(['name', 'stock_level', 'unit', 'price', 'category', 'subcategory']);
+        $this->reset(['name', 'stock_level', 'unit', 'price', 'category', 'subcategory', 'product']);
     }
 
     public function cancel(): void
@@ -67,7 +65,6 @@ class ProductForm extends Form
         $this->reset();
         $this->resetValidation();
     }
-
 
     public function updated($property): void
     {

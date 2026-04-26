@@ -1,0 +1,16 @@
+[33m261bfc8[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m added a subcategory and edit form
+[33ma563dca[m added an edit functionality for categories
+[33ma1457b3[m added a category model and switch to sfc livewire and added an add category form
+[33m92608d9[m added a qr code generation when the user view the product
+[33mcd8da2e[m fixed search result not showing form when clicked. fixed where the update button reset all the properties
+[33mea49d25[m added a working edit function with dirty states tracking
+[33m1b89329[m added a transition effect on form when user clicks the search result or the table products
+[33m0aa2ba6[m fixed destroyed index layout.
+[33md6be62d[m added logout functionality
+[33m7e549e9[m change the env file
+[33m395eb03[m change the env file
+[33mdedbdf1[m added a dashboard summary counts and add a low stock filter for products
+[33mbec0ff5[m added a popup form for creating a product
+[33m66ee7ba[m added wire:navigate on sidebar links
+[33m5f4e2c6[m added a dashboard and implement a login authentication.
+[33mb510c45[m created a livewire login page

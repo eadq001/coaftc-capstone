@@ -15,6 +15,7 @@ Route::middleware('auth')->group(function () {
     // Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('/dashboard', Home::class)->name('dashboard.home');
     Route::livewire('/dashboard/products', Products::class)->name('dashboard.products');
+    Route::livewire('/dashboard/users', 'dashboard.users.create-users')->name('dashboard.users');
     Route::delete('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
 });

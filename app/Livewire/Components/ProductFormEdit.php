@@ -3,6 +3,9 @@
 namespace App\Livewire\Components;
 
 use App\Livewire\Forms\ProductForm;
+use App\Models\Category;
+use App\Models\Subcategory;
+use Livewire\Attributes\Computed;
 use Livewire\Component;
 
 class ProductFormEdit extends Component
@@ -20,6 +23,18 @@ class ProductFormEdit extends Component
     {
         $this->productForm->update();
         $this->dispatch('add-edit-product-success');
+    }
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::get('category_name');
+    }
+
+    #[Computed]
+    public function subcategories()
+    {
+        return Subcategory::get('subcategory_name');
     }
 
     public function render()
