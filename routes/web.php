@@ -11,11 +11,14 @@ Route::livewire('/', Login::class)->name('home')->middleware('guest');
 Route::livewire('/login', Login::class)->name('login')->middleware('guest');
 Route::livewire('/register', Register::class)->name('register')->middleware('guest');
 
+Route::livewire('/verification', 'auth.register-confirm-email')->name('verification.verify')->middleware('guest');
+
 Route::middleware('auth')->group(function () {
     // Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('/dashboard', Home::class)->name('dashboard.home');
     Route::livewire('/dashboard/products', Products::class)->name('dashboard.products');
     Route::livewire('/dashboard/users', 'dashboard.users.create-users')->name('dashboard.users');
+    Route::livewire('/dashboard/employees', 'dashboard.employees')->name('dashboard.employees');
     Route::delete('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
 });

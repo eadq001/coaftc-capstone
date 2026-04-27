@@ -52,6 +52,16 @@
             <flux:error name="productForm.subcategory"/>
         </flux:field>
 
+        <flux:field>
+            <flux:label class="mb-0.5!">Size</flux:label>
+        <flux:select wire:model.live.debounce.1000ms="productForm.size" class="mb-0.5!" placeholder="Optional"  >
+            @foreach(App\Enums\EggSizes::cases() as $eggSize)
+            <flux:select.option>{{ $eggSize->label() }}</flux:select.option>
+            @endforeach
+        </flux:select>
+            <flux:error name="productForm.size"/>
+        </flux:field>
+
 {{--        <flux:field>--}}
 {{--            <flux:label class="mb-0.5!">Category</flux:label>--}}
 {{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.category" placeholder="Category"/>--}}

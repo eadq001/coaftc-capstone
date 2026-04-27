@@ -30,6 +30,9 @@ class ProductForm extends Form
     #[Validate('required|string|max:100')]
     public string $subcategory = '';
 
+    #[Validate('nullable|string|max:100')]
+    public string $size = '';
+
     public ?Product $product;
 
     public string $successMessage = '';
@@ -50,6 +53,7 @@ class ProductForm extends Form
         $this->price = $product->price;
         $this->category = $product->category;
         $this->subcategory = $product->subcategory;
+        $this->size = $product->size ?? '';
         $this->product = $product;
 
     }
@@ -57,7 +61,7 @@ class ProductForm extends Form
     public function update(): void
     {
         $this->product->update($this->validate());
-        $this->reset(['name', 'stock_level', 'unit', 'price', 'category', 'subcategory', 'product']);
+        $this->reset(['name', 'stock_level', 'unit', 'price', 'category', 'subcategory', 'product', 'size']);
     }
 
     public function cancel(): void

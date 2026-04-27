@@ -35,12 +35,6 @@ class Products extends Dashboard
 
     public int $subcategoryToEdit;
 
-    public function mount(): void
-    {
-        $this->totalProducts = Product::count('name');
-        $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
-        $this->totalInventoryValue = Product::sum('price');
-    }
 
     public function refreshData(?string $action = null): void
     {
