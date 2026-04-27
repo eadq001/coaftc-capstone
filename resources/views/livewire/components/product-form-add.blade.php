@@ -7,22 +7,22 @@
         <flux:field>
             <flux:label class="mb-0.5!">Product Name</flux:label>
             <flux:input type="text" wire:model.live.debounce.1000ms="productForm.name" placeholder="Product Name"/>
-            <flux:error name="productForm.name"/>
+            <flux:error name="productForm.name" class="mt-1!"/>
         </flux:field>
         <flux:field>
             <flux:label class="mb-0.5!">Stock Level</flux:label>
             <flux:input type="number" wire:model.live.debounce.1000ms="productForm.stock_level" placeholder="Stock Level"/>
-            <flux:error name="productForm.stock_level"/>
+            <flux:error name="productForm.stock_level" class="mt-1!"/>
         </flux:field>
         <flux:field>
             <flux:label class="mb-0.5!">Unit</flux:label>
             <flux:input type="text" wire:model.live.debounce.1000ms="productForm.unit" placeholder="Unit"/>
-            <flux:error name="productForm.unit"/>
+            <flux:error name="productForm.unit" class="mt-1!"/>
         </flux:field>
         <flux:field>
             <flux:label class="mb-0.5!">Price</flux:label>
             <flux:input type="number" wire:model.live.debounce.1000ms="productForm.price" placeholder="Price"/>
-            <flux:error name="productForm.price"/>
+            <flux:error name="productForm.price" class="mt-1!"/>
         </flux:field>
 
 
@@ -36,7 +36,7 @@
                 <flux:select.option>No category added yet</flux:select.option>
             @endforelse
         </flux:select>
-            <flux:error name="productForm.category"/>
+            <flux:error name="productForm.category" class="mt-1!"/>
         </flux:field>
 
 
@@ -49,7 +49,7 @@
                 <flux:select.option>No subcategory added yet</flux:select.option>
             @endforelse
         </flux:select>
-            <flux:error name="productForm.subcategory"/>
+            <flux:error name="productForm.subcategory" class="mt-1!"/>
         </flux:field>
 
         <flux:field>
@@ -59,7 +59,7 @@
             <flux:select.option>{{ $eggSize->label() }}</flux:select.option>
             @endforeach
         </flux:select>
-            <flux:error name="productForm.size"/>
+            <flux:error name="productForm.size" class="mt-1!"/>
         </flux:field>
 
 {{--        <flux:field>--}}

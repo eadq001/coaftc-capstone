@@ -1,7 +1,40 @@
-<div>
-    <div class="mb-6">
+<div x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false }">
+    <div class="mb-6 flex items-center justify-between">
+        <div>
         <flux:heading size="xl" level="1">Products</flux:heading>
         <flux:text class="mt-1 text-zinc-600">Manage your inventory and product catalog</flux:text>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2" >
+            <flux:button icon="plus" variant="primary" @click="show=true">
+                Add Product
+            </flux:button>
+
+            <flux:button icon="plus" variant="primary" @click="showCategoryForm=true">
+                Add Product Category
+            </flux:button>
+
+            <flux:button icon="plus" variant="primary" @click="showSubcategoryForm=true">
+                Add Product Subcategory
+            </flux:button>
+
+            <div x-show="show" x-transition
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
+                 wire:cloak>
+                <div class="bg-white p-4 w-2xl rounded-lg">
+                    <livewire:components.product-form-add @add-edit-product-success="refreshData('add')"/>
+                </div>
+            </div>
+
+            <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+                <livewire:dashboard.forms.product-category-form-add/>
+            </div>
+
+            <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+                <livewire:dashboard.forms.product-subcategory-form-add/>
+            </div>
+
+        </div>
     </div>
 
     <flux:card class="border border-zinc-300 rounded-lg shadow-sm bg-white overflow-hidden">
@@ -40,38 +73,6 @@
 
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2" x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false }">
-                    <flux:button icon="plus" variant="primary" @click="show=true">
-                        Add Product
-                    </flux:button>
-
-                    <flux:button icon="plus" variant="primary" @click="showCategoryForm=true">
-                        Add Product Category
-                    </flux:button>
-
-                    <flux:button icon="plus" variant="primary" @click="showSubcategoryForm=true">
-                        Add Product Subcategory
-                    </flux:button>
-
-                    <div x-show="show" x-transition
-                         class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
-                         wire:cloak>
-                        <div class="bg-white p-4 w-2xl rounded-lg">
-                            <livewire:components.product-form-add @add-edit-product-success="refreshData('add')"/>
-                        </div>
-                    </div>
-
-                    <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-                        <livewire:dashboard.forms.product-category-form-add/>
-                    </div>
-
-                    <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-                        <livewire:dashboard.forms.product-subcategory-form-add/>
-                    </div>
-
-                </div>
-            </div>
-
             <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
                     @class([
                     'mt-2',
@@ -79,6 +80,9 @@
                 ])>
                 View Low Stock Products
             </flux:button>
+
+            </div>
+
 
             {{--                            <flux:badge color="zinc" variant="filled" class="px-3 py-1">--}}
             {{--                                {{ $filteredCount ?? '0' }} results--}}
