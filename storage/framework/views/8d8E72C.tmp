@@ -1,4 +1,3 @@
-<?php use App\Enums\UserRoles; ?>
 <!DOCTYPE html>
 <html lang="<?php echo e(str_replace('_', '-', app()->getLocale())); ?>">
     <head>
@@ -172,18 +171,16 @@ Analytics <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalfe86969babb72517ecf97426e7c9330d; ?>
 <?php unset($__componentOriginalfe86969babb72517ecf97426e7c9330d); ?>
 <?php endif; ?>
-
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role === App\Enums\UserRoles::INVENTORY): ?>
                 <?php if (isset($component)) { $__componentOriginalfe86969babb72517ecf97426e7c9330d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfe86969babb72517ecf97426e7c9330d = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'cube','wire:current.exact' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'cube','wire:current' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::sidebar.item'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['icon' => 'cube','wire:current.exact' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']); ?>
+<?php $component->withAttributes(['icon' => 'cube','wire:current' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 Products <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
@@ -195,30 +192,6 @@ Products <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalfe86969babb72517ecf97426e7c9330d; ?>
 <?php unset($__componentOriginalfe86969babb72517ecf97426e7c9330d); ?>
 <?php endif; ?>
-                <?php if (isset($component)) { $__componentOriginalfe86969babb72517ecf97426e7c9330d = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalfe86969babb72517ecf97426e7c9330d = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'qr-code','wire:current.exact' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products-qr')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::sidebar.item'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'qr-code','wire:current.exact' => 'bg-green-300!','wire:navigate' => true,'href' => ''.e(route('dashboard.products-qr')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Products QR Code <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalfe86969babb72517ecf97426e7c9330d)): ?>
-<?php $attributes = $__attributesOriginalfe86969babb72517ecf97426e7c9330d; ?>
-<?php unset($__attributesOriginalfe86969babb72517ecf97426e7c9330d); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalfe86969babb72517ecf97426e7c9330d)): ?>
-<?php $component = $__componentOriginalfe86969babb72517ecf97426e7c9330d; ?>
-<?php unset($__componentOriginalfe86969babb72517ecf97426e7c9330d); ?>
-<?php endif; ?>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role === App\Enums\UserRoles::CASHIER): ?>
                 <?php if (isset($component)) { $__componentOriginalfe86969babb72517ecf97426e7c9330d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfe86969babb72517ecf97426e7c9330d = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'currency-dollar','href' => '#','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -240,8 +213,6 @@ Sales <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalfe86969babb72517ecf97426e7c9330d; ?>
 <?php unset($__componentOriginalfe86969babb72517ecf97426e7c9330d); ?>
 <?php endif; ?>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-
                 <?php if (isset($component)) { $__componentOriginalfe86969babb72517ecf97426e7c9330d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfe86969babb72517ecf97426e7c9330d = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'document-text','href' => '#','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -287,7 +258,7 @@ Users <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginalfe86969babb72517ecf97426e7c9330d); ?>
 <?php endif; ?>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-
+                
                 <?php if (isset($component)) { $__componentOriginalfe86969babb72517ecf97426e7c9330d = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalfe86969babb72517ecf97426e7c9330d = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::sidebar.item','data' => ['icon' => 'user-group','wire:current.exact' => true,'wire:navigate' => true,'href' => ''.e(route('dashboard.employees')).'','class' => 'text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -464,49 +435,7 @@ Employees <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginald5e1eb3ae521062f8474178ba08933ca; ?>
 <?php unset($__componentOriginald5e1eb3ae521062f8474178ba08933ca); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal5027d420cfeeb03dd925cfc08ae44851 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5027d420cfeeb03dd925cfc08ae44851 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::menu.item','data' => ['icon' => 'cog-6-tooth','href' => ''.e(route('profile.edit')).'','wire:navigate' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::menu.item'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['icon' => 'cog-6-tooth','href' => ''.e(route('profile.edit')).'','wire:navigate' => true]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Edit Profile <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5027d420cfeeb03dd925cfc08ae44851)): ?>
-<?php $attributes = $__attributesOriginal5027d420cfeeb03dd925cfc08ae44851; ?>
-<?php unset($__attributesOriginal5027d420cfeeb03dd925cfc08ae44851); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5027d420cfeeb03dd925cfc08ae44851)): ?>
-<?php $component = $__componentOriginal5027d420cfeeb03dd925cfc08ae44851; ?>
-<?php unset($__componentOriginal5027d420cfeeb03dd925cfc08ae44851); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginald5e1eb3ae521062f8474178ba08933ca = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginald5e1eb3ae521062f8474178ba08933ca = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::menu.separator','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::menu.separator'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginald5e1eb3ae521062f8474178ba08933ca)): ?>
-<?php $attributes = $__attributesOriginald5e1eb3ae521062f8474178ba08933ca; ?>
-<?php unset($__attributesOriginald5e1eb3ae521062f8474178ba08933ca); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginald5e1eb3ae521062f8474178ba08933ca)): ?>
-<?php $component = $__componentOriginald5e1eb3ae521062f8474178ba08933ca; ?>
-<?php unset($__componentOriginald5e1eb3ae521062f8474178ba08933ca); ?>
-<?php endif; ?>
                     <form action="/logout" method="POST" class="w-full">
                         <?php echo csrf_field(); ?>
                         <?php echo method_field('DELETE'); ?>

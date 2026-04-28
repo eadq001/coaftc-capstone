@@ -17,8 +17,11 @@ Route::middleware('auth')->group(function () {
     // Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
     Route::livewire('/dashboard', Home::class)->name('dashboard.home');
     Route::livewire('/dashboard/products', Products::class)->name('dashboard.products');
+    Route::livewire('/dashboard/products/qr', 'dashboard.products.products-qr')->name('dashboard.products-qr');
     Route::livewire('/dashboard/users', 'dashboard.users.create-users')->name('dashboard.users');
-    Route::livewire('/dashboard/employees', 'dashboard.employees')->name('dashboard.employees');
+    Route::livewire('/dashboard/profile', 'dashboard.profile.edit-profile')->name('profile.edit');
     Route::delete('/logout', [LogoutController::class, 'destroy'])->name('logout');
 
 });
+
+Route::livewire('/dashboard/employees', 'dashboard.employees')->name('dashboard.employees')->middleware('admin');

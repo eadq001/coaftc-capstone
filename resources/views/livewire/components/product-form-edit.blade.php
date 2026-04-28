@@ -83,7 +83,7 @@
 
                 </div>
                 <div class="justify-self-stretch">
-                    <img alt="qr-code" src="data:image/png;base64,{{ QrGenerator::generate($productForm->id) }}">
+                    <img alt="qr-code" src="data:image/png;base64,{{ QrGenerator::generate($productForm->id, 190) }}">
                 </div>
             </div>
 
