@@ -12,11 +12,27 @@ class extends Component
 {
     use WithPagination;
 
+    public string $searchText = '';
+
+    public function updatedSearchText(): void
+    {
+        $this->resetPage('products-qr-page');
+    }
+
+    public function clearSearchText(): void
+    {
+        $this->reset('searchText');
+        $this->resetPage('products-qr-page');
+    }
+
     #[Computed]
     public function products()
     {
         return Product::query()
             ->select(['id', 'name', 'category', 'subcategory', 'size'])
+            ->when($this->searchText !== '', function ($query) {
+                $query->where('name', 'like', $this->searchText . '%');
+            })
             ->orderByDesc('id')
             ->paginate(12, pageName: 'products-qr-page');
     }
@@ -30,6 +46,27 @@ class extends Component
     </div>
 
     <flux:card class="overflow-hidden rounded-lg border border-zinc-300 bg-white shadow-sm">
+        <div class="border-b border-zinc-200 p-6">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex-1 max-w-md">
+                    <flux:input
+                        icon="magnifying-glass"
+                        placeholder="Search by product name..."
+                        wire:model.live.debounce.300ms="searchText"
+                    />
+                </div>
+
+                <flux:button type="button"
+                        class="hover:bg-green-300! disabled:hover:bg-0  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5 py-2"
+                        wire:click="clearSearchText"
+                        :disabled="$searchText === ''"
+                >
+                    Clear
+                </flux:button>
+
+            </div>
+        </div>
+
         <div class="grid gap-6 p-6 sm:grid-cols-2 xl:grid-cols-3">
             @forelse($this->products as $product)
                 <article
