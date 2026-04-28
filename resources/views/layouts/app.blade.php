@@ -20,9 +20,9 @@
     <body class="h-screen bg-gray-100 dark:bg-gray-900 p-6">
     <div class="flex items-center justify-center h-full">
 
-        <div class="login-image flex-1 w-full h-full ">
-            <img src="{{ asset("images/coaftc.webp") }}" alt="" class="w-full h-full object-cover">
-        </div>
+{{--        <div class="login-image flex-1 w-full h-full ">--}}
+{{--            <img src="{{ asset("images/coaftc.webp") }}" alt="" class="w-full h-full object-cover">--}}
+{{--        </div>--}}
 
         {{ $slot }}
 
