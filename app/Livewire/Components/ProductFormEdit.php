@@ -44,6 +44,23 @@ class ProductFormEdit extends Component
         return Unit::all();
     }
 
+    public function cancel()
+    {
+        $this->reset();
+    }
+
+    public function resetStockToAdd()
+    {
+        $this->productForm->resetStockToAdd();
+    }
+
+    public function addStock()
+    {
+        $this->productForm->addStock();
+        $this->dispatch('add-product-stock-success');
+
+    }
+
     public function render()
     {
         return view('livewire.components.product-form-edit');

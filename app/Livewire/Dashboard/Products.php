@@ -84,10 +84,6 @@ class Products extends Dashboard
         return Product::paginate(5, pageName: 'products-table');
     }
 
-//    public function updatedSearchText($value): void
-//    {
-//        $this->searchResults = Product::where('name', 'like', "$value%")->limit(10)->get();
-//    }
 
     public function clearSearchText(): void
     {

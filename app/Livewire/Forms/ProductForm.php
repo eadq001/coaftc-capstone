@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Models\Product;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -34,6 +35,8 @@ class ProductForm extends Form
 
     #[Validate('nullable|string|max:100')]
     public string $class = '';
+
+    public ?int $stockToAdd = null;
 
     public ?Product $product;
 
@@ -81,6 +84,20 @@ class ProductForm extends Form
 
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
+
+    public function addStock(): void
+    {
+        $this->validate(['stockToAdd' => 'required|integer']);
+        $this->product->increment('stock_level', $this->stockToAdd);
+        $this->stock_level = $this->product->stock_level;
+        $this->resetStockToAdd();
+    }
+
+    public function resetStockToAdd()
+    {
+        $this->reset('stockToAdd');
+    }
+
 
     public function cancel(): void
     {

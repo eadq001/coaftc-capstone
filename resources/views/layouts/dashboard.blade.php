@@ -48,7 +48,7 @@
             }
         </style>
 
-        <flux:sidebar sticky collapsible class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
+        <flux:sidebar sticky collapsible wire:cloak class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
 
             <flux:sidebar.header class="border-b border-zinc-300 dark:border-zinc-700">
                 <flux:sidebar.brand
@@ -136,6 +136,7 @@
         </flux:main>
     </div>
     @livewireScripts
+    @fluxScripts
 
     </body>
 </html>
