@@ -1,8 +1,6 @@
 <?php
 
-use App\Http\Middleware\AdminRole;
-use App\Http\Middleware\CashierRole;
-use App\Http\Middleware\InventoryRole;
+use App\Http\Middleware\CheckUserRole;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -15,10 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'cashier' => CashierRole::class,
-            'admin' => AdminRole::class,
-            'inventory' => InventoryRole::class,
+            'role' => CheckUserRole::class
         ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

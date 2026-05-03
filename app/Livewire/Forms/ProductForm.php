@@ -9,7 +9,6 @@ use Livewire\Form;
 
 class ProductForm extends Form
 {
-    #[Locked]
     public ?int $id = null;
 
     #[Validate('required|string|max:255')]
@@ -18,20 +17,23 @@ class ProductForm extends Form
     #[Validate('required|int|min:1')]
     public ?int $stock_level;
 
-    #[Validate('required|string|max:50')]
-    public string $unit = '';
+    #[Validate('required|integer|min:1')]
+    public ?float $price = null;
 
-    #[Validate('required|numeric|min:0')]
-    public float|string $price = '';
+    #[Validate('required')]
+    public string $unit_id = '';
 
-    #[Validate('required|string|max:100')]
-    public string $category = '';
+    #[Validate('required|exists:categories,id')]
+    public string $category_id = '';
 
-    #[Validate('required|string|max:100')]
-    public string $subcategory = '';
+    #[Validate('required|exists:subcategories,id')]
+    public string $subcategory_id = '';
 
     #[Validate('nullable|string|max:100')]
     public string $size = '';
+
+    #[Validate('nullable|string|max:100')]
+    public string $class = '';
 
     public ?Product $product;
 
@@ -39,7 +41,14 @@ class ProductForm extends Form
 
     public function store(): void
     {
-        Product::create($this->validate());
+        $validated = $this->validate();
+
+        //cast the string to int
+        $validated['unit_id'] = (int) $validated['unit_id'];
+        $validated['category_id'] = (int) $validated['category_id'];
+        $validated['subcategory_id'] = (int) $validated['subcategory_id'];
+
+        Product::create($validated);
         $this->reset();
     }
 
@@ -49,19 +58,28 @@ class ProductForm extends Form
         $this->id = $product->id;
         $this->name = $product->name;
         $this->stock_level = $product->stock_level;
-        $this->unit = $product->unit;
+        $this->unit_id = $product->unit_id;
         $this->price = $product->price;
-        $this->category = $product->category;
-        $this->subcategory = $product->subcategory;
+        $this->category_id = $product->category_id;
+        $this->subcategory_id = $product->subcategory_id;
         $this->size = $product->size ?? '';
+        $this->class = $product->class->value ?? '';
         $this->product = $product;
 
     }
 
     public function update(): void
     {
+        $validated = $this->validate();
+
+        //cast the string to int
+        $validated['unit_id'] = (int) $validated['unit_id'];
+        $validated['category_id'] = (int) $validated['category_id'];
+        $validated['subcategory_id'] = (int) $validated['subcategory_id'];
+
         $this->product->update($this->validate());
-        $this->reset(['name', 'stock_level', 'unit', 'price', 'category', 'subcategory', 'product', 'size']);
+
+        $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
 
     public function cancel(): void
@@ -70,8 +88,4 @@ class ProductForm extends Form
         $this->resetValidation();
     }
 
-    public function updated($property): void
-    {
-        $this->validateOnly($property);
-    }
 }

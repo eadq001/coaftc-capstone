@@ -16,17 +16,6 @@ new class extends Dashboard {
 
     public string $position = '';
 
-    /**
-     * @var array<int, array{
-     *     id: int,
-     *     first_name: string,
-     *     last_name: string,
-     *     middle_name: string,
-     *     address: string,
-     *     position: string,
-     *     created_at: string
-     * }>
-     */
     public array $employees = [];
 
     public string $successMessage = '';
@@ -193,7 +182,7 @@ new class extends Dashboard {
 
                 <button
                     type="button"
-                    class="rounded-full p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                    class="rounded-full p-1 text-zinc-500 transition hover:rotate-180 hover:text-zinc-900"
                     @click="showEmployeeForm = false"
                 >
                     <flux:icon.x-mark class="h-5 w-5" />

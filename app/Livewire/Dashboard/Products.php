@@ -6,6 +6,7 @@ use App\Livewire\Dashboard;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Subcategory;
+use App\Models\Unit;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
@@ -35,6 +36,7 @@ class Products extends Dashboard
 
     public int $subcategoryToEdit;
 
+    public int $unitToEdit;
 
     public function refreshData(?string $action = null): void
     {
@@ -57,6 +59,12 @@ class Products extends Dashboard
     public function subcategories()
     {
         return Subcategory::paginate(9, ['id', 'subcategory_name'], 'subcategory-table');
+    }
+
+    #[Computed]
+    public function units()
+    {
+        return Unit::paginate(9, ['id', 'unit_name'], 'unit-table');
     }
 
     #[Computed]
@@ -94,28 +102,32 @@ class Products extends Dashboard
 
     public function cancel(): void
     {
-        $this->reset('productToEdit', 'categoryToEdit', 'subcategoryToEdit');
+        $this->reset('productToEdit', 'categoryToEdit', 'subcategoryToEdit', 'unitToEdit');
         $this->resetValidation();
     }
 
     #[On('add-edit-product-success')]
     public function resetProductToEdit(): void
     {
-        sleep(1);
         $this->reset('productToEdit');
     }
 
     #[On('add-edit-product-category-success')]
     public function resetCategoryToEdit(): void
     {
-        sleep(1);
         $this->reset('categoryToEdit');
     }
 
     #[On('add-edit-product-subcategory-success')]
     public function resetSubcategoryToEdit(): void
     {
-        sleep(1);
         $this->reset('subcategoryToEdit');
     }
+
+    #[On('add-edit-product-unit-success')]
+    public function resetUnitToEdit(): void
+    {
+        $this->reset('unitToEdit');
+    }
+
 }

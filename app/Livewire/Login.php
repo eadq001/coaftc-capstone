@@ -25,8 +25,9 @@ class Login extends Component
             return redirect()->intended('/dashboard');
         }
 
-        $this->addError('loginFailed', 'The records you entered do not on our records.');
+        $this->addError('loginFailed', 'Invalid email and password.');
     }
+
 
     public function render()
     {

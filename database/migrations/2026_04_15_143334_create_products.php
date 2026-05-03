@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Subcategory;
+use App\Models\Unit;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,10 +18,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('stock_level');
-            $table->string('unit');
             $table->float('price');
-            $table->string('category');
-            $table->string('subcategory');
+            $table->foreignIdFor(Unit::class);
+            $table->foreignIdFor(Category::class);
+            $table->foreignIdFor(Subcategory::class);
             $table->timestamps();
         });
     }

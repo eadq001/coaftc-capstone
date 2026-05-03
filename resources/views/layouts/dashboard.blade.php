@@ -73,22 +73,21 @@
             <flux:sidebar.nav class="text-zinc-800 dark:text-zinc-200">
                 <flux:sidebar.item icon="chart-bar-square" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
 
-                @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role === App\Enums\UserRoles::INVENTORY)
+                @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role->value === App\Enums\UserRoles::INVENTORY->value)
                 <flux:sidebar.item icon="cube" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
                 <flux:sidebar.item icon="qr-code" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.products-qr') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products QR Code</flux:sidebar.item>
                 @endif
 
-                @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role === App\Enums\UserRoles::CASHIER)
-                <flux:sidebar.item icon="currency-dollar"  href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
+                <flux:sidebar.item icon="currency-dollar" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
                 @endif
 
                 <flux:sidebar.item icon="document-text"  href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
 
-                @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN)
+                @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value)
                 <flux:sidebar.item icon="user" wire:current.strict="bg-green-300!"  wire:navigate href="{{ route('dashboard.users') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
-                @endif
-
                 <flux:sidebar.item icon="user-group" wire:current.exact wire:navigate href="{{ route('dashboard.employees') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
+                @endif
 
 {{--                <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 dark:text-zinc-200 [&_[data-flux-sidebar-heading]]:text-primary dark:[&_[data-flux-sidebar-heading]]:text-primary">--}}
 {{--                    <flux:sidebar.item href="" class="text-zinc-800 dark:text-zinc-200 hover:bg-primary dark:hover:bg-primary hover:text-white">Account</flux:sidebar.item>--}}
@@ -99,7 +98,6 @@
 
             <flux:sidebar.spacer />
 
-
             <flux:dropdown position="top" align="start" class="max-lg:hidden">
                 <flux:sidebar.profile name="{{ auth()->user()->name }}" />
 
@@ -108,7 +106,6 @@
                         <flux:menu.radio checked>{{ auth()->user()->name }}</flux:menu.radio>
                         {{--                    <flux:menu.radio>Truly Delta</flux:menu.radio>--}}
                     </flux:menu.radio.group>
-
                     <flux:menu.separator />
                     <flux:menu.item icon="cog-6-tooth" href="{{ route('profile.edit') }}" wire:navigate>Edit Profile</flux:menu.item>
                     <flux:menu.separator />
@@ -118,18 +115,27 @@
                         <flux:button class="border-none! cursor-pointer hover:text-white-200 text-sm" icon="arrow-right-start-on-rectangle" type="submit">Logout</flux:button>
                     </form>
                     <flux:menu.separator />
-
-
                 </flux:menu>
             </flux:dropdown>
         </flux:sidebar>
 
-        <flux:main class="!bg-green-300">
-            {{ $slot }}
+        <flux:main class="bg-green-300">
+{{--        <flux:main class="relative overflow-hidden !bg-transparent">--}}
+{{--            <div class="absolute inset-0 bg-linear-to-br from-emerald-600 via-emerald-400 to-zinc-100"></div>--}}
+{{--            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.78),transparent_28%),radial-gradient(circle_at_top_right,rgba(255,255,255,0.42),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(6,78,59,0.12),transparent_30%)]"></div>--}}
+{{--            <div class="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-white/45 via-white/16 to-transparent"></div>--}}
+
+{{--            <div class="relative min-h-screen p-4 sm:p-6 lg:p-8">--}}
+{{--                <div class="min-h-[calc(100vh-4rem)] rounded-[2rem] border border-white/55 bg-white/28 shadow-[inset_0_1px_0_rgba(255,255,255,0.55),0_28px_70px_rgba(15,23,42,0.10)] backdrop-blur-md">--}}
+{{--                    <div class="h-full rounded-[2rem] bg-linear-to-b from-white/18 to-transparent p-5 sm:p-6 lg:p-8">--}}
+
+                        {{ $slot }}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </flux:main>
     </div>
     @livewireScripts
-    @fluxScripts
 
     </body>
 </html>

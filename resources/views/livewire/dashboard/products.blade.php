@@ -1,4 +1,4 @@
-<div x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false }">
+<div x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false, showUnitForm:false }">
     <div class="mb-6 flex items-center justify-between">
         <div>
         <flux:heading size="xl" level="1">Products</flux:heading>
@@ -18,6 +18,10 @@
                 Add Product Subcategory
             </flux:button>
 
+            <flux:button icon="plus" variant="primary" @click="showUnitForm=true">
+                Add Product Unit
+            </flux:button>
+
             <div x-show="show" x-transition
                  class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
                  wire:cloak>
@@ -32,6 +36,10 @@
 
             <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
                 <livewire:dashboard.forms.product-subcategory-form-add/>
+            </div>
+
+            <div x-show="showUnitForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+                <livewire:dashboard.forms.product-unit-form-add/>
             </div>
 
         </div>
@@ -90,13 +98,14 @@
         </div>
 
         <flux:table x-data x-transition class="border! border-gray-200! px-2">
-            <flux:table.columns >
-                <flux:table.column sortable >Product Name</flux:table.column>
+            <flux:table.columns>
+                <flux:table.column sortable>Product Name</flux:table.column>
                 <flux:table.column sortable>Price</flux:table.column>
                 <flux:table.column sortable>Stock Level</flux:table.column>
                 <flux:table.column sortable>Unit</flux:table.column>
                 <flux:table.column sortable>Category</flux:table.column>
                 <flux:table.column>Subcategory</flux:table.column>
+                <flux:table.column>Class</flux:table.column>
                 <flux:table.column>Size</flux:table.column>
             </flux:table.columns>
 
@@ -130,20 +139,30 @@
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <span class="font-small! text-zinc-900">{{ $product->unit}}</span>
+                        <span class="font-small! text-zinc-900">{{ $product->unit?->unit_name}}</span>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge color="primary" class="font-small!" variant="subtle">{{ $product->category }}</flux:badge>
+                        <flux:badge color="primary" class="font-small!"
+                                    variant="subtle">{{ $product->category?->category_name }}</flux:badge>
                     </flux:table.cell>
 
                     <flux:table.cell>
-                        <flux:badge color="zinc" class="font-small!" variant="subtle">{{ $product->subcategory }}</flux:badge>
+                        <flux:badge color="zinc" class="font-small!"
+                                    variant="subtle">{{ $product->subcategory?->subcategory_name }}</flux:badge>
+                    </flux:table.cell>
+
+                    <flux:table.cell>
+                        @if($product->class)
+                            <flux:badge color="zinc" class="font-small!"
+                                        variant="subtle">{{ $product->class->value }}</flux:badge>
+                        @endif
                     </flux:table.cell>
 
                     <flux:table.cell>
                         @if($product->size)
-                        <flux:badge color="zinc" class="font-small!" variant="subtle">{{ $product->size}}</flux:badge>
+                            <flux:badge color="zinc" class="font-small!"
+                                        variant="subtle">{{ $product->size}}</flux:badge>
                         @endif
                     </flux:table.cell>
 
@@ -152,7 +171,7 @@
                 <flux:table.row>
                     <flux:table.cell>
 
-                    <div class="w-full">No results found</div>
+                        <div class="w-full">No results found</div>
                     </flux:table.cell>
 
                 </flux:table.row>
@@ -164,13 +183,15 @@
         </div>
     </flux:card>
 
-{{--    Product Categories and Subcategories grid display --}}
-    <div class="mt-5 text-sm flex gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
+    {{--    Product Categories and Subcategories grid display --}}
+    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
         <div class="p-8 bg-white rounded-lg w-full">
             <div class="mb-4 text-lg">Categories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->categories as $category)
-                    <p class="bg-green-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('categoryToEdit', {{ $category->id }})" title="click to edit">{{ $category->category_name }}</p>
+                    <p class="bg-green-200  px-2 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('categoryToEdit', {{ $category->id }})"
+                       title="click to edit">{{ $category->category_name }}</p>
                 @empty
                     <p>No categories added yet</p>
                 @endforelse
@@ -186,7 +207,25 @@
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->subcategories as $subcategory)
-                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex items-center" wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})" title="click to edit"v>{{ $subcategory->subcategory_name }}</p>
+                    <p class="bg-gray-200 px-1 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})"
+                       title="click to edit">{{ $subcategory->subcategory_name }}</p>
+                @empty
+                    <p>No subcategory added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->subcategories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+
+        <div class="p-8 bg-white rounded-lg w-full">
+            <div class="mb-4 text-lg">Units</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->units as $unit)
+                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('unitToEdit', {{ $unit->id }})" title="click to edit">{{ $unit->unit_name }}</p>
                 @empty
                     <p>No subcategory added yet</p>
                 @endforelse
@@ -199,15 +238,24 @@
     </div>
 
     @if($subcategoryToEdit)
-        <livewire:dashboard.forms.product-subcategory-form-edit :subcategoryToEdit="$subcategoryToEdit" />
+        <livewire:dashboard.forms.product-subcategory-form-edit :subcategoryToEdit="$subcategoryToEdit"
+                                                                wire:key="edit-subcategory-{{ $subcategoryToEdit }}"/>
     @endif
 
     @if($categoryToEdit)
-        <livewire:dashboard.forms.product-category-form-edit :categoryToEdit="$categoryToEdit" />
+        <livewire:dashboard.forms.product-category-form-edit :categoryToEdit="$categoryToEdit"
+                                                             wire:key="edit-category-{{ $categoryToEdit }}"/>
     @endif
 
+    @if($unitToEdit)
+        <livewire:dashboard.forms.product-unit-form-edit :unitToEdit="$unitToEdit"
+                                                         wire:key="edit-unit-{{ $unitToEdit }}"/>
+    @endif
 
     @if($productToEdit)
-        <livewire:components.product-form-edit :productToEdit="$productToEdit" @add-edit-product-success="refreshData; $refresh"/>
+        <livewire:components.product-form-edit :productToEdit="$productToEdit"
+                                               wire:key="edit-product-{{ $productToEdit }}"
+                                               @add-edit-product-success="refreshData; $refresh"/>
     @endif
+
 </div>

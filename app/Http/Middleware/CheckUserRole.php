@@ -2,24 +2,23 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\UserRoles;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CashierRole
+class CheckUserRole
 {
     /**
      * Handle an incoming request.
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (auth()->user()->user_role !== UserRoles::CASHIER) {
-            return back();
+        if (in_array(auth()->user()->user_role->value, $roles, true)) {
+        return $next($request);
         }
 
-        return $next($request);
+        abort(404);
     }
 }

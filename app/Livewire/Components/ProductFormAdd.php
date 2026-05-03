@@ -35,17 +35,29 @@ class ProductFormAdd extends Component
         unset($this->subcategories);
     }
 
+    #[On('add-edit-product-unit-success')]
+    public function clearUnitsValue(): void
+    {
+        unset($this->units);
+    }
+
 
     #[Computed]
     public function categories()
     {
-        return Category::get('category_name');
+        return Category::all();
     }
 
     #[Computed]
     public function subcategories()
     {
-        return Subcategory::get('subcategory_name');
+        return Subcategory::all();
+    }
+
+    #[Computed]
+    public function units()
+    {
+        return \App\Models\Unit::all();
     }
 
     public function updated($property): void

@@ -236,7 +236,7 @@ Fill out the employee information below. <?php echo $__env->renderComponent(); ?
 
                 <button
                     type="button"
-                    class="rounded-full p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                    class="rounded-full p-1 text-zinc-500 transition hover:rotate-180 hover:text-zinc-900"
                     @click="showEmployeeForm = false"
                 >
                     <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
