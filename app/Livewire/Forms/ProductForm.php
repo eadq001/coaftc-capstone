@@ -34,7 +34,7 @@ class ProductForm extends Form
     public string $size = '';
 
     #[Validate('nullable|string|max:100')]
-    public string $class = '';
+    public ?string $class = '';
 
     public ?int $stockToAdd = null;
 

@@ -119,23 +119,23 @@ Print or scan product QR codes with their item details. <?php echo $__env->rende
             </div>
         </div>
 
-        <div class="grid gap-6 p-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="grid gap-6 p-6 sm:grid-cols-2 xl:grid-cols-4">
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                 <article
-                    <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'product-qr-'.e($product->id).''; ?>wire:key="product-qr-<?php echo e($product->id); ?>"
-                    class="flex min-h-[24rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
+                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'product-qr-'.e($product->id).''; ?>wire:key="product-qr-<?php echo e($product->id); ?>"
+                        class="flex min-h-[18rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
                 >
                     <div class="rounded-lg bg-white p-4 shadow-sm">
                         <img
-                            alt="QR code for <?php echo e($product->name); ?>"
-                            class="h-[190px] w-[190px]"
-                            src="data:image/png;base64,<?php echo e(QrGenerator::generate((string) $product->id, 190)); ?>"
+                                alt="QR code for <?php echo e($product->name); ?>"
+
+                                src="data:image/png;base64,<?php echo e(QrGenerator::generate((string) $product->id, 150)); ?>"
                         >
                     </div>
 
                     <div class="mt-1 flex w-full flex-1 flex-col justify-end gap-2 border-t border-dashed border-zinc-200 pt-4">
                         <p class="text-base font-semibold text-zinc-900"><?php echo e($product->name); ?></p>
-                        <p class="text-sm text-zinc-600"><?php echo e($product->category); ?></p>
+                        <p class="text-sm text-zinc-600"><?php echo e($product->category_name); ?></p>
                         <p class="text-sm text-zinc-500"><?php echo e($product->subcategory); ?></p>
 
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->size): ?>

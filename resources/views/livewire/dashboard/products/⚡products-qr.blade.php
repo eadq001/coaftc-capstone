@@ -8,8 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 new #[Layout('layouts::dashboard', ['title' => 'Products QR'])]
-class extends Component
-{
+class extends Component {
     use WithPagination;
 
     public string $searchText = '';
@@ -29,11 +28,18 @@ class extends Component
     public function products()
     {
         return Product::query()
-            ->select(['id', 'name', 'category', 'subcategory', 'size'])
+            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+            ->leftJoin('subcategories', 'subcategories.id', '=', 'products.subcategory_id')
+            ->select([
+                'products.id',
+                'products.name',
+                'categories.category_name as category_name',
+                'subcategories.subcategory_name as subcategory',
+            ])
             ->when($this->searchText !== '', function ($query) {
-                $query->where('name', 'like', $this->searchText . '%');
+                $query->where('products.name', 'like', $this->searchText . '%');
             })
-            ->orderByDesc('id')
+            ->orderByDesc('products.id')
             ->paginate(12, pageName: 'products-qr-page');
     }
 };
@@ -50,16 +56,16 @@ class extends Component
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div class="flex-1 max-w-md">
                     <flux:input
-                        icon="magnifying-glass"
-                        placeholder="Search by product name..."
-                        wire:model.live.debounce.300ms="searchText"
+                            icon="magnifying-glass"
+                            placeholder="Search by product name..."
+                            wire:model.live.debounce.300ms="searchText"
                     />
                 </div>
 
                 <flux:button type="button"
-                        class="hover:bg-green-300! disabled:hover:bg-0  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5 py-2"
-                        wire:click="clearSearchText"
-                        :disabled="$searchText === ''"
+                             class="hover:bg-green-300! disabled:hover:bg-0  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5 py-2"
+                             wire:click="clearSearchText"
+                             :disabled="$searchText === ''"
                 >
                     Clear
                 </flux:button>
@@ -67,23 +73,23 @@ class extends Component
             </div>
         </div>
 
-        <div class="grid gap-6 p-6 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="grid gap-6 p-6 sm:grid-cols-2 xl:grid-cols-4">
             @forelse($this->products as $product)
                 <article
-                    wire:key="product-qr-{{ $product->id }}"
-                    class="flex min-h-[24rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
+                        wire:key="product-qr-{{ $product->id }}"
+                        class="flex min-h-[18rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
                 >
                     <div class="rounded-lg bg-white p-4 shadow-sm">
                         <img
-                            alt="QR code for {{ $product->name }}"
-                            class="h-[190px] w-[190px]"
-                            src="data:image/png;base64,{{ QrGenerator::generate((string) $product->id, 190) }}"
+                                alt="QR code for {{ $product->name }}"
+
+                                src="data:image/png;base64,{{ QrGenerator::generate((string) $product->id, 150) }}"
                         >
                     </div>
 
                     <div class="mt-1 flex w-full flex-1 flex-col justify-end gap-2 border-t border-dashed border-zinc-200 pt-4">
                         <p class="text-base font-semibold text-zinc-900">{{ $product->name }}</p>
-                        <p class="text-sm text-zinc-600">{{ $product->category }}</p>
+                        <p class="text-sm text-zinc-600">{{ $product->category_name }}</p>
                         <p class="text-sm text-zinc-500">{{ $product->subcategory }}</p>
 
                         @if($product->size)
