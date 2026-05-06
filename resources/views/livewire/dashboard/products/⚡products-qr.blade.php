@@ -28,14 +28,14 @@ class extends Component {
     public function products()
     {
         return Product::query()
-            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
-            ->leftJoin('subcategories', 'subcategories.id', '=', 'products.subcategory_id')
-            ->select([
-                'products.id',
-                'products.name',
-                'categories.category_name as category_name',
-                'subcategories.subcategory_name as subcategory',
-            ])
+//            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+//            ->leftJoin('subcategories', 'subcategories.id', '=', 'products.subcategory_id')
+//            ->select([
+//                'products.id',
+//                'products.name',
+//                'categories.category_name as category_name',
+//                'subcategories.subcategory_name as subcategory',
+//            ])
             ->when($this->searchText !== '', function ($query) {
                 $query->where('products.name', 'like', $this->searchText . '%');
             })
@@ -89,8 +89,8 @@ class extends Component {
 
                     <div class="mt-1 flex w-full flex-1 flex-col justify-end gap-2 border-t border-dashed border-zinc-200 pt-4">
                         <p class="text-base font-semibold text-zinc-900">{{ $product->name }}</p>
-                        <p class="text-sm text-zinc-600">{{ $product->category_name }}</p>
-                        <p class="text-sm text-zinc-500">{{ $product->subcategory }}</p>
+                        <p class="text-sm text-zinc-600">{{ $product->category?->category_name }}</p>
+                        <p class="text-sm text-zinc-500">{{ $product->subcategory?->subcategory_name }}</p>
 
                         @if($product->size)
                             <p class="text-sm font-medium text-zinc-700">{{ $product->size }}</p>
