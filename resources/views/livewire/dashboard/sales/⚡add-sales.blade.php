@@ -23,14 +23,11 @@ class extends Component {
 
     public function mount(): void
     {
-//        $this->items = new Collection();
-//        $this->currentItem = new Collection();
         $this->js("document.getElementById('product-search').focus();");
-//        $this->js("document.getElementById('quantity').focus();");
 
     }
 
-    public function updatedSearchId(?int $value = null)
+    public function updatedSearchId(?int $value = null): void
     {
         if (!$value) {
             return;
@@ -50,16 +47,18 @@ class extends Component {
                 $this->currentItem['size'] = $product->size;
             }
 
-//            dd($this->currentItem);
         } else {
             $this->js("alert('The product doesnt exist')");
         }
 
         $this->dispatch('show-data');
-//        $this->reset('searchId');
+//        $this->js("document.getElementById('quantity').focus();");
+        $this->js("requestAnimationFrame(() =>
+  document.getElementById('quantity')?.focus())");
+
     }
 
-    public function resetCurrentItems()
+    public function resetCurrentItems(): void
     {
         $this->reset('searchId', 'currentItem', 'currentItemQuantity');
         $this->js("document.getElementById('product-search').focus()");
@@ -105,8 +104,8 @@ class extends Component {
 
 <div class="">
     <div class="overflow-hidden rounded-[2rem] border border-emerald-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
-        <div class="grid gap-0 xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,0.85fr)]">
-            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0">
+        <div class="grid gap-0 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)] grid-rows-1">
+            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0 h-[90vh]">
                 <div class="border-b border-emerald-100 bg-linear-to-r from-emerald-50 via-white to-emerald-100/70 px-6 py-5 sm:px-8">
                     <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
                         <flux:field class="lg:col-span-2">
@@ -128,7 +127,7 @@ class extends Component {
                             <div class="px-4 py-3 text-right">Amount</div>
                         </div>
 
-                        <div class="divide-y divide-zinc-200">
+                        <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             @forelse($items as $item)
                                 <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
@@ -205,6 +204,7 @@ class extends Component {
     </div>
     {{--  SALES FORM  --}}
     @if($currentItem)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
         <div class="relative bg-white p-4 w-96 rounded-lg">
             <form class="space-y-3 text-sm" wire:submit="addQuantity">
                 <div class="absolute top-0 right-0 p-2" title="exit this form">
@@ -237,6 +237,7 @@ class extends Component {
 
                 </div>
             </form>
+            </div>
         </div>
     @endif
 </div>

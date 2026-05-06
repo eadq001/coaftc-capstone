@@ -9,8 +9,8 @@ use Livewire\Component;
 
 <div class="">
     <div class="overflow-hidden rounded-[2rem] border border-emerald-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
-        <div class="grid gap-0 xl:grid-cols-[minmax(0,1.65fr)_minmax(320px,0.85fr)]">
-            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0">
+        <div class="grid gap-0 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)] grid-rows-1">
+            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0 h-[90vh]">
                 <div class="border-b border-emerald-100 bg-linear-to-r from-emerald-50 via-white to-emerald-100/70 px-6 py-5 sm:px-8">
                     <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
                         <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
@@ -91,7 +91,7 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
                             <div class="px-4 py-3 text-right">Amount</div>
                         </div>
 
-                        <div class="divide-y divide-zinc-200">
+                        <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
@@ -190,6 +190,7 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
     </div>
     
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentItem): ?>
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
         <div class="relative bg-white p-4 w-96 rounded-lg">
             <form class="space-y-3 text-sm" wire:submit="addQuantity">
                 <div class="absolute top-0 right-0 p-2" title="exit this form">
@@ -424,6 +425,7 @@ Quantity <?php echo $__env->renderComponent(); ?>
 
                 </div>
             </form>
+            </div>
         </div>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 </div><?php /**PATH C:\Herd\coaftcorig\storage\framework/views/livewire/views/a861a413.blade.php ENDPATH**/ ?>
