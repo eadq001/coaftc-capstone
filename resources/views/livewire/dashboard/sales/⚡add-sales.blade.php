@@ -3,28 +3,34 @@
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 new #[Layout('layouts.dashboard')]
-class extends Component
-{
+class extends Component {
 
     public ?int $searchId = null;
 
-    public Collection $items;
+    public array $items = [];
 
-    public Collection $currentItem;
+    public array $currentItem = [];
+
+    public float $grandTotal = 0;
+
+    #[Validate('integer|required')]
+    public ?int $currentItemQuantity = null;
 
     public function mount(): void
     {
-        $this->items = new Collection();
-        $this->currentItem = new Collection();
+//        $this->items = new Collection();
+//        $this->currentItem = new Collection();
         $this->js("document.getElementById('product-search').focus();");
 //        $this->js("document.getElementById('quantity').focus();");
 
     }
 
-    public function updatedSearchId(int $value)
+    public function updatedSearchId(?int $value = null)
     {
         if (!$value) {
             return;
@@ -33,31 +39,69 @@ class extends Component
         $product = Product::find($value);
 
         if ($product) {
-            $this->currentItem[] = $product;
+            $this->currentItem = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'price' => $product->price,
+                'class' => $product->class->value,
+            ];
 
+            if (!empty($product['size'])) {
+                $this->currentItem['size'] = $product->size;
+            }
+
+//            dd($this->currentItem);
         } else {
             $this->js("alert('The product doesnt exist')");
         }
 
         $this->dispatch('show-data');
 //        $this->reset('searchId');
+    }
 
+    public function resetCurrentItems()
+    {
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity');
+        $this->js("document.getElementById('product-search').focus()");
+
+    }
+
+    public function addQuantity(): void
+    {
+        if (!$this->currentItem) {
+            return;
+        }
+
+        $this->validateOnly('currentItemQuantity');
+        $this->currentItem['quantity'] = $this->currentItemQuantity;
+
+        foreach ($this->items as $index => $item) {
+            if ($item['id'] === $this->currentItem['id']) {
+                $this->items[$index]['quantity'] += $this->currentItem['quantity'];
+                $this->resetCurrentItems();
+                $this->dispatch('add-quantity-success');
+                return;
+            }
+        }
+
+        $this->items[] = $this->currentItem;
+        $this->resetCurrentItems();
+        $this->dispatch('add-quantity-success');
+
+    }
+
+    #[On('add-quantity-success')]
+    public function grandTotal(): void
+    {
+        $grandTotal = 0;
+        foreach ($this->items as $item) {
+            $grandTotal += $item['quantity'] * $item['price'];
+        }
+
+        $this->grandTotal = $grandTotal;
     }
 };
 ?>
-
-@php
-    $cartItems = [
-        ['name' => 'Coca-Cola 1.5L', 'code' => 'QR-10021', 'qty' => 2, 'price' => 95.00],
-        ['name' => 'Gardenia Classic', 'code' => 'QR-10042', 'qty' => 1, 'price' => 78.00],
-        ['name' => 'Cup Noodles Beef', 'code' => 'QR-10056', 'qty' => 3, 'price' => 32.00],
-    ];
-
-    $subtotal = collect($cartItems)->sum(fn (array $item): float => $item['qty'] * $item['price']);
-    $discount = 25.00;
-    $tax = 18.50;
-    $grandTotal = $subtotal - $discount + $tax;
-@endphp
 
 <div class="">
     <div class="overflow-hidden rounded-[2rem] border border-emerald-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
@@ -67,7 +111,8 @@ class extends Component
                     <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
                         <flux:field class="lg:col-span-2">
                             <flux:label>QR Code / Product Search</flux:label>
-                            <flux:input icon="qr-code" placeholder="Scan QR or type product name..." id="product-search"
+                            <flux:input icon="qr-code" type="number" placeholder="Scan QR or type product name..."
+                                        id="product-search"
                                         autocomplete="off" wire:model.live="searchId"/>
                         </flux:field>
                     </div>
@@ -84,16 +129,16 @@ class extends Component
                         </div>
 
                         <div class="divide-y divide-zinc-200">
-                            @forelse(collect($items) as $item)
+                            @forelse($items as $item)
                                 <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
-                                        <p class="font-semibold text-zinc-900">{{ $item->name }}</p>
+                                        <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
                                     </div>
-                                    <div class="px-4 py-4 text-right font-medium">{{ $item['qty'] }}</div>
-                                    <div class="px-4 py-4 text-right">₱{{ number_format($item->price, 2) }}</div>
+                                    <div class="px-4 py-4 text-right font-medium">{{ $item['quantity'] }}</div>
+                                    <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
-                                        ₱{{ number_format($item['qty'] * $item['price'], 2) }}
+                                        ₱{{ number_format($item['quantity'] * $item['price'], 2) }}
                                     </div>
                                 </div>
                             @empty
@@ -158,35 +203,36 @@ class extends Component
             </aside>
         </div>
     </div>
-                {{--  SALES FORM  --}}
-    @if($currentItem->isNotEmpty())
+    {{--  SALES FORM  --}}
+    @if($currentItem)
         <div class="relative bg-white p-4 w-96 rounded-lg">
-            <form wire:submit="save" class="space-y-3 text-sm ">
+            <form class="space-y-3 text-sm" wire:submit="addQuantity">
                 <div class="absolute top-0 right-0 p-2" title="exit this form">
-                    <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click=""
+                    <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="resetCurrentItems"
                                       @click="showSubcategoryForm=false"/>
                 </div>
                 <p class="text-center">Sales Form</p>
                 <flux:field>
                     <flux:label class="mb-0.5!">Product Name</flux:label>
-                    <flux:input type="text" value="{{ $currentItem->first()->name }}" placeholder="Product Name" readonly/>
+                    <flux:input type="text" value="{{ $currentItem['name'] }}" placeholder="Product Name"
+                                readonly/>
                 </flux:field>
 
                 <flux:field>
                     <flux:label class="mb-0.5!">Price</flux:label>
-                    <flux:input type="text" value="{{ $currentItem->first()->price }}" placeholder="Price" readonly/>
+                    <flux:input type="text" value="{{ $currentItem['price'] }}" placeholder="Price" readonly/>
                 </flux:field>
 
                 <flux:field>
                     <flux:label class="mb-0.5!">Quantity</flux:label>
-                    <flux:input type="text" wire:model="Quantity" placeholder="Product Name" id="quantity"/>
-                    <flux:error name="subcategory_name"/>
+                    <flux:input type="text" wire:model="currentItemQuantity" placeholder="Quantity" id="quantity"/>
                 </flux:field>
 
                 <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
 
                     <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
-                            type="submit">Add Sale
+                            type="submit"
+                    >Add Sale
                     </button>
 
                 </div>
