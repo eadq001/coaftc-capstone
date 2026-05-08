@@ -5,6 +5,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Session;
 ?>
 
 <div class="">
@@ -93,7 +94,7 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($item['id']).''; ?>wire:key="<?php echo e($item['id']); ?>" class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900"><?php echo e($item['name']); ?></p>
                                         
@@ -166,14 +167,14 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center cursor-pointer">
+                            <div class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
                                 <button type="submit" class="font-semibold cursor-pointer">Pay</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 flex items-center justify-center">
                                 <button type="button" class="font-semibold">Print</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold">New Transaction</button>
+                                <button type="button" class="font-semibold" wire:click="newTransaction">New Transaction</button>
                             </div>
                         </div>
 
@@ -191,10 +192,10 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
     
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($currentItem): ?>
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-        <div class="relative bg-white p-4 w-96 rounded-lg">
-            <form class="space-y-3 text-sm" wire:submit="addQuantity">
-                <div class="absolute top-0 right-0 p-2" title="exit this form">
-                    <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
+            <div class="relative bg-white p-4 w-96 rounded-lg">
+                <form class="space-y-3 text-sm" wire:submit="addQuantity">
+                    <div class="absolute top-0 right-0 p-2" title="exit this form">
+                        <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.x-mark','data' => ['class' => 'w-5 h-5 hover:rotate-180 transition-all','wire:click' => 'resetCurrentItems','@click' => 'showSubcategoryForm=false']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.x-mark'); ?>
@@ -216,9 +217,9 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal155e76c41fe51242bc25d269fabf82f5; ?>
 <?php unset($__componentOriginal155e76c41fe51242bc25d269fabf82f5); ?>
 <?php endif; ?>
-                </div>
-                <p class="text-center">Sales Form</p>
-                <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
+                    </div>
+                    <p class="text-center">Sales Form</p>
+                    <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::field'); ?>
@@ -230,7 +231,7 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes([]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                    <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => ['class' => 'mb-0.5!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::label'); ?>
@@ -251,7 +252,7 @@ Product Name <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
 <?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'text','value' => ''.e($currentItem['name']).'','placeholder' => 'Product Name','readonly' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::input'); ?>
@@ -273,7 +274,7 @@ Product Name <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
 <?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
 <?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
+                     <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
 <?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
@@ -284,7 +285,7 @@ Product Name <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
 <?php endif; ?>
 
-                <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
+                    <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::field'); ?>
@@ -296,7 +297,7 @@ Product Name <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes([]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                    <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => ['class' => 'mb-0.5!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::label'); ?>
@@ -317,7 +318,7 @@ Price <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
 <?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'text','value' => ''.e($currentItem['price']).'','placeholder' => 'Price','readonly' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::input'); ?>
@@ -339,7 +340,7 @@ Price <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
 <?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
 <?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
+                     <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
 <?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
@@ -349,8 +350,7 @@ Price <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
 <?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
 <?php endif; ?>
-
-                <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
+                    <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::field'); ?>
@@ -362,7 +362,73 @@ Price <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes([]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                    <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => ['class' => 'mb-0.5!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::label'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['class' => 'mb-0.5!']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+Stocks Available <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
+<?php $attributes = $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
+<?php unset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
+<?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
+<?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
+<?php endif; ?>
+                        <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'number','value' => ''.e($currentItem['quantity']).'','placeholder' => 'Quantity','readonly' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::input'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['type' => 'number','value' => ''.e($currentItem['quantity']).'','placeholder' => 'Quantity','readonly' => true]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
+<?php $attributes = $__attributesOriginal26c546557cdc09040c8dd00b2090afd0; ?>
+<?php unset($__attributesOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal26c546557cdc09040c8dd00b2090afd0)): ?>
+<?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
+<?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
+<?php endif; ?>
+                     <?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
+<?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
+<?php unset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
+<?php $component = $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
+<?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
+<?php endif; ?>
+
+                    <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::field'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+                        <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => ['class' => 'mb-0.5!']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::label'); ?>
@@ -383,16 +449,16 @@ Quantity <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
 <?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
 <?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
+                        <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'text','wire:model' => 'currentItemQuantity','placeholder' => 'Quantity','id' => 'quantity']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'number','wire:model.live.debounce.600ms' => 'currentItemQuantity','placeholder' => 'Quantity','autocomplete' => 'off','id' => 'quantity']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['type' => 'text','wire:model' => 'currentItemQuantity','placeholder' => 'Quantity','id' => 'quantity']); ?>
+<?php $component->withAttributes(['type' => 'number','wire:model.live.debounce.600ms' => 'currentItemQuantity','placeholder' => 'Quantity','autocomplete' => 'off','id' => 'quantity']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -405,7 +471,29 @@ Quantity <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
 <?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
 <?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
+                        <?php if (isset($component)) { $__componentOriginal5730b1630871592dc0d77210545c88c1 = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginal5730b1630871592dc0d77210545c88c1 = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::error','data' => ['name' => 'currentItemQuantity']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('flux::error'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes(['name' => 'currentItemQuantity']); ?>
+<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
+
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginal5730b1630871592dc0d77210545c88c1)): ?>
+<?php $attributes = $__attributesOriginal5730b1630871592dc0d77210545c88c1; ?>
+<?php unset($__attributesOriginal5730b1630871592dc0d77210545c88c1); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal5730b1630871592dc0d77210545c88c1)): ?>
+<?php $component = $__componentOriginal5730b1630871592dc0d77210545c88c1; ?>
+<?php unset($__componentOriginal5730b1630871592dc0d77210545c88c1); ?>
+<?php endif; ?>
+                     <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
 <?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
@@ -416,15 +504,15 @@ Quantity <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
 <?php endif; ?>
 
-                <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
+                    <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
 
-                    <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
-                            type="submit"
-                    >Add Sale
-                    </button>
+                        <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
+                                type="submit"
+                        >Add Sale
+                        </button>
 
-                </div>
-            </form>
+                    </div>
+                </form>
             </div>
         </div>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>

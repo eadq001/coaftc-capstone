@@ -6,24 +6,30 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
+use Livewire\Attributes\Session;
 
 new #[Layout('layouts.dashboard')]
 class extends Component {
 
     public ?int $searchId = null;
 
+//    #[Session]
     public array $items = [];
 
     public array $currentItem = [];
 
+    #[Session]
     public float $grandTotal = 0;
 
-    #[Validate('integer|required')]
+    public ?int $availableStock = null;
+
+    #[Validate("integer|required")]
     public ?int $currentItemQuantity = null;
 
     public function mount(): void
     {
         $this->js("document.getElementById('product-search').focus();");
+        $this->reset();
 
     }
 
@@ -40,9 +46,13 @@ class extends Component {
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
+                'quantity' => $product->stock_level,
                 'class' => $product->class->value,
             ];
 
+            $this->availableStock = (int) $this->currentItem['quantity'];
+
+//            dd($this->availableStock);
             if (!empty($product['size'])) {
                 $this->currentItem['size'] = $product->size;
             }
@@ -52,15 +62,22 @@ class extends Component {
         }
 
         $this->dispatch('show-data');
-//        $this->js("document.getElementById('quantity').focus();");
-        $this->js("requestAnimationFrame(() =>
-  document.getElementById('quantity')?.focus())");
 
+        $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+
+    }
+
+    public function updatedCurrentItemQuantity(): void
+    {
+        $this->validate([
+            'currentItemQuantity' => 'integer|required|max:' . $this->availableStock
+        ]);
     }
 
     public function resetCurrentItems(): void
     {
         $this->reset('searchId', 'currentItem', 'currentItemQuantity');
+        $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
 
     }
@@ -72,8 +89,16 @@ class extends Component {
         }
 
         $this->validateOnly('currentItemQuantity');
+
+        if ($this->availableStock < $this->currentItemQuantity) {
+            $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($this->availableStock).");
+            return;
+        }
+
         $this->currentItem['quantity'] = $this->currentItemQuantity;
 
+
+        //add only the quantity amount if the product id already exist
         foreach ($this->items as $index => $item) {
             if ($item['id'] === $this->currentItem['id']) {
                 $this->items[$index]['quantity'] += $this->currentItem['quantity'];
@@ -98,6 +123,18 @@ class extends Component {
         }
 
         $this->grandTotal = $grandTotal;
+    }
+
+    public function newTransaction(): void
+    {
+        $this->reset();
+    }
+
+    protected function messages()
+    {
+        return [
+            'currentItemQuantity.required' => 'Enter a quantity'
+        ];
     }
 };
 ?>
@@ -129,7 +166,7 @@ class extends Component {
 
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             @forelse($items as $item)
-                                <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                <div wire:key="{{ $item['id'] }}" class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
@@ -180,14 +217,14 @@ class extends Component {
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center cursor-pointer">
+                            <div class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
                                 <button type="submit" class="font-semibold cursor-pointer">Pay</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 flex items-center justify-center">
                                 <button type="button" class="font-semibold">Print</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold">New Transaction</button>
+                                <button type="button" class="font-semibold" wire:click="newTransaction">New Transaction</button>
                             </div>
                         </div>
 
@@ -205,38 +242,43 @@ class extends Component {
     {{--  SALES FORM  --}}
     @if($currentItem)
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-        <div class="relative bg-white p-4 w-96 rounded-lg">
-            <form class="space-y-3 text-sm" wire:submit="addQuantity">
-                <div class="absolute top-0 right-0 p-2" title="exit this form">
-                    <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="resetCurrentItems"
-                                      @click="showSubcategoryForm=false"/>
-                </div>
-                <p class="text-center">Sales Form</p>
-                <flux:field>
-                    <flux:label class="mb-0.5!">Product Name</flux:label>
-                    <flux:input type="text" value="{{ $currentItem['name'] }}" placeholder="Product Name"
-                                readonly/>
-                </flux:field>
+            <div class="relative bg-white p-4 w-96 rounded-lg">
+                <form class="space-y-3 text-sm" wire:submit="addQuantity">
+                    <div class="absolute top-0 right-0 p-2" title="exit this form">
+                        <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="resetCurrentItems"
+                                          @click="showSubcategoryForm=false"/>
+                    </div>
+                    <p class="text-center">Sales Form</p>
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Product Name</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['name'] }}" placeholder="Product Name"
+                                    readonly/>
+                    </flux:field>
 
-                <flux:field>
-                    <flux:label class="mb-0.5!">Price</flux:label>
-                    <flux:input type="text" value="{{ $currentItem['price'] }}" placeholder="Price" readonly/>
-                </flux:field>
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Price</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['price'] }}" placeholder="Price" readonly/>
+                    </flux:field>
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
+                        <flux:input type="number" value="{{ $currentItem['quantity'] }}" placeholder="Quantity" readonly/>
+                    </flux:field>
 
-                <flux:field>
-                    <flux:label class="mb-0.5!">Quantity</flux:label>
-                    <flux:input type="text" wire:model="currentItemQuantity" placeholder="Quantity" id="quantity"/>
-                </flux:field>
+                    <flux:field >
+                        <flux:label class="mb-0.5!">Quantity</flux:label>
+                        <flux:input type="number" wire:model.live.debounce.600ms="currentItemQuantity" placeholder="Quantity" autocomplete="off" id="quantity"/>
+                        <flux:error name="currentItemQuantity"/>
+                    </flux:field>
 
-                <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
+                    <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
 
-                    <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
-                            type="submit"
-                    >Add Sale
-                    </button>
+                        <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
+                                type="submit"
+                        >Add Sale
+                        </button>
 
-                </div>
-            </form>
+                    </div>
+                </form>
             </div>
         </div>
     @endif
