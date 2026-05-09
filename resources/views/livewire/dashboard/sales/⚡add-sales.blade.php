@@ -46,11 +46,12 @@ class extends Component {
                 'id' => $product->id,
                 'name' => $product->name,
                 'price' => $product->price,
-                'quantity' => $product->stock_level,
+                'availableStock' => $product->stock_level,
+                'quantity' => 0,
                 'class' => $product->class->value,
             ];
 
-            $this->availableStock = (int) $this->currentItem['quantity'];
+//            $this->availableStock = (int) $this->currentItem['quantity'];
 
 //            dd($this->availableStock);
             if (!empty($product['size'])) {
@@ -70,7 +71,7 @@ class extends Component {
     public function updatedCurrentItemQuantity(): void
     {
         $this->validate([
-            'currentItemQuantity' => 'integer|required|max:' . $this->availableStock
+            'currentItemQuantity' => 'integer|required|max:' . $this->currentItem['availableStock']
         ]);
     }
 
@@ -90,27 +91,41 @@ class extends Component {
 
         $this->validateOnly('currentItemQuantity');
 
-        if ($this->availableStock < $this->currentItemQuantity) {
+//        $this->availableStock = (int) $this->currentItem['quantity'];
+
+        if ($this->currentItem['availableStock'] < ($this->currentItemQuantity + $this->currentItem['quantity'])) {
             $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($this->availableStock).");
             return;
         }
 
-        $this->currentItem['quantity'] = $this->currentItemQuantity;
-
+//        dump($this->currentItem['quantity'] + $this->currentItemQuantity);
 
         //add only the quantity amount if the product id already exist
         foreach ($this->items as $index => $item) {
             if ($item['id'] === $this->currentItem['id']) {
-                $this->items[$index]['quantity'] += $this->currentItem['quantity'];
+                if ($this->items[$index]['availableStock'] < ($this->currentItemQuantity + $this->items[$index]['quantity'])) {
+                    $availableStock = $item['availableStock'];
+                    $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($availableStock).");
+                    return;
+                }
+
+                dump($this->currentItemQuantity + $this->currentItem['quantity']);
+
+                $this->items[$index]['quantity'] += $this->currentItemQuantity;
                 $this->resetCurrentItems();
                 $this->dispatch('add-quantity-success');
+//                dd($this->currentItem['quantity'], $this->items);
                 return;
             }
         }
 
+        $this->currentItem['quantity'] += $this->currentItemQuantity;
+
+
         $this->items[] = $this->currentItem;
         $this->resetCurrentItems();
         $this->dispatch('add-quantity-success');
+
 
     }
 
@@ -261,7 +276,7 @@ class extends Component {
                     </flux:field>
                     <flux:field>
                         <flux:label class="mb-0.5!">Stocks Available</flux:label>
-                        <flux:input type="number" value="{{ $currentItem['quantity'] }}" placeholder="Quantity" readonly/>
+                        <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity" readonly/>
                     </flux:field>
 
                     <flux:field >
