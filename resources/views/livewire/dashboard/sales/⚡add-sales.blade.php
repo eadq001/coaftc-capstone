@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Product;
+use App\Models\Sale;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -98,9 +99,7 @@ class extends Component {
             return;
         }
 
-//        dump($this->currentItem['quantity'] + $this->currentItemQuantity);
-
-        //add only the quantity amount if the product id already exist
+        //add only the quantity amount if the product id already exist and checks the quantity added if it exceeds to the available stocks
         foreach ($this->items as $index => $item) {
             if ($item['id'] === $this->currentItem['id']) {
                 if ($this->items[$index]['availableStock'] < ($this->currentItemQuantity + $this->items[$index]['quantity'])) {
@@ -109,7 +108,7 @@ class extends Component {
                     return;
                 }
 
-                dump($this->currentItemQuantity + $this->currentItem['quantity']);
+//                dump($this->currentItemQuantity + $this->currentItem['quantity']);
 
                 $this->items[$index]['quantity'] += $this->currentItemQuantity;
                 $this->resetCurrentItems();
@@ -121,12 +120,9 @@ class extends Component {
 
         $this->currentItem['quantity'] += $this->currentItemQuantity;
 
-
         $this->items[] = $this->currentItem;
         $this->resetCurrentItems();
         $this->dispatch('add-quantity-success');
-
-
     }
 
     #[On('add-quantity-success')]
@@ -143,6 +139,44 @@ class extends Component {
     public function newTransaction(): void
     {
         $this->reset();
+    }
+
+    public function pay(): void
+    {
+        if ($this->items) {
+
+            DB::transaction(function () {
+
+            $sales = Sale::create([
+                'user_id' => auth()->id(),
+                'total_amount' => $this->grandTotal
+                ]);
+
+            $salesItems = collect($this->items)->map(fn($item) => [
+                'sale_id' => $sales->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'unit_price' => $item['price'],
+                'subtotal' => $item['quantity'] * $item['price']
+            ])->toArray();
+
+            $stocksToSubtract = collect($this->items)->map(fn($item) => [
+                'id' => $item['id'],
+                'quantity' => $item['quantity']
+                ]);
+
+            foreach ($stocksToSubtract as $stock) {
+                $product = Product::find($stock['id']);
+                $product->decrement('stock_level', $stock['quantity']);
+            }
+
+            $sales->salesItem()->createMany($salesItems);
+            });
+
+
+        $this->js("alert('paid')");
+        }
+
     }
 
     protected function messages()
@@ -181,7 +215,8 @@ class extends Component {
 
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             @forelse($items as $item)
-                                <div wire:key="{{ $item['id'] }}" class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                <div wire:key="{{ $item['id'] }}"
+                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
@@ -232,14 +267,18 @@ class extends Component {
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
-                                <button type="submit" class="font-semibold cursor-pointer">Pay</button>
+                            <div wire:click="pay"
+                                 class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
+                                <button type="button" class="font-semibold cursor-pointer">Pay</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 flex items-center justify-center">
                                 <button type="button" class="font-semibold">Print</button>
                             </div>
-                            <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold" wire:click="newTransaction">New Transaction</button>
+                            <div wire:click="newTransaction"
+                                 class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
+                                <button type="button" class="font-semibold">New
+                                    Transaction
+                                </button>
                             </div>
                         </div>
 
@@ -276,12 +315,14 @@ class extends Component {
                     </flux:field>
                     <flux:field>
                         <flux:label class="mb-0.5!">Stocks Available</flux:label>
-                        <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity" readonly/>
+                        <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity"
+                                    readonly/>
                     </flux:field>
 
-                    <flux:field >
+                    <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
-                        <flux:input type="number" wire:model.live.debounce.600ms="currentItemQuantity" placeholder="Quantity" autocomplete="off" id="quantity"/>
+                        <flux:input type="number" wire:model.live.debounce.600ms="currentItemQuantity"
+                                    placeholder="Quantity" autocomplete="off" id="quantity"/>
                         <flux:error name="currentItemQuantity"/>
                     </flux:field>
 

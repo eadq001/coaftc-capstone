@@ -4,5 +4,13 @@
     ],
     "mcp": true,
     "nightwatch_mcp": false,
-    "sail": false
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "mcp-development",
+        "fluxui-development",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development"
+    ]
 }

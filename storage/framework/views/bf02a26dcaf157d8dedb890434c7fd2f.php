@@ -1,5 +1,6 @@
 <?php
 use App\Models\Product;
+use App\Models\Sale;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -94,7 +95,8 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($item['id']).''; ?>wire:key="<?php echo e($item['id']); ?>" class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($item['id']).''; ?>wire:key="<?php echo e($item['id']); ?>"
+                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900"><?php echo e($item['name']); ?></p>
                                         
@@ -167,14 +169,18 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <div class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
-                                <button type="submit" class="font-semibold cursor-pointer">Pay</button>
+                            <div wire:click="pay"
+                                 class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
+                                <button type="button" class="font-semibold cursor-pointer">Pay</button>
                             </div>
                             <div class="rounded-2xl border border-white/10 bg-white/5 px-6 flex items-center justify-center">
                                 <button type="button" class="font-semibold">Print</button>
                             </div>
-                            <div class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold" wire:click="newTransaction">New Transaction</button>
+                            <div wire:click="newTransaction"
+                                 class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
+                                <button type="button" class="font-semibold">New
+                                    Transaction
+                                </button>
                             </div>
                         </div>
 
