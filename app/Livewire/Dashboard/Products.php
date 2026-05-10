@@ -25,7 +25,7 @@ class Products extends Dashboard
 
     public string $searchText = '';
 
-//    public $searchResults = [];
+    //    public $searchResults = [];
 
     #[Session]
     public bool $lowStockOnly = false;
@@ -72,10 +72,9 @@ class Products extends Dashboard
     {
         if ($this->searchText) {
             $this->resetPage('products-table');
-            return Product::where('name', 'like', "$this->searchText%")->paginate(5, pageName: 'products-table');
-        }
 
-        elseif ($this->lowStockOnly) {
+            return Product::where('name', 'like', "$this->searchText%")->paginate(5, pageName: 'products-table');
+        } elseif ($this->lowStockOnly) {
             $this->resetPage('products-page');
 
             return Product::where('stock_level', '<', 20)->paginate(5, pageName: 'products-table');
@@ -83,7 +82,6 @@ class Products extends Dashboard
 
         return Product::paginate(5, pageName: 'products-table');
     }
-
 
     public function clearSearchText(): void
     {
@@ -125,5 +123,4 @@ class Products extends Dashboard
     {
         $this->reset('unitToEdit');
     }
-
 }

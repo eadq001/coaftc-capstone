@@ -2,6 +2,7 @@
 
 use App\Models\Product;
 use App\Models\Sale;
+use App\PrintReceipt;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -23,6 +24,8 @@ class extends Component {
     public float $grandTotal = 0;
 
     public ?int $availableStock = null;
+
+    public ?int $editingItemIndex = null;
 
     #[Validate("integer|required")]
     public ?int $currentItemQuantity = null;
@@ -78,7 +81,7 @@ class extends Component {
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'editingItemIndex');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
 
@@ -92,33 +95,38 @@ class extends Component {
 
         $this->validateOnly('currentItemQuantity');
 
-//        $this->availableStock = (int) $this->currentItem['quantity'];
+        // Editing existing item — replace quantity directly
+        if ($this->editingItemIndex !== null) {
+            if ($this->currentItem['availableStock'] < $this->currentItemQuantity) {
+                $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ({$this->currentItem['availableStock']}).");
+                return;
+            }
+            $this->items[$this->editingItemIndex]['quantity'] = $this->currentItemQuantity;
+            $this->resetCurrentItems();
+            $this->dispatch('add-quantity-success');
+            return;
+        }
 
         if ($this->currentItem['availableStock'] < ($this->currentItemQuantity + $this->currentItem['quantity'])) {
             $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($this->availableStock).");
             return;
         }
 
-        //add only the quantity amount if the product id already exist and checks the quantity added if it exceeds to the available stocks
         foreach ($this->items as $index => $item) {
             if ($item['id'] === $this->currentItem['id']) {
                 if ($this->items[$index]['availableStock'] < ($this->currentItemQuantity + $this->items[$index]['quantity'])) {
-                    $availableStock = $item['availableStock'];
-                    $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($availableStock).");
+                    $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ({$item['availableStock']}).");
                     return;
                 }
-
-//                dump($this->currentItemQuantity + $this->currentItem['quantity']);
 
                 $this->items[$index]['quantity'] += $this->currentItemQuantity;
                 $this->resetCurrentItems();
                 $this->dispatch('add-quantity-success');
-//                dd($this->currentItem['quantity'], $this->items);
                 return;
             }
         }
 
-        $this->currentItem['quantity'] += $this->currentItemQuantity;
+        $this->currentItem['quantity'] = $this->currentItemQuantity;
 
         $this->items[] = $this->currentItem;
         $this->resetCurrentItems();
@@ -136,6 +144,16 @@ class extends Component {
         $this->grandTotal = $grandTotal;
     }
 
+    public function editItem(int $index): void
+    {
+        $this->currentItem = $this->items[$index];
+        $this->currentItemQuantity = $this->items[$index]['quantity'];
+        $this->editingItemIndex = $index;
+
+        $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+
+    }
+
     public function newTransaction(): void
     {
         $this->reset();
@@ -147,34 +165,45 @@ class extends Component {
 
             DB::transaction(function () {
 
-            $sales = Sale::create([
-                'user_id' => auth()->id(),
-                'total_amount' => $this->grandTotal
+                $sales = Sale::create([
+                    'user_id' => auth()->id(),
+                    'total_amount' => $this->grandTotal
                 ]);
 
-            $salesItems = collect($this->items)->map(fn($item) => [
-                'sale_id' => $sales->id,
-                'product_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'unit_price' => $item['price'],
-                'subtotal' => $item['quantity'] * $item['price']
-            ])->toArray();
+                $salesItems = collect($this->items)->map(fn($item) => [
+                    'sale_id' => $sales->id,
+                    'product_id' => $item['id'],
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $item['price'],
+                    'subtotal' => $item['quantity'] * $item['price'],
+                ])->toArray();
 
-            $stocksToSubtract = collect($this->items)->map(fn($item) => [
-                'id' => $item['id'],
-                'quantity' => $item['quantity']
+                $stocksToSubtract = collect($this->items)->map(fn($item) => [
+                    'id' => $item['id'],
+                    'quantity' => $item['quantity']
                 ]);
 
-            foreach ($stocksToSubtract as $stock) {
-                $product = Product::find($stock['id']);
-                $product->decrement('stock_level', $stock['quantity']);
-            }
+                foreach ($stocksToSubtract as $stock) {
+                    $product = Product::find($stock['id']);
+                    $product->decrement('stock_level', $stock['quantity']);
+                }
 
-            $sales->salesItem()->createMany($salesItems);
+                $sales->salesItem()->createMany($salesItems);
+
+                $transactionInfo = [
+                    'salesItems' => $salesItems,
+                    'prfNumber' => $sales->prf_number,
+                    'cashier' => auth()->user()->name,
+                    'date' => now()->format('d/m/Y'),
+                    'time' => now()->format('g:i:s A'),
+                    'grandTotal' => $this->grandTotal
+
+                ];
+
+                PrintReceipt::print($transactionInfo);
+                $this->js("alert('paid')");
             });
 
-
-        $this->js("alert('paid')");
         }
 
     }
@@ -216,7 +245,8 @@ class extends Component {
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             @forelse($items as $item)
                                 <div wire:key="{{ $item['id'] }}"
-                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                     wire:click="editItem({{ $loop->index }})"
+                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
@@ -330,7 +360,7 @@ class extends Component {
 
                         <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                                 type="submit"
-                        >Add Sale
+                        >{{ $editingItemIndex !== null ? 'Update' : 'Add Sale' }}
                         </button>
 
                     </div>

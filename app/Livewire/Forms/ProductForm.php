@@ -3,8 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Product;
-use Livewire\Attributes\Locked;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -46,7 +44,7 @@ class ProductForm extends Form
     {
         $validated = $this->validate();
 
-        //cast the string to int
+        // cast the string to int
         $validated['unit_id'] = (int) $validated['unit_id'];
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
@@ -75,7 +73,7 @@ class ProductForm extends Form
     {
         $validated = $this->validate();
 
-        //cast the string to int
+        // cast the string to int
         $validated['unit_id'] = (int) $validated['unit_id'];
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
@@ -98,11 +96,9 @@ class ProductForm extends Form
         $this->reset('stockToAdd');
     }
 
-
     public function cancel(): void
     {
         $this->reset();
         $this->resetValidation();
     }
-
 }

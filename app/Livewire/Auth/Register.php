@@ -4,6 +4,7 @@ namespace App\Livewire\Auth;
 
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
+use Illuminate\View\View;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -25,7 +26,7 @@ class Register extends Component
         $this->redirect('/login', true);
     }
 
-    public function render(): \Illuminate\Contracts\View\View|Factory|\Illuminate\View\View
+    public function render(): \Illuminate\Contracts\View\View|Factory|View
     {
         return view('livewire.auth.register');
     }

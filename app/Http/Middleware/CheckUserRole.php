@@ -16,7 +16,7 @@ class CheckUserRole
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (in_array(auth()->user()->user_role->value, $roles, true)) {
-        return $next($request);
+            return $next($request);
         }
 
         abort(404);

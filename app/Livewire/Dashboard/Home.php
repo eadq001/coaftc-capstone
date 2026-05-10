@@ -8,8 +8,11 @@ use Livewire\Component;
 class Home extends Component
 {
     public string $username;
+
     public int $totalProducts;
+
     public int $lowStockItems;
+
     public int $totalInventoryValue;
 
     public function mount(): void
@@ -19,7 +22,6 @@ class Home extends Component
         $this->totalInventoryValue = Product::sum('price');
         $this->username = auth()->user()->name;
     }
-
 
     public function render()
     {

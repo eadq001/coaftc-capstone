@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use App\Enums\UserRoles;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -25,6 +24,4 @@ class Dashboard extends Component
     {
         $this->username = auth()->user()->name;
     }
-
-
 }

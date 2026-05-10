@@ -1,6 +1,7 @@
 <?php
 use App\Models\Product;
 use App\Models\Sale;
+use App\PrintReceipt;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -96,7 +97,8 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
                         <div class="divide-y divide-zinc-200 overflow-y-scroll">
                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                                 <div <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = ''.e($item['id']).''; ?>wire:key="<?php echo e($item['id']); ?>"
-                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60">
+                                     wire:click="editItem(<?php echo e($loop->index); ?>)"
+                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900"><?php echo e($item['name']); ?></p>
                                         
@@ -514,7 +516,8 @@ Quantity <?php echo $__env->renderComponent(); ?>
 
                         <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                                 type="submit"
-                        >Add Sale
+                        ><?php echo e($editingItemIndex !== null ? 'Update' : 'Add Sale'); ?>
+
                         </button>
 
                     </div>

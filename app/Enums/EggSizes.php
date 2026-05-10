@@ -29,5 +29,3 @@ enum EggSizes: string
         };
     }
 }
-
-

@@ -8,7 +8,6 @@ enum UserRoles: string
     case INVENTORY = 'inventory_clerk';
     case CASHIER = 'cashier';
 
-
     public function getUserRole(): string
     {
         return match ($this) {

@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\LogoutController;
-use App\Http\Middleware\CheckUserRole;
 use App\Livewire\Auth\Register;
 use App\Livewire\Dashboard\Home;
 use App\Livewire\Dashboard\Products;
@@ -35,4 +34,3 @@ Route::middleware(['auth', 'role:admin'])->prefix('/dashboard')->group(function 
     Route::livewire('/users', 'dashboard.users.create-users')->name('dashboard.users');
     Route::livewire('/employees', 'dashboard.employees')->name('dashboard.employees');
 });
-

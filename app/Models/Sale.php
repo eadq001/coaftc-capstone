@@ -18,7 +18,7 @@ class Sale extends Model
             $year = now()->format('y');
             $prefix = "PRF{$year}-";
 
-            $latestPrf = Sale::where('prf_number', 'like', $prefix . '%')->latest('id')->value('prf_number');
+            $latestPrf = Sale::where('prf_number', 'like', $prefix.'%')->latest('id')->value('prf_number');
 
             $nextNumber = 1;
 
@@ -26,7 +26,7 @@ class Sale extends Model
                 $nextNumber = ((int) substr($latestPrf, strlen($prefix))) + 1;
             }
 
-            $sale->prf_number = $prefix . $nextNumber;
+            $sale->prf_number = $prefix.$nextNumber;
         });
     }
 
@@ -35,7 +35,7 @@ class Sale extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function salesItem(): hasMany
+    public function salesItem(): HasMany
     {
         return $this->hasMany(SalesItem::class);
     }

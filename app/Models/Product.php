@@ -12,8 +12,8 @@ class Product extends Model
     protected $fillable = ['name', 'stock_level', 'price', 'unit_id', 'category_id', 'subcategory_id', 'size', 'class'];
 
     protected $casts = [
-      'sizes' => EggSizes::class,
-      'class' => ProductClass::class
+        'sizes' => EggSizes::class,
+        'class' => ProductClass::class,
     ];
 
     public function category(): BelongsTo
