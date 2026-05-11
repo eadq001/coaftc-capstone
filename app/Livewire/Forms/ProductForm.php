@@ -48,6 +48,9 @@ class ProductForm extends Form
         $validated['unit_id'] = (int) $validated['unit_id'];
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
+        if (! $validated['class']) {
+            $validated['class'] = null;
+        }
 
         Product::create($validated);
         $this->reset();
@@ -64,7 +67,7 @@ class ProductForm extends Form
         $this->category_id = $product->category_id;
         $this->subcategory_id = $product->subcategory_id;
         $this->size = $product->size ?? '';
-        $this->class = $product->class->value ?? '';
+        $this->class = $product->class->value ?? null;
         $this->product = $product;
 
     }

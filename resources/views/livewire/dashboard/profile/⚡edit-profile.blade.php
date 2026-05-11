@@ -119,11 +119,11 @@ class extends Component
             </flux:field>
 
             <div class="flex items-center justify-between gap-4">
-                <x-success-message success-message="Profile updated" event="profile-updated" />
 
                 <flux:button type="submit" variant="primary">
                     Save Changes
                 </flux:button>
+                <x-success-message success-message="Profile updated" event="profile-updated" />
             </div>
         </form>
     </flux:card>

@@ -103,6 +103,7 @@ class Products extends Dashboard
     #[On('add-edit-product-success')]
     public function resetProductToEdit(): void
     {
+        sleep(1);
         $this->reset('productToEdit');
     }
 

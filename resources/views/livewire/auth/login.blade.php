@@ -1,4 +1,11 @@
 <div class="min-h-screen bg-zinc-950">
+
+    @if (session('status'))
+        <div x-data="{show:true}"  x-show="show" x-init="setTimeout(()=>show=false, 2500)" x-transition class="absolute z-50 top-2 right-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+            {{ session('status') }}
+        </div>
+    @endif
+
     <div class="grid min-h-screen lg:grid-cols-[1.2fr_0.8fr]">
         <section class="relative hidden overflow-hidden lg:flex">
             <div
@@ -134,7 +141,7 @@
                                 </label>
 
                                 <a
-                                    href="{{ Route::has('password.request') ? route('password.request') : '#' }}"
+                                    href="{{ route('password.reset') }}"
                                     class="text-sm font-medium text-emerald-700 transition hover:text-emerald-800"
                                 >
                                     Forgot password?

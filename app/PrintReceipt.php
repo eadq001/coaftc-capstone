@@ -3,16 +3,15 @@
 namespace App;
 
 use App\Models\Product;
-use Mike42\Escpos\Printer;
 use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class PrintReceipt
 {
-
     public static function print($transactionInfo): void
     {
-//        dd($transactionInfo);
-        $connector = new WindowsPrintConnector("POS58");
+        //        dd($transactionInfo);
+        $connector = new WindowsPrintConnector('POS58');
 
         $printer = new Printer($connector);
 
@@ -30,17 +29,17 @@ class PrintReceipt
         $printer->feed(2);
 
         $printer->setJustification(Printer::JUSTIFY_LEFT);
-//        $printer->text("Description      Qty      Amount\n");
+        //        $printer->text("Description      Qty      Amount\n");
         foreach ($transactionInfo['salesItems'] as $salesItem) {
 
             $product = Product::find($salesItem['product_id']);
             $productName = $product->name;
             $productUnit = $product->unit->unit_name;
-//            dd($productName, $productUnit);
+            //            dd($productName, $productUnit);
 
-            $printer->text($productName . "\n");
-            $printer->text($salesItem['quantity'] . " " . $productUnit. " X " . $salesItem['unit_price'] . "           ");
-            $printer->text($salesItem['subtotal'] . "\n");
+            $printer->text($productName."\n");
+            $printer->text($salesItem['quantity'].' '.$productUnit.' X '.$salesItem['unit_price'].'           ');
+            $printer->text($salesItem['subtotal']."\n");
         }
 
         $printer->feed(2);

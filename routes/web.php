@@ -11,6 +11,7 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/', Login::class);
     Route::livewire('/login', Login::class)->name('login');
     Route::livewire('/register', Register::class)->name('register');
+    Route::livewire('/password-reset', 'auth.password-reset')->name('password.reset');
     Route::livewire('/verification', 'auth.register-confirm-email')->name('verification.verify');
 });
 
