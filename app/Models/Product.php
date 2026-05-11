@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'stock_level', 'price', 'unit_id', 'category_id', 'subcategory_id', 'size', 'class'];
+    protected $guarded = [];
 
     protected $casts = [
         'sizes' => EggSizes::class,

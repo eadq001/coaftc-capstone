@@ -52,7 +52,7 @@ class extends Component {
                 'price' => $product->price,
                 'availableStock' => $product->stock_level,
                 'quantity' => 0,
-                'class' => $product->class->value,
+                'class' => $product->class->value ?? null,
             ];
 
 //            $this->availableStock = (int) $this->currentItem['quantity'];

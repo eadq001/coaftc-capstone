@@ -3,6 +3,7 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Product;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -47,6 +48,7 @@ class ProductForm extends Form
         // cast the string to int
         $validated['unit_id'] = (int) $validated['unit_id'];
         $validated['category_id'] = (int) $validated['category_id'];
+        $validated['user_id'] = auth()->user()->id;
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
         if (! $validated['class']) {
             $validated['class'] = null;
@@ -80,6 +82,7 @@ class ProductForm extends Form
         $validated['unit_id'] = (int) $validated['unit_id'];
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
+        $validated['user_id'] = auth()->user()->id;
 
         $this->product->update($this->validate());
 
