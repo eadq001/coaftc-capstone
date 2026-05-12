@@ -16,7 +16,7 @@ class Sale extends Model
 
         static::creating(function (Sale $sale) {
             $year = now()->format('y');
-            $prefix = "PRF{$year}-";
+            $prefix = "PRF{$year}-00000";
 
             $latestPrf = Sale::where('prf_number', 'like', $prefix.'%')->latest('id')->value('prf_number');
 

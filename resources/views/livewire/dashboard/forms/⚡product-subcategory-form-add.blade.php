@@ -13,7 +13,7 @@ new class extends Component {
     public function save(): void
     {
         $validated = $this->validate([
-            'subcategory_name' => 'required|min:5|string'
+            'subcategory_name' => 'required|min:4|string'
         ]);
 
         $this->reset('subcategory_name');

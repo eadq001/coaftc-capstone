@@ -364,7 +364,7 @@ class extends Component {
     @endif
 
     @if($paid)
-        <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+        <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 backdrop-blur-sm"
              x-data @keydown.enter.window="$wire.newTransaction()"
              x-init="$nextTick(() => $el.querySelector('button')?.focus())">
             <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
