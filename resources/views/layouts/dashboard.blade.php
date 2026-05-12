@@ -79,14 +79,14 @@
                 @endif
 
                 @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
-                <flux:sidebar.item icon="currency-dollar" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                <flux:sidebar.item icon="currency-dollar" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
                 @endif
 
                 <flux:sidebar.item icon="document-text"  href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
 
                 @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value)
                 <flux:sidebar.item icon="user" wire:current.strict="bg-green-300!"  wire:navigate href="{{ route('dashboard.users') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Users</flux:sidebar.item>
-                <flux:sidebar.item icon="user-group" wire:current.exact wire:navigate href="{{ route('dashboard.employees') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
+                <flux:sidebar.item icon="user-group" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.employees') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Employees</flux:sidebar.item>
                 @endif
 
 {{--                <flux:sidebar.group expandable icon="cog-6-tooth" heading="Settings" class="grid text-zinc-800 dark:text-zinc-200 [&_[data-flux-sidebar-heading]]:text-primary dark:[&_[data-flux-sidebar-heading]]:text-primary">--}}

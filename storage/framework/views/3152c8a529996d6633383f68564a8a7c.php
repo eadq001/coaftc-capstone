@@ -1,11 +1,12 @@
 <?php
 use App\Livewire\Dashboard;
 use App\Models\Employee;
+use Livewire\Attributes\Computed;
 ?>
 
 <div
-    class="relative space-y-6"
-    x-data="{ showEmployeeForm: false, showEditEmployeeForm: false }"
+        class="relative space-y-6"
+        x-data="{ showEmployeeForm: false, showEditEmployeeForm: false }"
 >
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -139,25 +140,31 @@ Employees saved here are loaded from the database. <?php echo $__env->renderComp
             <table class="min-w-full divide-y divide-zinc-200">
                 <thead class="bg-zinc-50">
                 <tr>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">First Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Last Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Middle Name</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Address</th>
-                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Position</th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">First
+                        Name
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Last
+                        Name
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">Middle
+                        Name
+                    </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                        Position
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 bg-white">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $employees; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $employee): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                     <tr
-                        <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'employee-'.e($employee['id']).''; ?>wire:key="employee-<?php echo e($employee['id']); ?>"
-                        class="cursor-pointer hover:bg-zinc-50"
-                        wire:click="editEmployee(<?php echo e($employee['id']); ?>)"
-                        @click="showEditEmployeeForm = true"
+                            <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'employee-'.e($employee['id']).''; ?>wire:key="employee-<?php echo e($employee['id']); ?>"
+                            class="cursor-pointer hover:bg-zinc-50"
+                            wire:click="editEmployee(<?php echo e($employee['id']); ?>)"
+                            @click="showEditEmployeeForm = true"
                     >
                         <td class="px-6 py-4 text-sm text-zinc-900"><?php echo e($employee['first_name']); ?></td>
                         <td class="px-6 py-4 text-sm text-zinc-900"><?php echo e($employee['last_name']); ?></td>
                         <td class="px-6 py-4 text-sm text-zinc-600"><?php echo e($employee['middle_name'] ?: 'N/A'); ?></td>
-                        <td class="px-6 py-4 text-sm text-zinc-600"><?php echo e($employee['address']); ?></td>
                         <td class="px-6 py-4 text-sm text-zinc-600"><?php echo e($employee['position']); ?></td>
                     </tr>
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -182,10 +189,10 @@ Employees saved here are loaded from the database. <?php echo $__env->renderComp
 <?php endif; ?>
 
     <div
-        class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 p-4 backdrop-blur-xs"
-        x-cloak
-        x-show="showEmployeeForm"
-        x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 p-4 backdrop-blur-xs"
+            x-cloak
+            x-show="showEmployeeForm"
+            x-transition
     >
         <div class="w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl">
             <div class="mb-6 flex items-start justify-between gap-4">
@@ -235,9 +242,9 @@ Fill out the employee information below. <?php echo $__env->renderComponent(); ?
                 </div>
 
                 <button
-                    type="button"
-                    class="rounded-full p-1 text-zinc-500 transition hover:rotate-180 hover:text-zinc-900"
-                    @click="showEmployeeForm = false"
+                        type="button"
+                        class="rounded-full p-1 text-zinc-500 transition hover:rotate-180 hover:text-zinc-900"
+                        @click="showEmployeeForm = false"
                 >
                     <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
@@ -619,99 +626,11 @@ Position <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                 </div>
 
-                <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::field'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-                    <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::label'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Address <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
-<?php $attributes = $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
-<?php unset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
-<?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
-<?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal0ee30026125d1a66523211147b00e4dc = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal0ee30026125d1a66523211147b00e4dc = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::textarea','data' => ['wire:model.live' => 'address','rows' => '3','placeholder' => 'Employee address']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::textarea'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['wire:model.live' => 'address','rows' => '3','placeholder' => 'Employee address']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal0ee30026125d1a66523211147b00e4dc)): ?>
-<?php $attributes = $__attributesOriginal0ee30026125d1a66523211147b00e4dc; ?>
-<?php unset($__attributesOriginal0ee30026125d1a66523211147b00e4dc); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal0ee30026125d1a66523211147b00e4dc)): ?>
-<?php $component = $__componentOriginal0ee30026125d1a66523211147b00e4dc; ?>
-<?php unset($__componentOriginal0ee30026125d1a66523211147b00e4dc); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal5730b1630871592dc0d77210545c88c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5730b1630871592dc0d77210545c88c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::error','data' => ['name' => 'address']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::error'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['name' => 'address']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5730b1630871592dc0d77210545c88c1)): ?>
-<?php $attributes = $__attributesOriginal5730b1630871592dc0d77210545c88c1; ?>
-<?php unset($__attributesOriginal5730b1630871592dc0d77210545c88c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5730b1630871592dc0d77210545c88c1)): ?>
-<?php $component = $__componentOriginal5730b1630871592dc0d77210545c88c1; ?>
-<?php unset($__componentOriginal5730b1630871592dc0d77210545c88c1); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
-<?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
-<?php unset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
-<?php $component = $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
-<?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
-<?php endif; ?>
-
                 <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between items-center">
                     <div>
 
-                    <div class="flex items-center justify-end gap-3">
-                        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+                        <div class="flex items-center justify-end gap-3">
+                            <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['type' => 'button','variant' => 'ghost','@click' => 'showEmployeeForm = false']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -723,8 +642,8 @@ Address <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['type' => 'button','variant' => 'ghost','@click' => 'showEmployeeForm = false']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            Cancel
-                         <?php echo $__env->renderComponent(); ?>
+                                Cancel
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
@@ -735,7 +654,7 @@ Address <?php echo $__env->renderComponent(); ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
 
-                        <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
+                            <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['type' => 'submit','variant' => 'primary']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
@@ -747,8 +666,8 @@ Address <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['type' => 'submit','variant' => 'primary']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                            Add Employee
-                         <?php echo $__env->renderComponent(); ?>
+                                Add Employee
+                             <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
@@ -758,7 +677,7 @@ Address <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
 <?php unset($__componentOriginalc04b147acd0e65cc1a77f86fb0e81580); ?>
 <?php endif; ?>
-                    </div>
+                        </div>
                     </div>
 
                     <?php if (isset($component)) { $__componentOriginala5e77f3594f8b6318da2dcd4db70cfc8 = $component; } ?>
@@ -790,12 +709,13 @@ Address <?php echo $__env->renderComponent(); ?>
     </div>
 
     <div
-        class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 p-4 backdrop-blur-xs"
-        x-cloak
-        x-show="showEditEmployeeForm"
-        x-transition
+            class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 p-4 backdrop-blur-xs"
+            x-cloak
+            x-show="showEditEmployeeForm"
+            x-transition
     >
-        <div class="w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl" x-data="{ active: false }" x-on:employee-updated.window="active = false">
+        <div class="w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl" x-data="{ active: false }"
+             x-on:employee-updated.window="active = false">
             <form wire:submit="updateEmployee" class="space-y-5">
                 <div class="mb-6 flex items-start justify-between gap-4">
                     <div>
@@ -831,7 +751,8 @@ Address <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php $component->withAttributes(['class' => 'mt-1 text-sm text-zinc-500']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Click edit to update the selected employee. <?php echo $__env->renderComponent(); ?>
+Click edit to update the selected employee.
+                         <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
 <?php $attributes = $__attributesOriginal0638ebfbd490c7a414275d493e14cb4e; ?>
@@ -844,10 +765,10 @@ Click edit to update the selected employee. <?php echo $__env->renderComponent()
                     </div>
 
                     <button
-                        type="button"
-                        class="rounded-full p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
-                        wire:click="$set('editSuccessMessage', '')"
-                        @click="showEditEmployeeForm = false; active = false"
+                            type="button"
+                            class="rounded-full p-1 text-zinc-500 transition hover:bg-zinc-100 hover:text-zinc-900"
+                            wire:click="resetForm"
+                            @click="showEditEmployeeForm = false; active = false"
                     >
                         <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
@@ -1228,112 +1149,24 @@ Position <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                 </div>
 
-                <?php if (isset($component)) { $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::field','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::field'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-                    <?php if (isset($component)) { $__componentOriginal8a84eac5abb8af1e2274971f8640b38f = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::label','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::label'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes([]); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Address <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
-<?php $attributes = $__attributesOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
-<?php unset($__attributesOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f)): ?>
-<?php $component = $__componentOriginal8a84eac5abb8af1e2274971f8640b38f; ?>
-<?php unset($__componentOriginal8a84eac5abb8af1e2274971f8640b38f); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal0ee30026125d1a66523211147b00e4dc = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal0ee30026125d1a66523211147b00e4dc = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::textarea','data' => ['wire:model' => 'address','rows' => '3','placeholder' => 'Employee address','xBind:readonly' => '!active']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::textarea'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['wire:model' => 'address','rows' => '3','placeholder' => 'Employee address','x-bind:readonly' => '!active']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal0ee30026125d1a66523211147b00e4dc)): ?>
-<?php $attributes = $__attributesOriginal0ee30026125d1a66523211147b00e4dc; ?>
-<?php unset($__attributesOriginal0ee30026125d1a66523211147b00e4dc); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal0ee30026125d1a66523211147b00e4dc)): ?>
-<?php $component = $__componentOriginal0ee30026125d1a66523211147b00e4dc; ?>
-<?php unset($__componentOriginal0ee30026125d1a66523211147b00e4dc); ?>
-<?php endif; ?>
-                    <?php if (isset($component)) { $__componentOriginal5730b1630871592dc0d77210545c88c1 = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginal5730b1630871592dc0d77210545c88c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::error','data' => ['name' => 'address']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('flux::error'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['name' => 'address']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginal5730b1630871592dc0d77210545c88c1)): ?>
-<?php $attributes = $__attributesOriginal5730b1630871592dc0d77210545c88c1; ?>
-<?php unset($__attributesOriginal5730b1630871592dc0d77210545c88c1); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginal5730b1630871592dc0d77210545c88c1)): ?>
-<?php $component = $__componentOriginal5730b1630871592dc0d77210545c88c1; ?>
-<?php unset($__componentOriginal5730b1630871592dc0d77210545c88c1); ?>
-<?php endif; ?>
-                 <?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
-<?php $attributes = $__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
-<?php unset($__attributesOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b)): ?>
-<?php $component = $__componentOriginaldbce252eb40169cc4a74f0123aabaf0b; ?>
-<?php unset($__componentOriginaldbce252eb40169cc4a74f0123aabaf0b); ?>
-<?php endif; ?>
-
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <button
-                            class="w-24 rounded-lg bg-green-300 px-3 py-1 transition-all hover:bg-green-400"
-                            type="button"
-                            @click="active = !active"
-                            :class="active ? 'hidden' : 'block'"
+                                class="w-24 rounded-lg bg-green-300 px-3 py-1 transition-all hover:bg-green-400"
+                                type="button"
+                                @click="active = !active"
+                                :class="active ? 'hidden' : 'block'"
                         >
                             Edit
                         </button>
 
                         <button
-                            class="w-24 rounded-lg bg-green-300 px-3 py-1 transition-all hover:bg-green-400 disabled:bg-gray-300"
-                            type="submit"
-                            x-show="active"
-                            disabled
-                            wire:dirty.attr.remove="disabled"
-                            @click="setTimeout(()=> showEditEmployeeForm = false, 2500)"
+                                class="w-24 rounded-lg bg-green-300 px-3 py-1 transition-all hover:bg-green-400 disabled:bg-gray-300"
+                                type="submit"
+                                x-show="active"
+                                disabled
+                                wire:dirty.attr.remove="disabled"
+                                @click="setTimeout(()=> showEditEmployeeForm = false, 2500)"
                         >
                             Update
                         </button>

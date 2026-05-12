@@ -3,7 +3,6 @@
 namespace App\Livewire\Forms;
 
 use App\Models\Product;
-use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -93,6 +92,7 @@ class ProductForm extends Form
     {
         $this->validate(['stockToAdd' => 'required|integer']);
         $this->product->increment('stock_level', $this->stockToAdd);
+        $this->product->update(['user_id' => auth()->user()->id]);
         $this->stock_level = $this->product->stock_level;
         $this->resetStockToAdd();
     }

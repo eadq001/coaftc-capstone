@@ -44,17 +44,17 @@ class ProductFormEdit extends Component
         return Unit::all();
     }
 
-    public function cancel()
+    public function cancel(): void
     {
         $this->reset();
     }
 
-    public function resetStockToAdd()
+    public function resetStockToAdd(): void
     {
         $this->productForm->resetStockToAdd();
     }
 
-    public function addStock()
+    public function addStock(): void
     {
         $this->productForm->addStock();
         $this->dispatch('add-product-stock-success');

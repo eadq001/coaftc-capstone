@@ -91,10 +91,6 @@
 
             </div>
 
-
-            {{--                            <flux:badge color="zinc" variant="filled" class="px-3 py-1">--}}
-            {{--                                {{ $filteredCount ?? '0' }} results--}}
-            {{--                            </flux:badge>--}}
         </div>
 
         <flux:table x-data x-transition class="border! border-gray-200! px-2">

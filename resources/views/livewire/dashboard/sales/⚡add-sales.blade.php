@@ -15,10 +15,11 @@ class extends Component {
 
     public ?int $searchId = null;
 
-//    #[Session]
     public array $items = [];
 
     public array $currentItem = [];
+
+    public bool $paid = false;
 
     #[Session]
     public float $grandTotal = 0;
@@ -55,9 +56,6 @@ class extends Component {
                 'class' => $product->class->value ?? null,
             ];
 
-//            $this->availableStock = (int) $this->currentItem['quantity'];
-
-//            dd($this->availableStock);
             if (!empty($product['size'])) {
                 $this->currentItem['size'] = $product->size;
             }
@@ -201,7 +199,7 @@ class extends Component {
                 ];
 
                 PrintReceipt::print($transactionInfo);
-                $this->js("alert('paid')");
+                $this->paid = true;
             });
 
         }
@@ -225,7 +223,7 @@ class extends Component {
                     <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
                         <flux:field class="lg:col-span-2">
                             <flux:label>QR Code / Product Search</flux:label>
-                            <flux:input icon="qr-code" type="number" placeholder="Scan QR or type product name..."
+                            <flux:input icon="qr-code" type="number" placeholder="Scan QR or type product id..."
                                         id="product-search"
                                         autocomplete="off" wire:model.live="searchId"/>
                         </flux:field>
@@ -297,16 +295,12 @@ class extends Component {
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <div wire:click="pay"
-                                 class="rounded-2xl border hover:bg-zinc-800 border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center transition-all cursor-pointer">
-                                <button type="button" class="font-semibold cursor-pointer">Pay</button>
-                            </div>
-                            <div class="rounded-2xl border border-white/10 bg-white/5 px-6 flex items-center justify-center">
-                                <button type="button" class="font-semibold">Print</button>
-                            </div>
+                                <button type="button" wire:click="pay" @disabled($paid) x-data @keydown.window.p="$wire.pay()"
+                                class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">Pay</button>
+
                             <div wire:click="newTransaction"
-                                 class="rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold">New
+                                 class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
+                                <button type="button" class="font-semibold" x-data @keydown.window.n="$wire.newTransaction()">New
                                     Transaction
                                 </button>
                             </div>
@@ -368,4 +362,23 @@ class extends Component {
             </div>
         </div>
     @endif
+
+    @if($paid)
+        <div class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm"
+             x-data @keydown.enter.window="$wire.newTransaction()"
+             x-init="$nextTick(() => $el.querySelector('button')?.focus())">
+            <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
+                <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100">
+                    <flux:icon.check class="h-8 w-8 text-emerald-700" />
+                </div>
+                <flux:heading size="lg" class="text-zinc-950">Transaction Paid</flux:heading>
+                <p class="mt-3 text-sm text-zinc-500">Press <kbd class="rounded-md border border-zinc-300 bg-zinc-100 px-2 py-0.5 font-mono text-xs text-zinc-600">Enter</kbd> to start a new transaction.</p>
+                <button type="button" wire:click="newTransaction"
+                        class="mt-8 w-full rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
+                    New Transaction
+                </button>
+            </div>
+        </div>
+    @endif
+
 </div>
