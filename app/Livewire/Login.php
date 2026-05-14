@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -28,6 +29,13 @@ class Login extends Component
         $this->addError('loginFailed', 'Invalid email and password.');
     }
 
+    //    public function mount(): void
+    //    {
+    //        dd([
+    //            'default_connection' => DB::getDefaultConnection(),
+    //            'database_file'      => DB::connection()->getDatabaseName(),
+    //        ]);
+    //    }
     public function render()
     {
         return view('livewire.auth.login');

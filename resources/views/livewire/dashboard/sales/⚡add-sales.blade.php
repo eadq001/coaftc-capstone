@@ -26,6 +26,8 @@ class extends Component {
 
     public ?int $availableStock = null;
 
+    public bool $showProductNotFound = false;
+
     public ?int $editingItemIndex = null;
 
     #[Validate("integer|required")]
@@ -61,7 +63,7 @@ class extends Component {
             }
 
         } else {
-            $this->js("alert('The product doesnt exist')");
+            $this->showProductNotFound = true;
         }
 
         $this->dispatch('show-data');
@@ -79,7 +81,7 @@ class extends Component {
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'editingItemIndex');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'editingItemIndex', 'showProductNotFound');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
 
@@ -233,18 +235,19 @@ class extends Component {
                 <div class="px-6 py-5 sm:px-8">
 
                     <div class="overflow-hidden rounded-2xl border border-zinc-200">
-                        <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                        <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_110px_110px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
                             <div class="px-4 py-3">Product</div>
                             <div class="px-4 py-3 text-right">Qty</div>
                             <div class="px-4 py-3 text-right">Price</div>
                             <div class="px-4 py-3 text-right">Amount</div>
+                            <div class="px-4 py-3 text-right">Action</div>
                         </div>
 
-                        <div class="divide-y divide-zinc-200 overflow-y-scroll">
+                        <div class="divide-y divide-zinc-200">
                             @forelse($items as $item)
                                 <div wire:key="{{ $item['id'] }}"
                                      wire:click="editItem({{ $loop->index }})"
-                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_140px] items-center bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
+                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_110px_110px]  bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
@@ -253,6 +256,9 @@ class extends Component {
                                     <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
                                         ₱{{ number_format($item['quantity'] * $item['price'], 2) }}
+                                    </div>
+                                    <div class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10">
+                                        <flux:button variant="danger" size="xs">Remove</flux:button>
                                     </div>
                                 </div>
                             @empty
@@ -267,7 +273,7 @@ class extends Component {
             <aside class="bg-zinc-950 text-white">
                 <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                     <flux:heading size="lg" class="!text-white">
-                        CASHIER: {{ strtoupper(auth()->user()->name) }}</flux:heading>
+                        Associate: {{ strtoupper(auth()->user()->name) }}</flux:heading>
                 </div>
 
                 <div class="grid gap-0">
@@ -376,6 +382,22 @@ class extends Component {
                 <button type="button" wire:click="newTransaction"
                         class="mt-8 w-full rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
                     New Transaction
+                </button>
+            </div>
+        </div>
+    @endif
+
+    @if($showProductNotFound)
+        <div x-data @keydown.enter.window="$wire.set('showProductNotFound', false);$wire.resetCurrentItems()" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+            <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
+                <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                    <flux:icon.x-mark class="h-8 w-8 text-red-600" />
+                </div>
+                <flux:heading size="lg" class="text-zinc-950">Product Not Found</flux:heading>
+                <p class="mt-3 text-sm text-zinc-500">The product ID <strong>#{{ $searchId }}</strong> does not exist.</p>
+                <button type="button" wire:click="resetCurrentItems"
+                        class="mt-8 w-full rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">
+                    OK
                 </button>
             </div>
         </div>

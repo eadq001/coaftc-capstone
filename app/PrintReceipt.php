@@ -10,7 +10,7 @@ class PrintReceipt
 {
     public static function print($transactionInfo): void
     {
-        $copies = ["Client's copy", "Guard's copy", "COAFTC copy"];
+        $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
 
         foreach ($copies as $copy) {
 
@@ -40,17 +40,17 @@ class PrintReceipt
                 $productUnit = $product->unit->unit_name;
                 //            dd($productName, $productUnit);
 
-                $printer->text($productName . " ");
-                $printer->text($salesItem['quantity'] . ' ' . $productUnit . "\n");
+                $printer->text($productName.' ');
+                $printer->text($salesItem['quantity'].' '.$productUnit."\n");
             }
             $printer->feed();
 
-            $printer->text("                 ". $copy);
+            $printer->text('                 '.$copy);
 
             $printer->feed(2);
 
-            $printer->text("-------------------------------");
-//        $printer->text("Total Amount: {$transactionInfo['grandTotal']}");
+            $printer->text('-------------------------------');
+            //        $printer->text("Total Amount: {$transactionInfo['grandTotal']}");
 
             $printer->feed(2);
 
