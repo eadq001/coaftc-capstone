@@ -75,11 +75,14 @@
 
                 @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role->value === App\Enums\UserRoles::INVENTORY->value)
                 <flux:sidebar.item icon="cube" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products</flux:sidebar.item>
+                @endif
+
+                @if(auth()->user()->user_role === App\Enums\UserRoles::ADMIN || auth()->user()->user_role->value === App\Enums\UserRoles::INVENTORY->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
                 <flux:sidebar.item icon="qr-code" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.products-qr') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Products QR Code</flux:sidebar.item>
                 @endif
 
                 @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
-                <flux:sidebar.item icon="currency-dollar" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                    <flux:sidebar.item icon="currency-dollar" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
                 @endif
 
                 <flux:sidebar.item icon="document-text"  href="#" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>

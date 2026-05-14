@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('sales_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Sale::class);
-            $table->foreignIdFor(Product::class);
+            $table->foreignIdFor(Sale::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Product::class)->constrained()->restrictOnDelete();
             $table->integer('quantity');
             $table->integer('unit_price');
             $table->integer('subtotal');

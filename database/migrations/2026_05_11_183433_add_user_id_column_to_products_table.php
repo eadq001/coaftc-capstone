@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
 
         });
     }

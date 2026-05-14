@@ -133,11 +133,12 @@ Print or scan product QR codes with their item details. <?php echo $__env->rende
                         >
                     </div>
 
-                    <div class=" grid grid-cols-2 mt-1 flex w-full flex-1 flex-col justify-end gap-2 border-t border-dashed border-zinc-200 pt-4">
-                        <p class="text-base font-semibold text-zinc-900"><?php echo e($product->id); ?></p>
-                        <p class="text-base font-semibold text-zinc-900"><?php echo e($product->name); ?></p>
+                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200 pt-2">
+                        <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->id); ?></p>
+                        <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->name); ?></p>
                         <p class="text-sm text-zinc-600"><?php echo e($product->category?->category_name); ?></p>
                         <p class="text-sm text-zinc-500"><?php echo e($product->subcategory?->subcategory_name); ?></p>
+                        <p class="text-sm text-zinc-500">remaining stocks: <?php echo e($product->stock_level); ?></p>
 
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->size): ?>
                             <p class="text-sm font-medium text-zinc-700"><?php echo e($product->size); ?></p>

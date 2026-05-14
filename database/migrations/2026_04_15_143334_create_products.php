@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('name');
             $table->integer('stock_level');
             $table->float('price');
-            $table->foreignIdFor(Unit::class);
-            $table->foreignIdFor(Category::class);
-            $table->foreignIdFor(Subcategory::class);
+            $table->foreignIdFor(Unit::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Category::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Subcategory::class)->constrained()->restrictOnDelete();
             $table->timestamps();
         });
     }

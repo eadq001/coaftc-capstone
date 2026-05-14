@@ -113,16 +113,17 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10">
                                         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['variant' => 'danger','size' => 'xs']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['variant' => 'danger','size' => 'xs','wire:click.stop' => 'removeItem('.e($loop->index).')']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'danger','size' => 'xs']); ?>
+<?php $component->withAttributes(['variant' => 'danger','size' => 'xs','wire:click.stop' => 'removeItem('.e($loop->index).')']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Remove <?php echo $__env->renderComponent(); ?>
+Remove
+                                         <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580)): ?>
 <?php $attributes = $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580; ?>
@@ -195,12 +196,16 @@ Remove <?php echo $__env->renderComponent(); ?>
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                                <button type="button" wire:click="pay" <?php if($paid): echo 'disabled'; endif; ?> x-data @keydown.window.p="$wire.pay()"
-                                class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">Pay</button>
+                            <button type="button" wire:click="pay" <?php if($paid): echo 'disabled'; endif; ?> x-data
+                                    @keydown.window.p="$wire.pay()"
+                                    class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
+                                Pay
+                            </button>
 
                             <div wire:click="newTransaction"
                                  class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
-                                <button type="button" class="font-semibold" x-data @keydown.window.n="$wire.newTransaction()">New
+                                <button type="button" class="font-semibold" x-data
+                                        @keydown.window.n="$wire.newTransaction()">New
                                     Transaction
                                 </button>
                             </div>
@@ -596,7 +601,9 @@ Transaction Paid <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
 <?php unset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
 <?php endif; ?>
-                <p class="mt-3 text-sm text-zinc-500">Press <kbd class="rounded-md border border-zinc-300 bg-zinc-100 px-2 py-0.5 font-mono text-xs text-zinc-600">Enter</kbd> to start a new transaction.</p>
+                <p class="mt-3 text-sm text-zinc-500">Press <kbd
+                            class="rounded-md border border-zinc-300 bg-zinc-100 px-2 py-0.5 font-mono text-xs text-zinc-600">Enter</kbd>
+                    to start a new transaction.</p>
                 <button type="button" wire:click="newTransaction"
                         class="mt-8 w-full rounded-xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2">
                     New Transaction
@@ -606,7 +613,8 @@ Transaction Paid <?php echo $__env->renderComponent(); ?>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($showProductNotFound): ?>
-        <div x-data @keydown.enter.window="$wire.set('showProductNotFound', false);$wire.resetCurrentItems()" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+        <div x-data @keydown.enter.window="$wire.set('showProductNotFound', false);$wire.resetCurrentItems()"
+             class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
             <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
                 <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
                     <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
@@ -653,7 +661,8 @@ Product Not Found <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
 <?php unset($__componentOriginale0fd5b6a0986beffac17a0a103dfd7b9); ?>
 <?php endif; ?>
-                <p class="mt-3 text-sm text-zinc-500">The product ID <strong>#<?php echo e($searchId); ?></strong> does not exist.</p>
+                <p class="mt-3 text-sm text-zinc-500">The product ID <strong>#<?php echo e($searchId); ?></strong> does not exist.
+                </p>
                 <button type="button" wire:click="resetCurrentItems"
                         class="mt-8 w-full rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">
                     OK

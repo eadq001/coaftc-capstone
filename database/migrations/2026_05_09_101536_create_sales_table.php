@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('prf_number')->unique();
             $table->integer('total_amount');
-            $table->foreignIdFor(User::class);
+            $table->foreignIdFor(User::class)->constrained()->restrictOnDelete();
             $table->timestamps();
         });
     }

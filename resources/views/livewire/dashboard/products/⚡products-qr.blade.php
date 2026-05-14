@@ -79,11 +79,12 @@ class extends Component {
                         >
                     </div>
 
-                    <div class=" grid grid-cols-2 mt-1 flex w-full flex-1 flex-col justify-end gap-2 border-t border-dashed border-zinc-200 pt-4">
-                        <p class="text-base font-semibold text-zinc-900">{{ $product->id}}</p>
-                        <p class="text-base font-semibold text-zinc-900">{{ $product->name }}</p>
+                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200 pt-2">
+                        <p class="text-sm font-semibold text-zinc-900">{{ $product->id}}</p>
+                        <p class="text-sm font-semibold text-zinc-900">{{ $product->name }}</p>
                         <p class="text-sm text-zinc-600">{{ $product->category?->category_name }}</p>
                         <p class="text-sm text-zinc-500">{{ $product->subcategory?->subcategory_name }}</p>
+                        <p class="text-sm text-zinc-500">remaining stocks: {{ $product->stock_level }}</p>
 
                         @if($product->size)
                             <p class="text-sm font-medium text-zinc-700">{{ $product->size }}</p>

@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-zinc-950">
-
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('status')): ?>
         <div x-data="{show:true}"  x-show="show" x-init="setTimeout(()=>show=false, 2500)" x-transition class="absolute z-50 top-2 right-2 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             <?php echo e(session('status')); ?>
