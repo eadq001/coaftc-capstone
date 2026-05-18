@@ -1,2 +1,4 @@
 import './bootstrap';
-import '../../vendor/livewire/flux/dist/flux.min.js';
+import Chart from 'chart.js/auto';
+
+window.Chart = Chart;
