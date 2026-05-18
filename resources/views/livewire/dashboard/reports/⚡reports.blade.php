@@ -15,7 +15,11 @@ class extends Component {
     public ?Collection $result = null;
     public ?Collection $itemsByCategory = null;
 
-    public function mount()
+    public function mount(): void
+    {
+        $this->getSalesReportToday();
+    }
+    public function getSalesReportToday()
     {
         if ($this->startDate && $this->endDate) {
             $this->result = Sale::whereDate('created_at', '>=', $this->startDate)
@@ -25,7 +29,8 @@ class extends Component {
             $this->itemsByCategory = $this->result
                 ->flatMap
                 ->salesItem
-                ->groupBy(fn($item) => $item->product->category->category_name);
+                ->groupBy(fn($item) => $item->sale->created_at->format('Y-m-d'))
+            ;
         }
     }
 };
@@ -76,27 +81,24 @@ class extends Component {
             </div>
         </section>
 
-        <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
-            <div class="border-b border-zinc-200 px-6 py-4">
-                <flux:heading size="lg">Inventory Report Preview</flux:heading>
-                <flux:text class="mt-1 text-sm text-zinc-500">
-                    Table layout for generated report results grouped by category.
-                </flux:text>
-            </div>
-
-            <div class="overflow-x-auto">
                 @if($result)
+        <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+                @foreach($itemsByCategory as $key => $saleDate)
+
                     @foreach($itemsByCategory as $categoryItems)
+            <div class="overflow-x-auto">
                         @php
-                            $category = $categoryItems->first()->product->category->category_name;
+                            $category = $categoryItems->first()->sale;
 //                            dd($categoryItems);
                         @endphp
-                            <table class="min-w-[1180px] w-full border-collapse text-sm mb-3">
+                            <table class="min-w-[1180px] w-full border-collapse text-sm">
                                 <thead>
                                 <tr class="bg-emerald-700 text-white">
-                                    <th colspan="9"
+                                    <th colspan="10"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.18em]">
-                                        {{ $category }}
+                                        <div class="space-x-8">
+                                            {{ date_format(date_create($key), 'F j, Y') }}
+                                        </div>
                                     </th>
                                 </tr>
 
@@ -106,10 +108,11 @@ class extends Component {
                                     <th class="px-4 py-3 text-left">Subcategory</th>
                                     <th class="px-4 py-3 text-left">Quantity</th>
                                     <th class="px-4 py-3 text-left">Unit</th>
-                                    <th class="px-4 py-3 text-left">Inventory Start</th>
-                                    <th class="px-4 py-3 text-left">Inventory End</th>
+                                    <th class="px-4 py-3 text-left">Start</th>
+                                    <th class="px-4 py-3 text-left">End</th>
                                     <th class="px-4 py-3 text-left">Price</th>
                                     <th class="px-4 py-3 text-left">Subtotal</th>
+                                    <th class="px-4 py-3 text-left">Associate</th>
                                 </tr>
                                 </thead>
 
@@ -121,10 +124,12 @@ class extends Component {
                                     <td class="px-4 py-4 text-zinc-600">{{ $item->product->subcategory->subcategory_name }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->quantity }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->unit->unit_name }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->product->stock_level + $item->quantity }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->product->stock_level }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->unit_pricel }}</td>
-                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item->subtotal }}
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_start }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_end }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->unit_price }}</td>
+                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item->subtotal }}</td>
+                                    <td class="px-4 py-4 text-zinc-600">
+                                        <span>{{  $category->user->name }}</span>
                                     </td>
                                 </tr>
                                 @endforeach
@@ -132,7 +137,7 @@ class extends Component {
 
                                 <tfoot>
                                 <tr class="border-t-2 border-emerald-600 bg-emerald-50">
-                                    <td colspan="8"
+                                    <td colspan="9"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
                                         Total
                                     </td>
@@ -143,6 +148,7 @@ class extends Component {
                                 </tfoot>
                             </table>
                     @endforeach
+                @endforeach
                 @endif
 
             </div>

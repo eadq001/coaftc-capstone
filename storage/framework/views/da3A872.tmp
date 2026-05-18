@@ -233,24 +233,28 @@ Ending Date <?php echo $__env->renderComponent(); ?>
             </div>
         </section>
 
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($result): ?>
         <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $itemsByCategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $saleDate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($result): ?>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $itemsByCategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $categoryItems): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-            <div class="overflow-x-auto">
-                        <?php
-                            $category = $categoryItems->first()->sale;
+                    <?php
+                        $category = $categoryItems->first()->sale;
 //                            dd($categoryItems);
-                        ?>
-                            <table class="min-w-[1180px] w-full border-collapse text-sm">
+                    ?>
+            <div class="border-b border-zinc-200 px-6 py-4">
+                <span><?php echo e("   DATE: ". $category->created_at->format('F j, Y')); ?></span>
+
+            </div>
+
+            <div class="overflow-x-auto">
+
+                            <table class="min-w-[1180px] w-full border-collapse text-sm mb-3">
                                 <thead>
                                 <tr class="bg-emerald-700 text-white">
-                                    <th colspan="10"
+                                    <th colspan="9"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.18em]">
                                         <div class="space-x-8">
-                                            <?php echo e(date_format(date_create($key), 'F j, Y')); ?>
-
+                                            <span><?php echo e($category->prf_number); ?></span>
+                                            <span><?php echo e('   ASSOCIATE: ' . $category->user->name); ?></span>
                                         </div>
                                     </th>
                                 </tr>
@@ -261,11 +265,10 @@ Ending Date <?php echo $__env->renderComponent(); ?>
                                     <th class="px-4 py-3 text-left">Subcategory</th>
                                     <th class="px-4 py-3 text-left">Quantity</th>
                                     <th class="px-4 py-3 text-left">Unit</th>
-                                    <th class="px-4 py-3 text-left">Start</th>
-                                    <th class="px-4 py-3 text-left">End</th>
+                                    <th class="px-4 py-3 text-left">Inventory Start</th>
+                                    <th class="px-4 py-3 text-left">Inventory End</th>
                                     <th class="px-4 py-3 text-left">Price</th>
                                     <th class="px-4 py-3 text-left">Subtotal</th>
-                                    <th class="px-4 py-3 text-left">Associate</th>
                                 </tr>
                                 </thead>
 
@@ -280,9 +283,8 @@ Ending Date <?php echo $__env->renderComponent(); ?>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700"><?php echo e($item->inventory_start); ?></td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700"><?php echo e($item->inventory_end); ?></td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700"><?php echo e($item->unit_price); ?></td>
-                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950"><?php echo e($item->subtotal); ?></td>
-                                    <td class="px-4 py-4 text-zinc-600">
-                                        <span><?php echo e($category->user->name); ?></span>
+                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950"><?php echo e($item->subtotal); ?>
+
                                     </td>
                                 </tr>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -290,7 +292,7 @@ Ending Date <?php echo $__env->renderComponent(); ?>
 
                                 <tfoot>
                                 <tr class="border-t-2 border-emerald-600 bg-emerald-50">
-                                    <td colspan="9"
+                                    <td colspan="8"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
                                         Total
                                     </td>
@@ -302,7 +304,6 @@ Ending Date <?php echo $__env->renderComponent(); ?>
                                 </tfoot>
                             </table>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                 <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             </div>
