@@ -17,16 +17,17 @@ Route::middleware('guest')->group(function () {
 
 Route::delete('/logout', [LogoutController::class, 'destroy'])->name('logout')->middleware('auth');
 
+Route::middleware(['auth', 'role:admin,cashier,inventory_clerk'])->prefix('/dashboard')->group(function () {
+    Route::livewire('/sales', 'dashboard.sales.add-sales')->name('dashboard.sales');
+    Route::livewire('/products/qr', 'dashboard.products.products-qr')->name('dashboard.products-qr');
+    Route::livewire('/reports', 'dashboard.reports')->name('dashboard.reports');
+});
 
 Route::middleware(['auth', 'role:admin'])->prefix('/dashboard')->group(function () {
     Route::livewire('/users', 'dashboard.users.create-users')->name('dashboard.users');
     Route::livewire('/employees', 'dashboard.employees')->name('dashboard.employees');
 });
 
-Route::middleware(['auth', 'role:admin,cashier,inventory_clerk'])->prefix('/dashboard')->group(function () {
-    Route::livewire('/sales', 'dashboard.sales.add-sales')->name('dashboard.sales');
-    Route::livewire('/products/qr', 'dashboard.products.products-qr')->name('dashboard.products-qr');
-});
 
 Route::middleware(['auth', 'role:admin,inventory_clerk'])->prefix('/dashboard')->group(function () {
     Route::livewire('/products', Products::class)->name('dashboard.products');

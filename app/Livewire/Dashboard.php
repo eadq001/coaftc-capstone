@@ -9,16 +9,8 @@ use Livewire\Component;
 #[Layout('layouts.dashboard')]
 class Dashboard extends Component
 {
-    public bool $sidebarCollapsed = false;
 
     public $username;
-
-    #[Locked]
-    public string $currentUserRole = '';
-
-    public array $userRoles = [];
-
-    public bool $rolesAllowed = false;
 
     public function mount()
     {

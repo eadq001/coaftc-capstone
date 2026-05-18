@@ -1,0 +1,255 @@
++ totalProducts: int
++ lowStockItems: int
++ totalInventoryValue: int
++ searchText: string
++ lowStockOnly: bool
++ productToEdit: int
++ categoryToEdit: ?int
++ subcategoryToEdit: int
++ unitToEdit: int
++ refreshData(?action: string): void
++ categories(): mixed
++ subcategories(): mixed
++ units(): mixed
++ products(): LengthAwarePaginator|array
++ clearSearchText(): void
++ toggleLowStockOnly(): void
++ cancel(): void
++ resetProductToEdit(): void
++ resetCategoryToEdit(): void
++ resetSubcategoryToEdit(): void
++ resetUnitToEdit(): void
+
+# Product (Model)
++ id: int
++ name: string
++ stock_level: int
++ price: float
++ unit_id: int
++ category_id: int
++ subcategory_id: int
++ size: string (EggSizes enum)
++ class: string (ProductClass enum)
++ user_id: int
++ created_at: datetime
++ updated_at: datetime
++ category(): BelongsTo
++ subcategory(): BelongsTo
++ unit(): BelongsTo
+
++ SuperPewee: EggSizes
++ Pewee: EggSizes
++ Pullet: EggSizes
++ Small: EggSizes
++ Medium: EggSizes
++ Large: EggSizes
++ XLarge: EggSizes
++ Jumbo: EggSizes
++ SuperJumbo: EggSizes
+
+# Category (Model)
++ id: int
++ category_name: string
++ created_at: datetime
++ updated_at: datetime
++ product(): HasMany|Category
+
+# Subcategory (Model)
++ id: int
++ subcategory_name: string
++ created_at: datetime
++ updated_at: datetime
++ product(): HasMany|Category
+
+# From Livewire\Component (inherited)
++ id(): string
++ getId(): string
++ setId($id): void
++ setName($name): void
++ getName(): string
++ tap($callback): static
++ reset(...$properties): void
++ pull($properties = null): mixed
++ only($properties): array
++ all(): array
++ fill($values): void
++ getPropertyValue($name): mixed
++ hasProperty($prop): bool
++ validate($rules = null, $messages = [], $attributes = []): array
++ validateOnly($field, $rules = null, $messages = [], $attributes = []): array
++ addError($name, $message): void
++ resetValidation($field = null): void
++ getErrorBag(): MessageBag
++ resetErrorBag($field = null): void
++ dispatch($event, ...$params): Event
++ redirect($url, $navigate = false): void
++ redirectRoute($name, $parameters = [], $absolute = true, $navigate = false): void
++ redirectIntended($default = '/', $navigate = false): void
++ js($expression, ...$params): void
++ authorize($ability, $arguments = []): void
++ stream($content = null, $replace = false, ...): StreamManager|void
++ transition($type = null, $skip = false): void
++ skipRender($html = null): void
++ forceRender(): void
++ __invoke(): mixed
+
+# From WithPagination (trait)
++ resetPage($pageName = 'page'): void
++ setPage($page, $pageName = 'page'): void
+
+# ProductForm (extends Form)
++ id: ?int
++ name: string
++ stock_level: ?int
++ price: ?float
++ unit_id: string
++ category_id: string
++ subcategory_id: string
++ size: string
++ class: ?string
++ stockToAdd: ?int
++ product: ?Product
++ successMessage: string
++ store(): void
++ set(productToEdit: int): void
++ update(): void
++ addStock(): void
++ resetStockToAdd(): void
++ cancel(): void
+
+#Form class
+
+validate($rules, $messages, $attributes):array
+reset(...$properties):void
+resetValidation($field):void
+
+# Sale (Model)
++ id: int
++ prf_number: string
++ total_amount: int
++ user_id: int
++ created_at: datetime
++ updated_at: datetime
++ user(): BelongsTo
++ salesItem(): HasMany
+
+# SalesItem (Model)
++ id: int
++ sale_id: int
++ product_id: int
++ quantity: int
++ unit_price: int
++ subtotal: int
++ created_at: datetime
++ updated_at: datetime
++ sale(): BelongsTo
+
+# add-sales (SFC — extends Component)
++ searchId: ?int
++ items: array
++ currentItem: array
++ paid: bool
++ grandTotal: float
++ availableStock: ?int
++ showProductNotFound: bool
++ editingItemIndex: ?int
++ currentItemQuantity: ?int
++ mount(): void
++ updatedSearchId(?value: int): void
++ updatedCurrentItemQuantity(): void
++ resetCurrentItems(): void
++ addQuantity(): void
++ grandTotal(): void
++ editItem(index: int): void
++ newTransaction(): void
++ pay(): void
++ removeItem(itemIndex: int): void
+# messages(): array
+
+# create-users (SFC — extends Component)
++ username: string
++ email: string
++ user_role: string
++ password: string
++ confirmPassword: string
++ verification_token: string
++ updatedPassword(): void
++ cancel(): void
++ register(): void
+
+# employees (extends Dashboard)
++ selectedEmployee: ?Employee
++ first_name: string
++ last_name: string
++ middle_name: string
++ position: string
++ employees: array
++ successMessage: string
++ editSuccessMessage: string
++ mount(): void
++ loadEmployees(): void
++ addEmployee(): void
++ editEmployee(employee: Employee): void
++ updateEmployee(): void
++ resetForm(): void
+
+# Employee (Model)
++ id: int
++ first_name: string
++ last_name: string
++ middle_name: string
++ position: string
++ created_at: datetime
++ updated_at: datetime
+
+# products-qr (SFC — extends Component)
++ searchText: string
++ updatedSearchText(): void
++ clearSearchText(): void
++ products(): mixed
+
+# User (Model — extends Authenticatable)
++ id: int
++ name: string
++ email: string
++ email_verified_at: ?datetime
++ password: string
++ remember_token: ?string
++ user_role: string (UserRoles enum)
++ created_at: datetime
++ updated_at: datetime
+
+# UserRoles (enum: string)
++ ADMIN: UserRoles
++ INVENTORY: UserRoles
++ CASHIER: UserRoles
++ getUserRole(): string
+
+# sales-report (SFC — extends Component)
++ dateFrom: ?string
++ dateTo: ?string
++ totalSales: float
++ totalTransactions: int
++ totalItemsSold: int
++ sales: Collection
++ mount(): void
++ updatedDateFrom(): void
++ updatedDateTo(): void
++ generateReport(): void
++ resetFilters(): void
+
+# inventory-report (SFC — extends Component)
++ searchText: string
++ categoryFilter: ?int
++ lowStockOnly: bool
++ products: LengthAwarePaginator
++ totalProducts: int
++ totalStockValue: float
++ lowStockCount: int
++ outOfStockCount: int
++ updatedSearchText(): void
++ updatedCategoryFilter(): void
++ toggleLowStockOnly(): void
++ generateReport(): void
++ exportCsv(): void
++ clearFilters(): void

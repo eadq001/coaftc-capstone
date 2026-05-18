@@ -157,6 +157,7 @@ class extends Component {
     public function newTransaction(): void
     {
         $this->reset();
+        $this->js("document.getElementById('product-search').focus();");
     }
 
     public function pay(): void
@@ -174,6 +175,8 @@ class extends Component {
                     'sale_id' => $sales->id,
                     'product_id' => $item['id'],
                     'quantity' => $item['quantity'],
+                    'inventory_start' => $item['availableStock'],
+                    'inventory_end' => $item['availableStock'] - $item['quantity'],
                     'unit_price' => $item['price'],
                     'subtotal' => $item['quantity'] * $item['price'],
                 ])->toArray();
@@ -210,6 +213,7 @@ class extends Component {
     {
         unset($this->items[$itemIndex]);
         $this->items = array_values($this->items);
+        $this->grandTotal();
     }
 
     protected function messages()

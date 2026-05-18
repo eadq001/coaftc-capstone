@@ -16,6 +16,7 @@ class NativeAppServiceProvider implements ProvidesPhpIni
         Window::open()
             ->maximized()
             ->focusable()
+            ->hideMenu()
             ->showDevTools(false);
     }
 
