@@ -19,7 +19,7 @@
     </div>
 
     <div class="grid gap-6 lg:grid-cols-3">
-        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 transition-transform duration-300 hover:scale-105">
             <div class="flex items-center justify-between gap-4">
                 <div wire:poll>
                     <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total sales</flux:text>
@@ -33,7 +33,7 @@
             </div>
         </flux:card>
 
-        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 transition-transform duration-300 hover:scale-105">
             <div class="flex items-center justify-between gap-4">
                 <div>
                     <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Transactions</flux:text>
@@ -47,7 +47,7 @@
             </div>
         </flux:card>
 
-        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
+        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 transition-transform duration-300 hover:scale-105">
             <div class="flex items-center justify-between gap-4">
                 <div>
                     <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Compared with {{ strtolower($salesComparison['previous_label']) }}</flux:text>
