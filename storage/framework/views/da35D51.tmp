@@ -306,7 +306,7 @@ Ending Date <?php echo $__env->renderComponent(); ?>
 <?php $component = $__componentOriginal26c546557cdc09040c8dd00b2090afd0; ?>
 <?php unset($__componentOriginal26c546557cdc09040c8dd00b2090afd0); ?>
 <?php endif; ?>
-                <button type="button" variant="primary" class="h-10 bg-white p-3 flex items-center rounded-lg disabled:bg-gray-200 transition cursor-pointer" <?php echo e($searchText ? '' : 'disabled'); ?>
+                <button type="button" variant="primary" class="h-10 bg-white p-3 flex items-center rounded-lg" <?php echo e($searchText ? 'disabled' : ''); ?>
 
                              wire:click="$set('searchText', '')">
                     Clear

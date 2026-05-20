@@ -11,14 +11,16 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 new #[Layout('layouts.dashboard')]
 class extends Component {
 
-    public string $startDate = '2026-05-01';
-    public string $endDate = '2026-05-21';
+    public string $startDate = '';
+    public string $endDate = '';
     public ?Collection $result = null;
     public ?Collection $itemsByCategory = null;
     public string $searchText = '';
 
     public function mount(): void
     {
+         $this->startDate = now()->format('Y-m-d');
+         $this->endDate = now()->format('Y-m-d');
         $this->getSalesReportToday();
     }
 
@@ -146,10 +148,10 @@ class extends Component {
                         autocomplete="off"
                         wire:model.live.debounce.500ms="searchText"
                 />
-                <flux:button type="button" variant="primary" class="h-10"
+                <button type="button" variant="primary" class="h-10 bg-white p-3 flex items-center rounded-lg disabled:bg-gray-200 transition cursor-pointer" {{ $searchText ? '' : 'disabled' }}
                              wire:click="$set('searchText', '')">
                     Clear
-                </flux:button>
+                </button>
                 <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
                              wire:click="importToExcel">
                     Import
