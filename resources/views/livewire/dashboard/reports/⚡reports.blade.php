@@ -1,9 +1,12 @@
 <?php
 
+use App\Exports\DailySalesReportExport;
 use App\Models\Sale;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 new #[Layout('layouts.dashboard')]
 class extends Component {
@@ -52,10 +55,15 @@ class extends Component {
         }
     }
 
-    public function importToExcel(): void
+    public function importToExcel(): BinaryFileResponse
     {
-        if ($this->result) {
-        }
+        $date = now()->format('Ymd');
+        $this->getSalesReportToday();
+
+        return Excel::download(
+            new DailySalesReportExport($this->itemsByCategory ?? collect()),
+            "daily-sales-report-$date.xlsx"
+        );
     }
 
     public function updatedSearchText(): void
@@ -143,7 +151,7 @@ class extends Component {
                     Clear
                 </flux:button>
                 <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                             wire:click="">
+                             wire:click="importToExcel">
                     Import
                 </flux:button>
             </div>
