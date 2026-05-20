@@ -110,18 +110,21 @@ class Products extends Dashboard
     #[On('add-edit-product-category-success')]
     public function resetCategoryToEdit(): void
     {
+        sleep(1);
         $this->reset('categoryToEdit');
     }
 
     #[On('add-edit-product-subcategory-success')]
     public function resetSubcategoryToEdit(): void
     {
+        sleep(1);
         $this->reset('subcategoryToEdit');
     }
 
     #[On('add-edit-product-unit-success')]
     public function resetUnitToEdit(): void
     {
+        sleep(1);
         $this->reset('unitToEdit');
     }
 }

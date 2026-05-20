@@ -109,7 +109,7 @@
 
     <div class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(320px,0.8fr)]">
         <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-            <div class="mb-5 flex items-start justify-between gap-4">
+            <div class="mb-5 flex items-start justify-between gap-1">
                 <div>
                     <flux:heading size="lg">Top 10 highest selling products</flux:heading>
                     <flux:text class="mt-1 text-zinc-600 dark:text-zinc-400">
@@ -120,7 +120,7 @@
             </div>
 
             @if ($topSellingProducts)
-                <div wire:ignore wire:loading.class="opacity-50" wire:target="analyticsPeriod" class="h-[28rem]">
+                <div wire:ignore wire:loading.class="opacity-50" wire:target="analyticsPeriod" class="h-[13rem]">
                     <canvas id="topProductsChart" class="size-full"></canvas>
                 </div>
             @else
