@@ -112,18 +112,18 @@ class extends Component {
                         <div class="mt-8 flex gap-4 lg:items-end">
                             <flux:field>
                                 <flux:label>Starting Date</flux:label>
-                                <flux:input type="date" icon="calendar-days" wire:model="startDate"/>
+                                <flux:input type="date" icon="calendar-days" wire:model.live="startDate"/>
                             </flux:field>
 
                             <flux:field>
                                 <flux:label>Ending Date</flux:label>
-                                <flux:input type="date" icon="calendar-days" wire:model="endDate"/>
+                                <flux:input type="date" icon="calendar-days" wire:model.live="endDate"/>
                             </flux:field>
 
-                            <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                         wire:click="getSalesReportToday">
-                                Generate Report
-                            </flux:button>
+{{--                            <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"--}}
+{{--                                         wire:click="getSalesReportToday">--}}
+{{--                                Generate Report--}}
+{{--                            </flux:button>--}}
 
                             <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
                                          wire:click="">
