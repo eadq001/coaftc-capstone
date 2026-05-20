@@ -1,20 +1,17 @@
 <?php
 
 use App\Models\Sale;
-use Carbon\Carbon;
 use Illuminate\Support\Collection;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 new #[Layout('layouts.dashboard')]
 class extends Component {
 
-    public $startDate = '2026-05-01';
-    public $endDate = '2026-05-19';
+    public string $startDate = '2026-05-01';
+    public string $endDate = '2026-05-21';
     public ?Collection $result = null;
     public ?Collection $itemsByCategory = null;
-    public ?Collection $totalSalesPerCategory = null;
     public string $searchText = '';
 
     public function mount(): void
@@ -22,28 +19,58 @@ class extends Component {
         $this->getSalesReportToday();
     }
 
-    public function getSalesReportToday()
+    public function getSalesReportToday(): void
     {
         if ($this->startDate && $this->endDate) {
-            $this->result = Sale::whereDate('created_at', '>=', $this->startDate)
+            $searchText = trim($this->searchText);
+
+            $this->result = Sale::query()
+                ->whereDate('created_at', '>=', $this->startDate)
                 ->whereDate('created_at', '<=', $this->endDate)
+                ->when($searchText !== '', function ($query) use ($searchText) {
+                    $query->whereHas('salesItem.product', function ($query) use ($searchText) {
+                        $query->where('name', 'like', "%{$searchText}%");
+                    });
+                })
+                ->with([
+                    'salesItem' => function ($query) use ($searchText) {
+                        $query
+                            ->when($searchText !== '', function ($query) use ($searchText) {
+                                $query->whereHas('product', function ($query) use ($searchText) {
+                                    $query->where('name', 'like', "%{$searchText}%");
+                                });
+                            })
+                            ->with(['product.category', 'product.unit', 'sale.user']);
+                    },
+                ])
                 ->get();
 
             $this->itemsByCategory = $this->result
                 ->flatMap
                 ->salesItem
                 ->groupBy(fn($item) => $item->sale->created_at->format('Y-m-d'));
-
-            $this->totalSalesPerCategory = $this->itemsByCategory
-                ->flatMap
-                ->groupBy(fn($item) => $item->product->category->category_name);
         }
-//            dd($this->result, $this->totalSalesPerCategory);
     }
 
-    public function updatedSearchText()
+    public function importToExcel(): void
     {
+        if ($this->result) {
+        }
+    }
 
+    public function updatedSearchText(): void
+    {
+        $this->getSalesReportToday();
+    }
+
+    public function updatedStartDate(): void
+    {
+        $this->getSalesReportToday();
+    }
+
+    public function updatedEndDate(): void
+    {
+        $this->getSalesReportToday();
     }
 };
 ?>
@@ -72,8 +99,7 @@ class extends Component {
                             ready.
                         </flux:text>
 
-                        <div class="mt-8 grid gap-4 grid-cols-6 lg:items-end">
-
+                        <div class="mt-8 flex gap-4 lg:items-end">
                             <flux:field>
                                 <flux:label>Starting Date</flux:label>
                                 <flux:input type="date" icon="calendar-days" wire:model="startDate"/>
@@ -88,10 +114,7 @@ class extends Component {
                                          wire:click="getSalesReportToday">
                                 Generate Report
                             </flux:button>
-                            <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                         wire:click="">
-                                Generate Daily Report
-                            </flux:button>
+
                             <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
                                          wire:click="">
                                 Generate Monthly Report
@@ -108,20 +131,30 @@ class extends Component {
 
 
         @if($result)
-            <flux:input
-                    class="flex-start"
-                    icon="magnifying-glass"
-                    placeholder="Search by product name..."
-                    autocomplete="off"
-                    wire:model.live.debounce.500ms="searchText"
-            />
-            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+            <div class="flex gap-2">
+                <flux:input
+                        icon="magnifying-glass"
+                        placeholder="Search by product name..."
+                        autocomplete="off"
+                        wire:model.live.debounce.500ms="searchText"
+                />
+                <flux:button type="button" variant="primary" class="h-10"
+                             wire:click="$set('searchText', '')">
+                    Clear
+                </flux:button>
+                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
+                             wire:click="">
+                    Import
+                </flux:button>
+            </div>
 
-                @foreach($itemsByCategory as $key => $saleDate)
-                    {{--                    @php--}}
-                    {{--                        dd($itemsByCategory);--}}
-                    {{--                    @endphp--}}
-                    <div class="overflow-x-auto">
+            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+                @forelse($itemsByCategory as $key => $saleDate)
+                    @php
+                        $salesTotal = $saleDate->sum('subtotal');
+                    @endphp
+
+                    <div class="overflow-x-hidden">
                         <table class="min-w-[1180px] w-full border-collapse text-sm">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
@@ -151,18 +184,15 @@ class extends Component {
                                 <tr class="transition hover:bg-emerald-50/60">
                                     <td class="px-4 py-4 font-medium text-zinc-900">{{ $item->sale->prf_number }}</td>
                                     <td class="px-4 py-4 text-zinc-800">{{ $item->product->name }}</td>
-                                    <td class="px-4 py-4 text-zinc-600">{{ $item->product->category->category_name }}</td>
+                                    <td class="px-4 py-4 text-zinc-600">{{ $item->product->category?->category_name ?? 'Uncategorized' }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->quantity }}</td>
-                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->unit->unit_name }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->unit?->unit_name ?? 'N/A' }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_start }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_end }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->unit_price }}</td>
                                     <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item->subtotal }}</td>
                                     <td class="px-4 py-4 text-zinc-600">
-                                        @php
-                                            $salesTotal = $saleDate->sum('subtotal');
-                                        @endphp
-                                        <span>{{ $item->sale->user->name }}</span>
+                                        <span>{{ $item->sale->user?->name ?? 'N/A' }}</span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -181,33 +211,15 @@ class extends Component {
                                 </td>
                             </tr>
                             </tfoot>
-
-                            <table class="min-w-[1180px] w-full border-collapse text-sm flex items-center">
-{{--                                Controller --}}
-                                @foreach($saleDate->groupBy(fn ($item) => $item->product->category->category_name)
-                                    as $categoryName => $categoryItems)
-{{--                                    @php--}}
-{{--                                        dd($categoryName, $categoryItems)--}}
-{{--                                    @endphp--}}
-                                    <thead>
-                                        <tr class="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
-                                            <th class="px-4 py-3 text-left">{{ $categoryName }}</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        <tr class="transition hover:bg-emerald-50/60">
-                                            <td class="px-4 py-4 font-medium text-zinc-900">{{ $categoryItems->sum("subtotal")}}</td>
-                                        </tr>
-                                    </tbody>
-                                @endforeach
-                            </table>
-                        @endforeach
                         </table>
-                        @endif
-
                     </div>
+                @empty
+                    <div class="px-6 py-10 text-center text-sm text-zinc-500">
+                        No sales found for the selected date range and product search.
+                    </div>
+                @endforelse
             </section>
+        @endif
     </div>
 
 </div>

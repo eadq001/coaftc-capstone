@@ -265,10 +265,41 @@ class extends Component {
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
                                         ₱{{ number_format($item['quantity'] * $item['price'], 2) }}
                                     </div>
-                                    <div class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10">
-                                        <flux:button variant="danger" size="xs"
-                                                     wire:click.stop="removeItem({{$loop->index}})">Remove
-                                        </flux:button>
+
+                                    <div
+                                        x-on:click.stop=""
+                                        class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10"
+                                    >
+                                        <flux:modal.trigger name="remove-item-{{ $item['id'] }}">
+                                            <flux:button variant="danger" size="xs">Remove</flux:button>
+                                        </flux:modal.trigger>
+
+                                        <flux:modal name="remove-item-{{ $item['id'] }}" class="min-w-[22rem]">
+                                            <div class="space-y-6 text-left">
+                                                <div>
+                                                    <flux:heading size="lg">Remove product?</flux:heading>
+                                                    <flux:text class="mt-2">
+                                                        Do you want to remove "{{ $item['name'] }}" from the current sale?
+                                                    </flux:text>
+                                                </div>
+
+                                                <div class="flex gap-2">
+                                                    <flux:spacer />
+
+                                                    <flux:modal.close>
+                                                        <flux:button variant="ghost">No</flux:button>
+                                                    </flux:modal.close>
+
+                                                    <flux:modal.close>
+                                                        <flux:button variant="danger"
+                                                                     wire:click.stop="removeItem({{ $loop->index }})">
+                                                            Yes
+                                                        </flux:button>
+                                                    </flux:modal.close>
+                                                </div>
+                                            </div>
+                                        </flux:modal>
+
                                     </div>
                                 </div>
                             @empty

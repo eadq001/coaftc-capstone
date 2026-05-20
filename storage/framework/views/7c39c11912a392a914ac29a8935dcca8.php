@@ -4,7 +4,8 @@
 
 $__newAttributes = [];
 $__propNames = \Illuminate\View\ComponentAttributeBag::extractPropNames(([
-    'size' => null,
+    'shortcut' => null,
+    'name' => null,
 ]));
 
 foreach ($attributes->all() as $__key => $__value) {
@@ -21,7 +22,8 @@ unset($__propNames);
 unset($__newAttributes);
 
 foreach (array_filter(([
-    'size' => null,
+    'shortcut' => null,
+    'name' => null,
 ]), 'is_string', ARRAY_FILTER_USE_KEY) as $__key => $__value) {
     $$__key = $$__key ?? $__value;
 }
@@ -34,19 +36,17 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<?php
-$classes = Flux::classes()
-    ->add('[:where(&)]:bg-white dark:[:where(&)]:bg-white/10')
-    ->add('border border-zinc-200 dark:border-white/10')
-    ->add(match ($size) {
-        default => '[:where(&)]:p-6 [:where(&)]:rounded-xl',
-        'sm' => '[:where(&)]:p-4 [:where(&)]:rounded-lg',
-    })
-    ;
-?>
+<div
+    <?php echo e($attributes->class('contents')); ?>
 
-<div <?php echo e($attributes->class($classes)); ?> data-flux-card>
+    x-data
+    x-on:click="$el.querySelector('button[disabled]') || $dispatch('modal-show', { name: '<?php echo e($name); ?>' })"
+    <?php if($shortcut): ?>
+        x-on:keydown.<?php echo e($shortcut); ?>.document="$event.preventDefault(); $dispatch('modal-show', { name: '<?php echo e($name); ?>' })"
+    <?php endif; ?>
+    data-flux-modal-trigger
+>
     <?php echo e($slot); ?>
 
 </div>
-<?php /**PATH C:\Herd\coaftcorig\vendor\livewire\flux\src/../stubs/resources/views/flux/card/index.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Herd\coaftcorig\vendor\livewire\flux\src/../stubs/resources/views/flux/modal/trigger.blade.php ENDPATH**/ ?>

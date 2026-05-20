@@ -137,7 +137,7 @@
             </div>
 
             <div class="space-y-4">
-                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
                     <div>
                         <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total products</flux:text>
                         <div class="mt-1 text-2xl font-semibold text-primary">{{ $totalProducts ?? '0' }}</div>
@@ -147,7 +147,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
                     <div>
                         <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Low stock items</flux:text>
                         <div class="mt-1 text-2xl font-semibold text-red-600">{{ $lowStockItems ?? '0' }}</div>
@@ -157,7 +157,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700">
+                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
                     <div>
                         <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total inventory value</flux:text>
                         <div class="mt-1 text-2xl font-semibold text-primary">&#8369; {{ number_format($totalInventoryValue) }}</div>
