@@ -324,7 +324,7 @@ Ending Date <?php echo $__env->renderComponent(); ?>
                     ?>
 
                     <div class="overflow-x-hidden">
-                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.class="opacity-40">
+                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.longest.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
                                 <th colspan="10"
@@ -383,7 +383,17 @@ Ending Date <?php echo $__env->renderComponent(); ?>
                             </tr>
                             </tfoot>
                         </table>
+
+                        <div class="p-4 flex gap-4 text-sm ">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $saleDate->groupBy(fn($item) => $item->product->category->category_name); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
+                            <span><?php echo e($category . ':'); ?></span>
+                            <span><?php echo e($item->sum('subtotal')); ?></span>
+                        </span>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        </div>
                     </div>
+
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                     <div class="px-6 py-10 text-center text-sm text-zinc-500">
                         No sales found for the selected date range and product search.

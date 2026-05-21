@@ -165,7 +165,7 @@ class extends Component {
                     @endphp
 
                     <div class="overflow-x-hidden">
-                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.class="opacity-40">
+                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.longest.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
                                 <th colspan="10"
@@ -222,7 +222,17 @@ class extends Component {
                             </tr>
                             </tfoot>
                         </table>
+
+                        <div class="p-4 flex gap-4 text-sm ">
+                        @foreach($saleDate->groupBy(fn($item) => $item->product->category->category_name) as $category => $item)
+                        <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
+                            <span>{{ $category . ':'}}</span>
+                            <span>{{ $item->sum('subtotal') }}</span>
+                        </span>
+                        @endforeach
+                        </div>
                     </div>
+
                 @empty
                     <div class="px-6 py-10 text-center text-sm text-zinc-500">
                         No sales found for the selected date range and product search.

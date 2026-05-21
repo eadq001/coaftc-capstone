@@ -23,9 +23,12 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
      */
     private array $totalRows = [];
 
-    public function __construct(private readonly Collection $itemsByDate)
-    {
-    }
+    /**
+     * @var array<int, int>
+     */
+    private array $categoryTotalRows = [];
+
+    public function __construct(private readonly Collection $itemsByDate) {}
 
     /**
      * @return array<int, array<int, mixed>>
@@ -63,6 +66,12 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             $this->totalRows[] = $currentRow;
             $rows[] = ['', '', '', '', '', '', '', 'Total', $items->sum('subtotal'), ''];
             $currentRow++;
+
+            foreach ($items->groupBy(fn ($item) => $item->product->category?->category_name ?? 'Uncategorized') as $category => $categoryItems) {
+                $this->categoryTotalRows[] = $currentRow;
+                $rows[] = ['', '', '', '', '', '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
+                $currentRow++;
+            }
         }
 
         return $rows;
@@ -81,7 +90,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             'E' => 14,
             'F' => 10,
             'G' => 10,
-            'H' => 12,
+            'H' => 18,
             'I' => 14,
             'J' => 20,
         ];
@@ -108,6 +117,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                         'vertical' => Alignment::VERTICAL_CENTER,
                     ],
                 ]);
+                $sheet->getStyle("H1:H{$highestRow}")->getAlignment()->setWrapText(true);
 
                 $sheet->getStyle('A1:J2')->applyFromArray([
                     'font' => [
@@ -132,6 +142,14 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
 
                 foreach ($this->totalRows as $totalRow) {
                     $sheet->getStyle("A{$totalRow}:J{$totalRow}")->applyFromArray([
+                        'font' => [
+                            'bold' => true,
+                        ],
+                    ]);
+                }
+
+                foreach ($this->categoryTotalRows as $categoryTotalRow) {
+                    $sheet->getStyle("A{$categoryTotalRow}:J{$categoryTotalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
