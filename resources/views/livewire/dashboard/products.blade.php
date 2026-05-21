@@ -125,7 +125,7 @@
 
         </div>
 
-        <flux:table x-data x-transition class="border! border-gray-200! px-2">
+        <flux:table wire:loading.class="opacity-40" class="border! border-gray-200! px-2 transition-opacity">
             <flux:table.columns>
                 <flux:table.column sortable>Product Name</flux:table.column>
                 <flux:table.column sortable>Price</flux:table.column>
@@ -137,7 +137,6 @@
                 <flux:table.column>Size</flux:table.column>
             </flux:table.columns>
 
-            <div wire:transition>
             @forelse($this->products as $product)
                 <flux:table.row wire:key="{{ $product->id }}" class="cursor-pointer"
                                 wire:click="$set('productToEdit', {{ $product->id }} )" title="click to edit"
@@ -205,7 +204,6 @@
 
                 </flux:table.row>
             @endforelse
-            </div>
         </flux:table>
         <div class="p-6 border-t border-zinc-200">
             {{ $this->products->links(data: ['scrollTo' => false ]) }}
