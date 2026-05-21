@@ -81,13 +81,45 @@
 
                 </div>
 
-            <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
-                    @class([
-                    'mt-2',
-                   '!bg-green-400 !text-white' => $lowStockOnly,
-                ])>
-                View Low Stock Products
-            </flux:button>
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                    <flux:select wire:model.live="filterField" placeholder="Filter by..." class="min-w-40">
+                        <flux:select.option value="price">Price</flux:select.option>
+                        <flux:select.option value="stock_level">Stock Level</flux:select.option>
+                        <flux:select.option value="unit_id">Unit</flux:select.option>
+                        <flux:select.option value="category_id">Category</flux:select.option>
+                        <flux:select.option value="subcategory_id">Subcategory</flux:select.option>
+                        <flux:select.option value="class">Class</flux:select.option>
+                        <flux:select.option value="size">Size</flux:select.option>
+                    </flux:select>
+
+                    @if($filterField)
+                        <flux:select
+                                wire:model.live="filterValue"
+                                placeholder="Choose value..."
+                                class="min-w-44"
+                                wire:key="product-filter-value-{{ $filterField }}"
+                        >
+                            @foreach($this->filterOptions as $value => $label)
+                                <flux:select.option value="{{ $value }}" wire:key="product-filter-option-{{ $filterField }}-{{ $value }}">
+                                    {{ $label }}
+                                </flux:select.option>
+                            @endforeach
+                        </flux:select>
+                    @endif
+
+                    @if($filterField || $filterValue)
+                        <flux:button variant="subtle" size="sm" wire:click="clearFilters">
+                            Clear Filter
+                        </flux:button>
+                    @endif
+
+                    <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
+                            @class([
+                            '!bg-green-400 !text-white' => $lowStockOnly,
+                        ])>
+                        View Low Stock Products
+                    </flux:button>
+                </div>
 
             </div>
 
@@ -105,6 +137,7 @@
                 <flux:table.column>Size</flux:table.column>
             </flux:table.columns>
 
+            <div wire:transition>
             @forelse($this->products as $product)
                 <flux:table.row wire:key="{{ $product->id }}" class="cursor-pointer"
                                 wire:click="$set('productToEdit', {{ $product->id }} )" title="click to edit"
@@ -172,7 +205,7 @@
 
                 </flux:table.row>
             @endforelse
-
+            </div>
         </flux:table>
         <div class="p-6 border-t border-zinc-200">
             {{ $this->products->links(data: ['scrollTo' => false ]) }}

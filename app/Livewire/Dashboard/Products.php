@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Dashboard;
 
+use App\Enums\EggSizes;
+use App\Enums\ProductClass;
 use App\Livewire\Dashboard;
 use App\Models\Category;
 use App\Models\Product;
@@ -24,6 +26,10 @@ class Products extends Dashboard
     public int $totalInventoryValue;
 
     public string $searchText = '';
+
+    public string $filterField = '';
+
+    public string $filterValue = '';
 
     //    public $searchResults = [];
 
@@ -68,24 +74,90 @@ class Products extends Dashboard
     }
 
     #[Computed]
+    public function filterOptions(): array
+    {
+        return match ($this->filterField) {
+            'price', 'stock_level' => [
+                'highest' => 'Highest',
+                'lowest' => 'Lowest',
+            ],
+            'unit_id' => Unit::query()
+                ->orderBy('unit_name')
+                ->pluck('unit_name', 'id')
+                ->all(),
+            'category_id' => Category::query()
+                ->orderBy('category_name')
+                ->pluck('category_name', 'id')
+                ->all(),
+            'subcategory_id' => Subcategory::query()
+                ->orderBy('subcategory_name')
+                ->pluck('subcategory_name', 'id')
+                ->all(),
+            'class' => collect(ProductClass::cases())
+                ->mapWithKeys(fn (ProductClass $class): array => [$class->value => $class->value])
+                ->all(),
+            'size' => collect(EggSizes::cases())
+                ->mapWithKeys(fn (EggSizes $size): array => [$size->value => $size->label()])
+                ->all(),
+            default => [],
+        };
+    }
+
+    #[Computed]
     public function products(): LengthAwarePaginator|array
     {
-        if ($this->searchText) {
-            $this->resetPage('products-table');
+        $query = Product::query()
+            ->with([
+                'category:id,category_name',
+                'subcategory:id,subcategory_name',
+                'unit:id,unit_name',
+            ]);
 
-            return Product::where('name', 'like', "$this->searchText%")->paginate(5, pageName: 'products-table');
-        } elseif ($this->lowStockOnly) {
-            $this->resetPage('products-page');
-
-            return Product::where('stock_level', '<', 20)->paginate(5, pageName: 'products-table');
+        if ($this->searchText !== '') {
+            $query->where('name', 'like', "$this->searchText%");
         }
 
-        return Product::paginate(5, pageName: 'products-table');
+        if ($this->lowStockOnly) {
+            $query->where('stock_level', '<', 20);
+        }
+
+        if ($this->filterField !== '' && $this->filterValue !== '') {
+            match ($this->filterField) {
+                'price', 'stock_level' => $query->orderBy($this->filterField, $this->filterValue === 'highest' ? 'desc' : 'asc'),
+                'unit_id', 'category_id', 'subcategory_id' => $query->where($this->filterField, (int) $this->filterValue),
+                'class', 'size' => $query->where($this->filterField, $this->filterValue),
+                default => null,
+            };
+        }
+
+        return $query->latest()->paginate(5, pageName: 'products-table');
     }
 
     public function clearSearchText(): void
     {
         $this->reset('searchText');
+    }
+
+    public function clearFilters(): void
+    {
+        $this->reset('filterField', 'filterValue');
+        $this->resetPage('products-table');
+    }
+
+    public function updatedFilterField(): void
+    {
+        $this->reset('filterValue');
+        $this->resetPage('products-table');
+    }
+
+    public function updatedFilterValue(): void
+    {
+        $this->resetPage('products-table');
+    }
+
+    public function updatedSearchText(): void
+    {
+        $this->resetPage('products-table');
     }
 
     public function toggleLowStockOnly(): void
