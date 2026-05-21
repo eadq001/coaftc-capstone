@@ -141,7 +141,7 @@ class extends Component {
 
 
         @if($result)
-            <div class="flex gap-2">
+            <div class="flex gap-2" >
                 <flux:input
                         icon="magnifying-glass"
                         placeholder="Search by product name..."
@@ -158,14 +158,14 @@ class extends Component {
                 </flux:button>
             </div>
 
-            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm" >
                 @forelse($itemsByCategory as $key => $saleDate)
                     @php
                         $salesTotal = $saleDate->sum('subtotal');
                     @endphp
 
                     <div class="overflow-x-hidden">
-                        <table class="min-w-[1180px] w-full border-collapse text-sm">
+                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
                                 <th colspan="10"

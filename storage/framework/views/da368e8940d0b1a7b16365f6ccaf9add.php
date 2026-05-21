@@ -264,7 +264,7 @@ Ending Date <?php echo $__env->renderComponent(); ?>
 
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($result): ?>
-            <div class="flex gap-2">
+            <div class="flex gap-2" >
                 <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['icon' => 'magnifying-glass','placeholder' => 'Search by product name...','autocomplete' => 'off','wire:model.live.debounce.500ms' => 'searchText']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -317,14 +317,14 @@ Ending Date <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
             </div>
 
-            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+            <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm" >
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $itemsByCategory; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $saleDate): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                     <?php
                         $salesTotal = $saleDate->sum('subtotal');
                     ?>
 
                     <div class="overflow-x-hidden">
-                        <table class="min-w-[1180px] w-full border-collapse text-sm">
+                        <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
                                 <th colspan="10"
