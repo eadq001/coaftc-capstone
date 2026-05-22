@@ -1,7 +1,9 @@
 <?php
 
 use App\Exports\DailySalesReportExport;
+use App\Exports\SalesSummaryReportExport;
 use App\Models\Sale;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -16,12 +18,15 @@ class extends Component {
     public ?Collection $result = null;
     public ?Collection $itemsByCategory = null;
     public string $searchText = '';
+    public array $availableReportMonths = [];
+    public array $availableReportYears = [];
 
     public function mount(): void
     {
          $this->startDate = now()->format('Y-m-d');
          $this->endDate = now()->format('Y-m-d');
         $this->getSalesReportToday();
+        $this->loadReportPeriods();
     }
 
     public function getSalesReportToday(): void
@@ -68,6 +73,83 @@ class extends Component {
         );
     }
 
+    public function loadReportPeriods(): void
+    {
+        $salesDates = Sale::query()
+            ->whereHas('salesItem')
+            ->oldest('created_at')
+            ->get(['created_at'])
+            ->pluck('created_at');
+
+        $this->availableReportMonths = $salesDates
+            ->map(fn ($createdAt) => $createdAt->format('Y-m'))
+            ->unique()
+            ->sort()
+            ->map(fn (string $month) => [
+                'value' => $month,
+                'label' => CarbonImmutable::createFromFormat('Y-m', $month)->format('F Y'),
+            ])
+            ->values()
+            ->all();
+
+        $this->availableReportYears = $salesDates
+            ->map(fn ($createdAt) => $createdAt->format('Y'))
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+    }
+
+    public function downloadMonthlyReport(string $month): ?BinaryFileResponse
+    {
+        $monthParts = $this->parseReportMonth($month);
+
+        if ($monthParts === null) {
+            return null;
+        }
+
+        [$year, $monthNumber] = $monthParts;
+        $items = $this->salesItemsForPeriod($year, $monthNumber);
+
+        if ($items->isEmpty()) {
+            $this->loadReportPeriods();
+
+            return null;
+        }
+
+        return Excel::download(
+            new SalesSummaryReportExport(collect([$month => $items])),
+            "monthly-sales-report-{$year}-" . str_pad((string) $monthNumber, 2, '0', STR_PAD_LEFT) . '.xlsx'
+        );
+    }
+
+    public function downloadYearlyReport(string $year): ?BinaryFileResponse
+    {
+        $reportYear = $this->parseReportYear($year);
+
+        if ($reportYear === null) {
+            return null;
+        }
+
+        $items = $this->salesItemsForPeriod($reportYear);
+
+        if ($items->isEmpty()) {
+            $this->loadReportPeriods();
+
+            return null;
+        }
+
+        return Excel::download(
+            new SalesSummaryReportExport(
+                $items
+                    ->groupBy(fn ($item) => $item->sale->created_at->format('Y-m'))
+                    ->sortKeys(),
+                true
+            ),
+            "yearly-sales-report-{$reportYear}.xlsx"
+        );
+    }
+
     public function updatedSearchText(): void
     {
         $this->getSalesReportToday();
@@ -81,6 +163,44 @@ class extends Component {
     public function updatedEndDate(): void
     {
         $this->getSalesReportToday();
+    }
+
+    private function salesItemsForPeriod(int $year, ?int $month = null): Collection
+    {
+        return Sale::query()
+            ->whereYear('created_at', $year)
+            ->when($month !== null, fn ($query) => $query->whereMonth('created_at', $month))
+            ->whereHas('salesItem')
+            ->with(['salesItem.product.category', 'salesItem.sale'])
+            ->oldest('created_at')
+            ->get()
+            ->flatMap
+            ->salesItem
+            ->values();
+    }
+
+    /**
+     * @return array{0: int, 1: int}|null
+     */
+    private function parseReportMonth(string $month): ?array
+    {
+        if (! preg_match('/^\d{4}-(0[1-9]|1[0-2])$/', $month)) {
+            return null;
+        }
+
+        return [
+            (int) substr($month, 0, 4),
+            (int) substr($month, 5, 2),
+        ];
+    }
+
+    private function parseReportYear(string $year): ?int
+    {
+        if (! preg_match('/^\d{4}$/', $year)) {
+            return null;
+        }
+
+        return (int) $year;
     }
 };
 ?>
@@ -125,19 +245,90 @@ class extends Component {
 {{--                                Generate Report--}}
 {{--                            </flux:button>--}}
 
-                            <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                         wire:click="">
-                                Generate Monthly Report
-                            </flux:button>
-                            <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                         wire:click="">
-                                Generate Yearly Report
-                            </flux:button>
+                            <flux:modal.trigger name="monthly-sales-report">
+                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
+                                             wire:click="loadReportPeriods">
+                                    Generate Monthly Sales
+                                </flux:button>
+                            </flux:modal.trigger>
+
+                            <flux:modal.trigger name="yearly-sales-report">
+                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
+                                             wire:click="loadReportPeriods">
+                                    Generate Yearly Report
+                                </flux:button>
+                            </flux:modal.trigger>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <flux:modal name="monthly-sales-report" class="min-w-[26rem]">
+            <div class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Select month</flux:heading>
+                </div>
+
+                @if($availableReportMonths)
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @foreach($availableReportMonths as $month)
+                            <flux:modal.close>
+                                <flux:button
+                                        type="button"
+                                        variant="ghost"
+                                        icon="calendar-days"
+                                        class="w-full justify-start"
+                                        wire:key="monthly-sales-report-{{ $month['value'] }}"
+                                        wire:click="downloadMonthlyReport('{{ $month['value'] }}')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="downloadMonthlyReport"
+                                >
+                                    {{ $month['label'] }}
+                                </flux:button>
+                            </flux:modal.close>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-500">
+                        No sales months available.
+                    </div>
+                @endif
+            </div>
+        </flux:modal>
+
+        <flux:modal name="yearly-sales-report" class="min-w-[26rem]">
+            <div class="space-y-6">
+                <div>
+                    <flux:heading size="lg">Select year</flux:heading>
+                </div>
+
+                @if($availableReportYears)
+                    <div class="grid gap-2 sm:grid-cols-2">
+                        @foreach($availableReportYears as $year)
+                            <flux:modal.close>
+                                <flux:button
+                                        type="button"
+                                        variant="ghost"
+                                        icon="calendar-days"
+                                        class="w-full justify-start"
+                                        wire:key="yearly-sales-report-{{ $year }}"
+                                        wire:click="downloadYearlyReport('{{ $year }}')"
+                                        wire:loading.attr="disabled"
+                                        wire:target="downloadYearlyReport"
+                                >
+                                    {{ $year }}
+                                </flux:button>
+                            </flux:modal.close>
+                        @endforeach
+                    </div>
+                @else
+                    <div class="rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-500">
+                        No sales years available.
+                    </div>
+                @endif
+            </div>
+        </flux:modal>
 
 
         @if($result)
@@ -224,7 +415,7 @@ class extends Component {
                         </table>
 
                         <div class="p-4 flex gap-4 text-sm ">
-                        @foreach($saleDate->groupBy(fn($item) => $item->product->category->category_name) as $category => $item)
+                        @foreach($saleDate->groupBy(fn($item) => $item->product->category?->category_name ?? 'Uncategorized') as $category => $item)
                         <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
                             <span>{{ $category . ':'}}</span>
                             <span>{{ $item->sum('subtotal') }}</span>
