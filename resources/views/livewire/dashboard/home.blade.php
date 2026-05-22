@@ -1,7 +1,7 @@
 <div class="space-y-8">
     <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-            <flux:heading size="xl" level="1">Sales analytics</flux:heading>
+            <flux:heading size="xl" level="1">Sales Analytics</flux:heading>
             <flux:text class="mt-1 text-zinc-600 dark:text-zinc-400">
                 Revenue, sales movement, and top products for the selected period.
             </flux:text>

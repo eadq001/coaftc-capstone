@@ -15,16 +15,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-//        $this->call(EmployeeSeeder::class);
+       $this->call(EmployeeSeeder::class);
 
-//        User::factory()->create([
-//            'email' => 'eadq1999@gmail.com',
-//            'password' => '12345678',
-//            'user_role' => 'admin',
-//        ]);
+    //    User::factory()->create([
+    //        'email' => 'eadq1999@gmail.com',
+    //        'password' => '12345678',
+    //        'user_role' => 'admin',
+    //    ]);
 
         User::factory()->create([
-            'email' => 'eadq1@gmail.com',
+            'email' => 'ashley@gmail.com',
+            'password' => '12345678',
+            'user_role' => 'admin',
+        ]);
+        User::factory()->create([
+            'email' => 'khim@gmail.com',
+            'password' => '12345678',
+            'user_role' => 'inventory_clerk',
+        ]);
+        User::factory()->create([
+            'email' => 'dave@gmail.com',
             'password' => '12345678',
             'user_role' => 'cashier',
         ]);

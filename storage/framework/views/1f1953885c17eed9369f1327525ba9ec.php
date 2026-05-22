@@ -12,7 +12,7 @@
 <?php endif; ?>
 <?php $component->withAttributes(['size' => 'xl','level' => '1']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Sales analytics <?php echo $__env->renderComponent(); ?>
+Sales Analytics <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
 <?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>

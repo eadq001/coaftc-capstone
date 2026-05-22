@@ -14,12 +14,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->integer('stock_level');
-            $table->float('price');
-            $table->timestamps();
+        Schema::table('products', function (Blueprint $table) {
+            $table->foreignIdFor(Unit::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Category::class)->constrained()->restrictOnDelete();
+            $table->foreignIdFor(Subcategory::class)->constrained()->restrictOnDelete();
         });
     }
 
@@ -28,6 +26,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('products');
+        Schema::table('products', function (Blueprint $table) {
+            //
+        });
     }
 };

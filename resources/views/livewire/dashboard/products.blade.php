@@ -125,7 +125,7 @@
 
         </div>
 
-        <flux:table wire:loading.class="opacity-40" class="border! border-gray-200! px-2 transition-opacity">
+        <flux:table wire:loading.class="opacity-40" class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
             <flux:table.columns>
                 <flux:table.column sortable>Product Name</flux:table.column>
                 <flux:table.column sortable>Price</flux:table.column>
@@ -211,8 +211,8 @@
     </flux:card>
 
     {{--    Product Categories and Subcategories grid display --}}
-    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
-        <div class="p-8 bg-white rounded-lg w-full">
+    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6" >
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.11s>
             <div class="mb-4 text-lg">Categories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->categories as $category)
@@ -230,7 +230,7 @@
         </div>
 
 
-        <div class="p-8 bg-white rounded-lg w-full">
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.12s>
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->subcategories as $subcategory)
@@ -247,7 +247,7 @@
             </div>
         </div>
 
-        <div class="p-8 bg-white rounded-lg w-full">
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.13s>
             <div class="mb-4 text-lg">Units</div>
             <div class="grid grid-cols-3 gap-4">
                 @forelse($this->units as $unit)

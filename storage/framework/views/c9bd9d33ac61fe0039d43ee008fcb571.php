@@ -123,7 +123,7 @@ Print or scan product QR codes with their item details. <?php echo $__env->rende
             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->products; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $product): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
                 <article
                         <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::$currentLoop['key'] = 'product-qr-'.e($product->id).''; ?>wire:key="product-qr-<?php echo e($product->id); ?>"
-                        class="flex min-h-[18rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
+                        class="flex min-h-[18rem] gap-2 flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
                 >
                     <div class="rounded-lg bg-white p-4 shadow-sm">
                         <img
@@ -133,12 +133,15 @@ Print or scan product QR codes with their item details. <?php echo $__env->rende
                         >
                     </div>
 
-                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200 pt-2">
+                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200">
                         <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->id); ?></p>
                         <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->name); ?></p>
                         <p class="text-sm text-zinc-600"><?php echo e($product->category?->category_name); ?></p>
                         <p class="text-sm text-zinc-500"><?php echo e($product->subcategory?->subcategory_name); ?></p>
                         <p class="text-sm text-zinc-500">remaining stocks: <?php echo e($product->stock_level); ?></p>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->class): ?>
+                        <p class="text-sm text-zinc-500">class: <?php echo e($product->class); ?></p>
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($product->size): ?>
                             <p class="text-sm font-medium text-zinc-700"><?php echo e($product->size); ?></p>

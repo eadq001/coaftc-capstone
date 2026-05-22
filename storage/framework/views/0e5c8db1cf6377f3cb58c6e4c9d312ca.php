@@ -610,14 +610,14 @@ Size <?php echo $__env->renderComponent(); ?>
 
         <?php if (isset($component)) { $__componentOriginal0a72bb2009468dece2d4608a050e87ba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0a72bb2009468dece2d4608a050e87ba = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::table.index','data' => ['wire:loading.class' => 'opacity-40','class' => 'border! border-gray-200! px-2 transition-opacity']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::table.index','data' => ['wire:loading.class' => 'opacity-40','class' => 'border! border-gray-200! px-2 transition-opacity','wire:poll.10s' => true]] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::table'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['wire:loading.class' => 'opacity-40','class' => 'border! border-gray-200! px-2 transition-opacity']); ?>
+<?php $component->withAttributes(['wire:loading.class' => 'opacity-40','class' => 'border! border-gray-200! px-2 transition-opacity','wire:poll.10s' => true]); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
             <?php if (isset($component)) { $__componentOriginal3f77032fa33cb52b5796e07e933bec29 = $component; } ?>
@@ -1260,8 +1260,8 @@ Size <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 
     
-    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
-        <div class="p-8 bg-white rounded-lg w-full">
+    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6" >
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.11s>
             <div class="mb-4 text-lg">Categories</div>
             <div class="grid grid-cols-3 gap-4">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->categories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $category): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
@@ -1280,7 +1280,7 @@ Size <?php echo $__env->renderComponent(); ?>
         </div>
 
 
-        <div class="p-8 bg-white rounded-lg w-full">
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.12s>
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-3 gap-4">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->subcategories; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subcategory): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
@@ -1298,7 +1298,7 @@ Size <?php echo $__env->renderComponent(); ?>
             </div>
         </div>
 
-        <div class="p-8 bg-white rounded-lg w-full">
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.13s>
             <div class="mb-4 text-lg">Units</div>
             <div class="grid grid-cols-3 gap-4">
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $this->units; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $unit): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>

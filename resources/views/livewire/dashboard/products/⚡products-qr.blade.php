@@ -31,7 +31,7 @@ class extends Component {
             ->when($this->searchText !== '', function ($query) {
                 $query->where('products.name', 'like', $this->searchText . '%');
             })
-            ->orderByDesc('products.id')
+            ->orderBy('products.id')
             ->paginate(12, pageName: 'products-qr-page');
     }
 };
@@ -69,7 +69,7 @@ class extends Component {
             @forelse($this->products as $product)
                 <article
                         wire:key="product-qr-{{ $product->id }}"
-                        class="flex min-h-[18rem] flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
+                        class="flex min-h-[18rem] gap-2 flex-col items-center rounded-xl border border-zinc-200 bg-zinc-50 p-6 text-center shadow-sm"
                 >
                     <div class="rounded-lg bg-white p-4 shadow-sm">
                         <img
@@ -79,12 +79,15 @@ class extends Component {
                         >
                     </div>
 
-                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200 pt-2">
+                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200">
                         <p class="text-sm font-semibold text-zinc-900">{{ $product->id}}</p>
                         <p class="text-sm font-semibold text-zinc-900">{{ $product->name }}</p>
                         <p class="text-sm text-zinc-600">{{ $product->category?->category_name }}</p>
                         <p class="text-sm text-zinc-500">{{ $product->subcategory?->subcategory_name }}</p>
                         <p class="text-sm text-zinc-500">remaining stocks: {{ $product->stock_level }}</p>
+                        @if($product->class)
+                        <p class="text-sm text-zinc-500">class: {{ $product->class }}</p>
+                        @endif
 
                         @if($product->size)
                             <p class="text-sm font-medium text-zinc-700">{{ $product->size }}</p>

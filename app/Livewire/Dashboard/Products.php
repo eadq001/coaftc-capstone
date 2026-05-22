@@ -130,7 +130,7 @@ class Products extends Dashboard
             };
         }
 
-        return $query->latest()->paginate(5, pageName: 'products-table');
+        return $query->orderBy('name', 'asc')->paginate(10, pageName: 'products-table');
     }
 
     public function clearSearchText(): void
