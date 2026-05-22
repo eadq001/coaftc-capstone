@@ -55,23 +55,24 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                     $item->quantity,
                     $item->product->unit?->unit_name ?? 'N/A',
                     $item->inventory_start,
-                    $item->inventory_end,
-                    $item->unit_price,
+                    (string)$item->inventory_end ?? '0',
+                    number_format((float)$item->unit_price, 2, '.', ','),
                     $item->subtotal,
                     $item->sale->user?->name ?? 'N/A',
                 ];
                 $currentRow++;
             }
 
-            $this->totalRows[] = $currentRow;
-            $rows[] = ['', '', '', '', '', '', '', 'Total', $items->sum('subtotal'), ''];
-            $currentRow++;
 
             foreach ($items->groupBy(fn ($item) => $item->product->category?->category_name ?? 'Uncategorized') as $category => $categoryItems) {
                 $this->categoryTotalRows[] = $currentRow;
                 $rows[] = ['', '', '', '', '', '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
                 $currentRow++;
             }
+
+            $this->totalRows[] = $currentRow;
+            $rows[] = ['', '', '', '', '', '', '', 'Total', $items->sum('subtotal'), ''];
+            $currentRow++;
         }
 
         return $rows;
@@ -124,7 +125,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                         'bold' => true,
                     ],
                     'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        'horizontal' => Alignment::HORIZONTAL_LEFT,
                     ],
                 ]);
 
@@ -135,7 +136,36 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                             'bold' => true,
                         ],
                         'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_LEFT,
+                        ],
+                    ]);
+
+                    $sheet->getStyle("F4:G{$highestRow}")->applyFromArray([
+//                    'font' => [
+//                        'bold' => true,
+//                    ],
+                        'alignment' => [
                             'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        ],
+                    ]);
+
+                    $sheet->getStyle("D4:D{$highestRow}")->applyFromArray([
+//                    'font' => [
+//                        'bold' => true,
+//                    ],
+                        'alignment' => [
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
+                        ],
+                    ]);
+
+                    $sheet->getStyle("H4:I{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
+                }
+
+
+                foreach ($this->categoryTotalRows as $categoryTotalRow) {
+                    $sheet->getStyle("A{$categoryTotalRow}:J{$categoryTotalRow}")->applyFromArray([
+                        'font' => [
+                            'bold' => true,
                         ],
                     ]);
                 }
@@ -148,13 +178,6 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                     ]);
                 }
 
-                foreach ($this->categoryTotalRows as $categoryTotalRow) {
-                    $sheet->getStyle("A{$categoryTotalRow}:J{$categoryTotalRow}")->applyFromArray([
-                        'font' => [
-                            'bold' => true,
-                        ],
-                    ]);
-                }
             },
         ];
     }
