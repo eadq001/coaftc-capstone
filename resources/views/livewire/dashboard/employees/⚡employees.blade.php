@@ -32,7 +32,7 @@ new class extends Dashboard {
     public function loadEmployees(): void
     {
         $this->employees = Employee::query()
-            ->latest()
+            ->orderBy('first_name', 'asc')
             ->get()
             ->map(fn(Employee $employee): array => [
                 'id' => $employee->id,

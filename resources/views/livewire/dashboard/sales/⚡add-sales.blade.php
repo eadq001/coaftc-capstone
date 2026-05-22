@@ -15,8 +15,10 @@ class extends Component {
 
     public ?int $searchId = null;
 
+    #[Session]
     public array $items = [];
 
+//    #[Session]
     public array $currentItem = [];
 
     public bool $paid = false;
@@ -36,7 +38,7 @@ class extends Component {
     public function mount(): void
     {
         $this->js("document.getElementById('product-search').focus();");
-        $this->reset();
+//        $this->reset();
 
     }
 

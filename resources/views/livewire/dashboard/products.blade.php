@@ -125,7 +125,7 @@
 
         </div>
 
-        <flux:table wire:loading.class="opacity-40" class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
+        <flux:table class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
             <flux:table.columns>
                 <flux:table.column sortable>Product Name</flux:table.column>
                 <flux:table.column sortable>Price</flux:table.column>

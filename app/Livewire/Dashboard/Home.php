@@ -59,7 +59,7 @@ class Home extends Component
         return view('livewire.dashboard.home')->layout('layouts.dashboard');
     }
 
-    private function refreshAnalytics(): void
+    public function refreshAnalytics(): void
     {
         [$startDate, $endDate] = $this->dateRange();
         [$previousStartDate, $previousEndDate] = $this->previousDateRange();
@@ -100,7 +100,7 @@ class Home extends Component
     {
         $groupFormat = $this->analyticsPeriod === 'daily' ? '%H' : ($this->analyticsPeriod === 'yearly' ? '%Y-%m' : '%Y-%m-%d');
         $revenues = Sale::query()
-            ->selectRaw("DATE_FORMAT('{$groupFormat}', created_at) as period")
+            ->selectRaw("DATE_FORMAT(created_at, '{$groupFormat}') as period")
             ->selectRaw('sum(total_amount) as revenue')
             ->whereBetween('created_at', [$startDate, $endDate])
             ->groupBy('period')

@@ -18,10 +18,10 @@
         </flux:field>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-3">
-        <flux:card class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 transition-transform duration-300 hover:scale-105">
+    <div class="grid gap-6 lg:grid-cols-3" wire:poll.5s="refreshAnalytics">
+        <flux:card  class="border border-zinc-300 bg-white shadow-sm dark:border-zinc-700 dark:bg-zinc-900 transition-transform duration-300 hover:scale-105">
             <div class="flex items-center justify-between gap-4">
-                <div wire:poll>
+                <div>
                     <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total sales</flux:text>
                     <div class="mt-2 text-3xl font-semibold tabular-nums text-primary">
                         &#8369; {{ number_format($totalSales) }}
