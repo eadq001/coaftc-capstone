@@ -90,7 +90,7 @@ class ProductForm extends Form
 
     public function addStock(): void
     {
-        $this->validate(['stockToAdd' => 'required|integer']);
+        $this->validate(['stockToAdd' => 'required|integer|min:1']);
         $this->product->increment('stock_level', $this->stockToAdd);
         $this->product->update(['user_id' => auth()->user()->id]);
         $this->stock_level = $this->product->stock_level;

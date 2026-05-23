@@ -14,6 +14,7 @@ class PrintReceipt
 
         foreach ($copies as $copy) {
 
+            // $connector = new WindowsPrintConnector('\\ASHLEYGWEN\\POS58');
             $connector = new WindowsPrintConnector('POS58');
 
             $printer = new Printer($connector);

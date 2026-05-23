@@ -13,6 +13,7 @@ use Livewire\Attributes\Session;
 new #[Layout('layouts.dashboard')]
 class extends Component {
 
+    #[Validate('min:1')]
     public ?int $searchId = null;
 
     #[Session]
@@ -32,7 +33,7 @@ class extends Component {
 
     public ?int $editingItemIndex = null;
 
-    #[Validate("integer|required")]
+    #[Validate("integer|required|min:1")]
     public ?int $currentItemQuantity = null;
 
     public function mount(): void
@@ -44,7 +45,8 @@ class extends Component {
 
     public function updatedSearchId(?int $value = null): void
     {
-        if (!$value) {
+        if ($value < 1) {
+            $this->reset('searchId');
             return;
         }
 
