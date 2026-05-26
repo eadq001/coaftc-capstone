@@ -13,8 +13,8 @@ use Livewire\Attributes\Session;
 new #[Layout('layouts.dashboard')]
 class extends Component {
 
-    #[Validate('min:1')]
-    public ?int $searchId = null;
+    #[Validate('min:1|max:11|integer')]
+    public $searchId = null;
 
     #[Session]
     public array $items = [];
@@ -43,12 +43,14 @@ class extends Component {
 
     }
 
-    public function updatedSearchId(?int $value = null): void
+    public function updatedSearchId($value = null): void
     {
-        if ($value < 1) {
+        if (strlen($value) > 11 || ((int)$value) < 1  ) {
             $this->reset('searchId');
             return;
         }
+
+        $value = (int) $value;
 
         $product = Product::find($value);
 

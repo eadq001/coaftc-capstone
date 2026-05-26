@@ -34,7 +34,8 @@ class ProductForm extends Form
     #[Validate('nullable|string|max:100')]
     public ?string $class = '';
 
-    public ?int $stockToAdd = null;
+//    #[Validate('integer|min:1')]
+//    public ?int $stockToAdd = null;
 
     public ?Product $product;
 
@@ -88,10 +89,9 @@ class ProductForm extends Form
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
 
-    public function addStock(): void
+    public function addStock(int $stockLevel): void
     {
-        $this->validate(['stockToAdd' => 'required|integer|min:1']);
-        $this->product->increment('stock_level', $this->stockToAdd);
+        $this->product->increment('stock_level', $stockLevel);
         $this->product->update(['user_id' => auth()->user()->id]);
         $this->stock_level = $this->product->stock_level;
         $this->resetStockToAdd();

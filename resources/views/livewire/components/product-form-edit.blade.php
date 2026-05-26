@@ -142,20 +142,21 @@
                     <form wire:submit="addStock" class="space-y-3 text-sm ">
                         <div class="absolute top-0 right-0 p-2" title="exit this form">
                             <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all"
-                                              @click="showAddStockForm=false;$wire.resetStockToAdd()"/>
+                                              @click="$wire.resetStockToAdd();showAddStockForm=false"/>
                         </div>
                         <p class="text-center">Add Stock Level</p>
 
-                        <div class="flex gap-x-3 items-center">
+                        <div class="space-y-4">
                         <flux:field>
                             <flux:label class="mb-0.5!">Quantity</flux:label>
-                            <flux:input type="number" wire:model="productForm.stockToAdd" placeholder="Quantity to add"/>
-                            <flux:error name="productForm.stockToAdd"/>
+                            <flux:input type="number" min="1" wire:model.live="stockToAdd" placeholder="Quantity to add"/>
+                            <flux:error name="stockToAdd"/>
                         </flux:field>
 
                         <flux:field>
                             <flux:label class="mb-0.5! text-zinc-900!">Current Stock Level</flux:label>
                             <flux:input type="number" value="{{ $productForm->stock_level }}" disabled/>
+                            <flux:error name="productForm.stock_level"/>
                         </flux:field>
 
                         </div>

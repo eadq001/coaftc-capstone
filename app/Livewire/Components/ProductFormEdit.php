@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Subcategory;
 use App\Models\Unit;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class ProductFormEdit extends Component
@@ -14,6 +15,9 @@ class ProductFormEdit extends Component
     public ProductForm $productForm;
 
     public int $productToEdit;
+
+    #[Validate('min:1')]
+    public $stockToAdd = null;
 
     public function mount(): void
     {
@@ -51,12 +55,23 @@ class ProductFormEdit extends Component
 
     public function resetStockToAdd(): void
     {
-        $this->productForm->resetStockToAdd();
+        $this->reset('stockToAdd');
+        $this->resetValidation();
+//        $this->productForm->resetStockToAdd();
+    }
+
+    public function updatedStockToAdd($value): void
+    {
+        if (strlen($value) > 10 || ((int)$value) < 1 ) {
+            $this->addError('stockToAdd', 'the minimum value to add a stock is 1');
+            $this->reset('stockToAdd');
+        }
     }
 
     public function addStock(): void
     {
-        $this->productForm->addStock();
+        $this->productForm->addStock((int) $this->stockToAdd);
+        $this->reset('stockToAdd');
         $this->dispatch('add-product-stock-success');
 
     }

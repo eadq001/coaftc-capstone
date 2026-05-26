@@ -62,7 +62,7 @@ class extends Component {
         }
     }
 
-    public function importToExcel(): BinaryFileResponse
+    public function exportToExcel(): BinaryFileResponse
     {
         $date = now()->format('Ymd');
         $this->getSalesReportToday();
@@ -344,8 +344,8 @@ class extends Component {
                     Clear
                 </button>
                 <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                             wire:click="importToExcel">
-                    Import
+                             wire:click="exportToExcel">
+                    Export
                 </flux:button>
             </div>
 
