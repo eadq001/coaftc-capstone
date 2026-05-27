@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx\PageSetup;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
@@ -127,26 +128,26 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
     public function columnWidths(): array
     {
         return [
-            'A' => 16,
-            'B' => 10,
-            'C' => 24,
-            'D' => 18,
-            'E' => 18,
-            'F' => 18,
-            'G' => 16,
-            'H' => 26,
-            'I' => 14,
-            'J' => 18,
-            'K' => 22,
-            'L' => 16,
-            'M' => 14,
-            'N' => 20,
-            'O' => 14,
-            'P' => 14,
-            'Q' => 22,
-            'R' => 14,
-            'S' => 22,
-            'T' => 15,
+            'A' => 3,
+            'B' => 7,
+            'C' => 9.22,
+            'D' => 12,
+            'E' => 12,
+            'F' => 11.78,
+            'G' => 10.44,
+            'H' => 10,
+            'I' => 10,
+            'J' => 10,
+            'K' => 10,
+            'L' => 11,
+            'M' => 10,
+            'N' => 10,
+            'O' => 11.89,
+            'P' => 11,
+            'Q' => 11,
+            'R' => 10,
+            'S' => 8.22,
+            'T' => 12,
         ];
     }
 
@@ -163,13 +164,30 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
                 $sheet->getStyle("A1:T{$highestRow}")->applyFromArray([
                     'alignment' => [
                         'vertical' => Alignment::VERTICAL_CENTER,
+                        'horizontal' => Alignment::HORIZONTAL_CENTER,
                         'wrapText' => true,
                     ],
                 ]);
 
+                $sheet->getStyle("A1:T{$highestRow}")
+                    ->getFont()
+                    ->setName('Arial Narrow')
+                    ->setSize(11);
+
                 $sheet->getStyle("D1:T{$highestRow}")
                     ->getNumberFormat()
                     ->setFormatCode('#,##0.00');
+
+                $sheet->getPageMargins()->setTop(0.5511);
+                $sheet->getPageMargins()->setHeader(0.3149);
+                $sheet->getPageMargins()->setLeft(0.1181);
+                $sheet->getPageMargins()->setRight(0);
+                $sheet->getPageMargins()->setBottom(0.3543);
+                $sheet->getPageMargins()->setFooter(0.3149);
+
+                $sheet->getPageSetup()->setPaperSize(14);
+                $sheet->getPageSetup()->setOrientation('landscape');
+                $sheet->getPageSetup()->setScale(90);
 
                 foreach ($this->tableRanges as [$startRow, $endRow]) {
                     $sheet->getStyle("A{$startRow}:T{$endRow}")->applyFromArray([
@@ -280,7 +298,7 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
         $row = [
             $showMonth ? $this->spacedMonthName($month) : '',
             CarbonImmutable::parse($date)->day,
-            $items->pluck('sale.prf_number')->filter()->unique()->values()->implode(', '),
+//            $items->pluck('sale.prf_number')->filter()->unique()->values()->implode(', '),
         ];
 
         foreach (self::CATEGORIES as $category) {

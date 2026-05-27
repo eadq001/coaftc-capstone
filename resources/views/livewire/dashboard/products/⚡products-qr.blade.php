@@ -79,7 +79,7 @@ class extends Component {
                         >
                     </div>
 
-                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200">
+                    <div class="w-full border-t border-dashed border-zinc-200">
                         <p class="text-sm font-semibold text-zinc-900">{{ $product->id}}</p>
                         <p class="text-sm font-semibold text-zinc-900">{{ $product->name }}</p>
                         <p class="text-sm text-zinc-600">{{ $product->category?->category_name }}</p>

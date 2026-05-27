@@ -4,11 +4,13 @@ use App\Enums\UserRoles;
 use App\Livewire\Dashboard;
 use App\Mail\UserEmailVerification;
 use App\Models\UnverifiedUser;
+use Illuminate\Http\Client\ConnectionException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Illuminate\Support\Str;
+use Symfony\Component\Mailer\Exception\TransportException;
 
 new #[Layout('layouts::dashboard', ['title' => 'Users'])]
 class extends Component {
@@ -31,6 +33,9 @@ class extends Component {
     #[Validate('required')]
     public string $verification_token = '';
 
+    public bool $userCreated = false;
+    public bool $userNotCreated = false;
+
     public function updatedPassword(): void
     {
         $this->validateOnly('confirmPassword');
@@ -43,17 +48,23 @@ class extends Component {
 
     public function register(): void
     {
-        $this->verification_token = Str::random(64);
-        $this->validate();
-        $this->password = Hash::make($this->password);
-        UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
-        $this->dispatch('add-user-successful');
+        try {
+            $this->verification_token = Str::random(64);
+            $this->validate();
+            $this->password = Hash::make($this->password);
+            UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
 
-        $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(10), ['token' => $this->verification_token]);
-        Mail::to($this->email)->send(New UserEmailVerification($url));
-        $this->reset();
+            $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(10), ['token' => $this->verification_token]);
+            Mail::to($this->email)->send(New UserEmailVerification($url));
+            $this->reset();
+
+            $this->userCreated = true;
+        } catch (TransportException $e) {
+            $this->userNotCreated = true;
+            UnverifiedUser::where('email', '=', $this->email)->delete();
+        }
+
     }
-
 
 };
 ?>
@@ -61,8 +72,8 @@ class extends Component {
 <div class="relative" x-data="{showUserForm:false}">
     <div class="mb-6 flex items-center justify-between">
         <div>
-        <flux:heading size="xl" level="1">Users</flux:heading>
-        <flux:text class="mt-1 text-zinc-600">Add new users to the system</flux:text>
+            <flux:heading size="xl" level="1">Users</flux:heading>
+            <flux:text class="mt-1 text-zinc-600">Add new users to the system</flux:text>
         </div>
         <div class="p-6">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -164,5 +175,43 @@ class extends Component {
                 </div>
             </div>
         </form>
+
+        @if($userCreated)
+            <div wire:transition x-data @keydown.enter.window="$wire.set('userCreated', false);"
+                 class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
+                    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <flux:icon.x-mark class="h-8 w-8 text-red-600"/>
+                    </div>
+                    <flux:heading size="lg" class="text-zinc-950">User Created</flux:heading>
+                    <p class="mt-3 text-sm text-zinc-500">We send you an email verification link. open it to register
+                        your account.
+                    </p>
+                    <button type="button" wire:click="$wire.set('userCreated', false);"
+                            class="mt-8 w-full rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">
+                        OK
+                    </button>
+                </div>
+            </div>
+        @endif
+
+        @if($userNotCreated)
+            <div wire:transition x-data @keydown.enter.window="$wire.set('userNotCreated', false);"
+                 class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
+                    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <flux:icon.x-mark class="h-8 w-8 text-red-600"/>
+                    </div>
+                    <flux:heading size="lg" class="text-zinc-950">User Creation Problem</flux:heading>
+                    <p class="mt-3 text-sm text-zinc-500">Please check your internet connection or reload the page
+                    </p>
+                    <button type="button" wire:click="$wire.set('userNotCreated', false);"
+                            class="mt-8 w-full rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">
+                        OK
+                    </button>
+                </div>
+            </div>
+        @endif
+
     </div>
 </div>

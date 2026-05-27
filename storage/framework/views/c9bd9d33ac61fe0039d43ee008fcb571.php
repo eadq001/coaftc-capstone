@@ -133,7 +133,7 @@ Print or scan product QR codes with their item details. <?php echo $__env->rende
                         >
                     </div>
 
-                    <div class="flex w-full flex-1 flex-col justify-end border-t border-dashed border-zinc-200">
+                    <div class="w-full border-t border-dashed border-zinc-200">
                         <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->id); ?></p>
                         <p class="text-sm font-semibold text-zinc-900"><?php echo e($product->name); ?></p>
                         <p class="text-sm text-zinc-600"><?php echo e($product->category?->category_name); ?></p>
