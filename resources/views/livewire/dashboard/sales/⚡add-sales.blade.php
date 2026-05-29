@@ -33,8 +33,8 @@ class extends Component {
 
     public ?int $editingItemIndex = null;
 
-    #[Validate("integer|required|min:1")]
-    public ?int $currentItemQuantity = null;
+    #[Validate("min:1|integer")]
+    public $currentItemQuantity = null;
 
     public function mount(): void
     {
@@ -45,12 +45,12 @@ class extends Component {
 
     public function updatedSearchId($value = null): void
     {
-        if (strlen($value) > 11 || ((int)$value) < 1  ) {
+        if (strlen($value) > 11 || ((int)$value) < 1) {
             $this->reset('searchId');
             return;
         }
 
-        $value = (int) $value;
+        $value = (int)$value;
 
         $product = Product::find($value);
 
@@ -78,11 +78,27 @@ class extends Component {
 
     }
 
-    public function updatedCurrentItemQuantity(): void
+    public function updatedCurrentItemQuantity($value): void
     {
-        $this->validate([
-            'currentItemQuantity' => 'integer|required|max:' . $this->currentItem['availableStock']
-        ]);
+        $this->currentItemQuantity = (int)$value;
+
+        if (strlen($this->currentItemQuantity) > 11 || $this->currentItemQuantity < 1) {
+            $this->reset('currentItemQuantity');
+        }
+
+        foreach ($this->items as $index => $item) {
+            if ($item['id'] === $this->currentItem['id']) {
+                if ($this->items[$index]['availableStock'] < ($this->currentItemQuantity + $this->items[$index]['quantity'])) {
+                    $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ({$item['availableStock']}).");
+                    return;
+                }
+
+                $this->validate([
+                    'currentItemQuantity' => '|max:' . $this->currentItem['availableStock']
+                ]);
+            }
+
+        }
     }
 
     public function resetCurrentItems(): void
@@ -114,7 +130,7 @@ class extends Component {
         }
 
         if ($this->currentItem['availableStock'] < ($this->currentItemQuantity + $this->currentItem['quantity'])) {
-            $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ($this->availableStock).");
+            $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ({$this->currentItem['availableStock']}).");
             return;
         }
 
@@ -273,8 +289,8 @@ class extends Component {
                                     </div>
 
                                     <div
-                                        x-on:click.stop=""
-                                        class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10"
+                                            x-on:click.stop=""
+                                            class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10"
                                     >
                                         <flux:modal.trigger name="remove-item-{{ $item['id'] }}">
                                             <flux:button variant="danger" size="xs">Remove</flux:button>
@@ -285,12 +301,13 @@ class extends Component {
                                                 <div>
                                                     <flux:heading size="lg">Remove product?</flux:heading>
                                                     <flux:text class="mt-2">
-                                                        Do you want to remove "{{ $item['name'] }}" from the current sale?
+                                                        Do you want to remove "{{ $item['name'] }}" from the current
+                                                        sale?
                                                     </flux:text>
                                                 </div>
 
                                                 <div class="flex gap-2">
-                                                    <flux:spacer />
+                                                    <flux:spacer/>
 
                                                     <flux:modal.close>
                                                         <flux:button variant="ghost">No</flux:button>
