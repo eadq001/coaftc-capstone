@@ -369,7 +369,7 @@ class extends Component {
                             <tr class="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
                                 <th class="px-4 py-3 text-left">PRF No.</th>
                                 <th class="px-4 py-3 text-left">Product Name</th>
-                                <th class="px-4 py-3 text-left">Subcategory</th>
+                                <th class="px-4 py-3 text-left">Category</th>
                                 <th class="px-4 py-3 text-left">Quantity</th>
                                 <th class="px-4 py-3 text-left">Unit</th>
                                 <th class="px-4 py-3 text-left">Start</th>

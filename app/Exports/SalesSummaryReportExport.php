@@ -7,16 +7,14 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromArray;
-use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx\PageSetup;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnWidths, WithEvents
+class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithEvents
 {
     private const CATEGORIES = [
         'North Vegetables',
@@ -128,26 +126,26 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
     public function columnWidths(): array
     {
         return [
-            'A' => 3,
-            'B' => 7,
-            'C' => 9.22,
-            'D' => 12,
-            'E' => 12,
-            'F' => 11.78,
-            'G' => 10.44,
-            'H' => 10,
-            'I' => 10,
-            'J' => 10,
-            'K' => 10,
-            'L' => 11,
-            'M' => 10,
-            'N' => 10,
-            'O' => 11.89,
-            'P' => 11,
-            'Q' => 11,
-            'R' => 10,
-            'S' => 8.22,
-            'T' => 12,
+            'A' => 3.77734375,
+            'B' => 7.77734375,
+            'C' => 10,
+            'D' => 12.77734375,
+            'E' => 12.77734375,
+            'F' => 12.5546875,
+            'G' => 11.21875,
+            'H' => 10.77734375,
+            'I' => 10.77734375,
+            'J' => 10.77734375,
+            'K' => 10.77734375,
+            'L' => 11.77734375,
+            'M' => 10.77734375,
+            'N' => 10.77734375,
+            'O' => 12.6640625,
+            'P' => 11.77734375,
+            'Q' => 11.77734375,
+            'R' => 10.77734375,
+            'S' => 9,
+            'T' => 12.77734375,
         ];
     }
 
@@ -169,15 +167,26 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
                     ],
                 ]);
 
+                //default font
                 $sheet->getStyle("A1:T{$highestRow}")
                     ->getFont()
                     ->setName('Arial Narrow')
                     ->setSize(11);
 
+                //rotate the month to 90 degree
+                $sheet->getStyle("A1:A{$highestRow}")->applyFromArray([
+                    'alignment' => [
+                        'textRotation' => 90
+                    ]
+                ]);
+
+
+                //prices are with .00
                 $sheet->getStyle("D1:T{$highestRow}")
                     ->getNumberFormat()
                     ->setFormatCode('#,##0.00');
 
+                //adjust the page margins
                 $sheet->getPageMargins()->setTop(0.5511);
                 $sheet->getPageMargins()->setHeader(0.3149);
                 $sheet->getPageMargins()->setLeft(0.1181);
@@ -185,9 +194,12 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
                 $sheet->getPageMargins()->setBottom(0.3543);
                 $sheet->getPageMargins()->setFooter(0.3149);
 
+                //long paper in landscape orientation and already fit to page scaling for printing
                 $sheet->getPageSetup()->setPaperSize(14);
                 $sheet->getPageSetup()->setOrientation('landscape');
-                $sheet->getPageSetup()->setScale(90);
+                $sheet->getPageSetup()->setFitToPage(true);
+
+                $sheet->getSheetView()->setZoomScale(85);
 
                 foreach ($this->tableRanges as [$startRow, $endRow]) {
                     $sheet->getStyle("A{$startRow}:T{$endRow}")->applyFromArray([
@@ -200,14 +212,14 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
                 }
 
                 foreach ($this->headerRows as $headerRow) {
-                    $sheet->getStyle("A{$headerRow}:T{$headerRow}")->applyFromArray([
+                    $sheet->getStyle("B{$headerRow}:T{$headerRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
                         'fill' => [
                             'fillType' => Fill::FILL_SOLID,
                             'startColor' => [
-                                'rgb' => 'D9EAD3',
+                                'rgb' => 'FFFF00',
                             ],
                         ],
                         'alignment' => [
@@ -248,7 +260,14 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
                     $sheet->getStyle("A{$this->grandTotalRow}:T{$this->grandTotalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
+                            'vertical' => Alignment::VERTICAL_CENTER,
+                            'horizontal' => Alignment::HORIZONTAL_CENTER,
                         ],
+
+                        'alignment' => [
+                            'textRotation' => 0
+                        ],
+
                         'fill' => [
                             'fillType' => Fill::FILL_SOLID,
                             'startColor' => [
@@ -297,10 +316,9 @@ class SalesSummaryReportExport implements FromArray, ShouldAutoSize, WithColumnW
         $categoryTotals = $this->categoryTotals($items);
         $row = [
             $showMonth ? $this->spacedMonthName($month) : '',
-            CarbonImmutable::parse($date)->day,
-//            $items->pluck('sale.prf_number')->filter()->unique()->values()->implode(', '),
-        ];
+            CarbonImmutable::parse($date)->day, ' '];
 
+        //shows the amount values in the rows
         foreach (self::CATEGORIES as $category) {
             $row[] = $this->amountOrBlank($categoryTotals[$category]);
         }
