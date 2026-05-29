@@ -236,6 +236,8 @@ class extends Component {
         unset($this->items[$itemIndex]);
         $this->items = array_values($this->items);
         $this->grandTotal();
+
+        $this->js("document.getElementById('product-search').focus()");
     }
 
     protected function messages()

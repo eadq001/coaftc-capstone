@@ -112,8 +112,8 @@ QR Code / Product Search <?php echo $__env->renderComponent(); ?>
                                     </div>
 
                                     <div
-                                        x-on:click.stop=""
-                                        class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10"
+                                            x-on:click.stop=""
+                                            class="px-4 py-4 text-right font-semibold text-zinc-900 relative z-10"
                                     >
                                         <?php if (isset($component)) { $__componentOriginal1db8c57e729d67f7d4103875cf3230cb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal1db8c57e729d67f7d4103875cf3230cb = $attributes; } ?>
@@ -206,7 +206,8 @@ Remove product? <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['class' => 'mt-2']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                                                        Do you want to remove "<?php echo e($item['name']); ?>" from the current sale?
+                                                        Do you want to remove "<?php echo e($item['name']); ?>" from the current
+                                                        sale?
                                                      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>

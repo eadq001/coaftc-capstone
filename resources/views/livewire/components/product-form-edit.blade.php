@@ -1,6 +1,6 @@
 @php use App\QrGenerator;use BaconQrCode\Encoder\QrCode; @endphp
 <div class="fixed inset-0 z-50 bg-green-300/50 flex items-center justify-center backdrop-blur-xs ease-in-out"
-     wire:transition wire:cloak x-data="{ active: false, showAddStockForm:false }">
+     wire:transition wire:cloak x-data="{ active: false, showAddStockForm:false, showDeleteForm:false }">
     <div class=" bg-white p-4 w-2xl rounded-lg relative">
         <form wire:submit="update" class="space-y-3">
             <div class="absolute top-4 right-4" title="exit this form">
@@ -128,16 +128,22 @@
                             Add Stock Only
                         </button>
 
-
                     </div>
+
+                    <div>
+                        <flux:modal.trigger name="remove-item-{{ $productForm->id }}">
+                            <flux:button variant="danger" size="sm" class="cursor-pointer">Remove</flux:button>
+                        </flux:modal.trigger>
+                    </div>
+
+                    <x-success-message successMessage="Successfully edited the product"/>
                 </div>
-                <x-success-message successMessage="Successfully edited the product"/>
             </div>
         </form>
 
 
         <div x-show="showAddStockForm" wire:cloak>
-            <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/20 backdrop-blur-xs" >
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/20 backdrop-blur-xs">
                 <div class="relative bg-white p-4 w-2xl rounded-lg">
                     <form wire:submit="addStock" class="space-y-3 text-sm ">
                         <div class="absolute top-0 right-0 p-2" title="exit this form">
@@ -147,17 +153,18 @@
                         <p class="text-center">Add Stock Level</p>
 
                         <div class="space-y-4">
-                        <flux:field>
-                            <flux:label class="mb-0.5!">Quantity</flux:label>
-                            <flux:input type="number" min="1" wire:model.live="stockToAdd" placeholder="Quantity to add"/>
-                            <flux:error name="stockToAdd"/>
-                        </flux:field>
+                            <flux:field>
+                                <flux:label class="mb-0.5!">Quantity</flux:label>
+                                <flux:input type="number" min="1" wire:model.live="stockToAdd"
+                                            placeholder="Quantity to add"/>
+                                <flux:error name="stockToAdd"/>
+                            </flux:field>
 
-                        <flux:field>
-                            <flux:label class="mb-0.5! text-zinc-900!">Current Stock Level</flux:label>
-                            <flux:input type="number" value="{{ $productForm->stock_level }}" disabled/>
-                            <flux:error name="productForm.stock_level"/>
-                        </flux:field>
+                            <flux:field>
+                                <flux:label class="mb-0.5! text-zinc-900!">Current Stock Level</flux:label>
+                                <flux:input type="number" value="{{ $productForm->stock_level }}" disabled/>
+                                <flux:error name="productForm.stock_level"/>
+                            </flux:field>
 
                         </div>
 
@@ -177,5 +184,36 @@
                 </div>
             </div>
         </div>
+
+        <div>
+
+            <flux:modal name="remove-item-{{ $productForm->id }}" class="min-w-[22rem]">
+                <div class="space-y-6 text-left">
+                    <div>
+                        <flux:heading size="lg">Remove product?</flux:heading>
+                        <flux:text class="mt-2">
+                            Do you want to remove "{{ $productForm->name }}" from the current
+                            sale?
+                        </flux:text>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <flux:spacer/>
+
+                        <flux:modal.close>
+                            <flux:button variant="ghost">No</flux:button>
+                        </flux:modal.close>
+
+                        <flux:modal.close>
+                            <flux:button variant="danger"
+                                         wire:click.stop="removeItem({{ $productForm->id }})">
+                                Yes
+                            </flux:button>
+                        </flux:modal.close>
+                    </div>
+                </div>
+            </flux:modal>
+        </div>
+
     </div>
 </div>
