@@ -89,6 +89,8 @@ class ProductForm extends Form
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
 
+
+
     public function addStock(int $stockLevel): void
     {
         $this->product->increment('stock_level', $stockLevel);

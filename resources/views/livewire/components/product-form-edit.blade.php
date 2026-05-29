@@ -132,7 +132,7 @@
 
                     <div>
                         <flux:modal.trigger name="remove-item-{{ $productForm->id }}">
-                            <flux:button variant="danger" size="sm" class="cursor-pointer">Remove</flux:button>
+                            <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove</flux:button>
                         </flux:modal.trigger>
                     </div>
 
@@ -206,7 +206,7 @@
 
                         <flux:modal.close>
                             <flux:button variant="danger"
-                                         wire:click.stop="removeItem({{ $productForm->id }})">
+                                         wire:click.stop="softDeleteProduct({{ $productForm->id }}); $parent.cancel()">
                                 Yes
                             </flux:button>
                         </flux:modal.close>
@@ -214,6 +214,6 @@
                 </div>
             </flux:modal>
         </div>
-
     </div>
+
 </div>

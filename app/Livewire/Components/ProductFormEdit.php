@@ -4,6 +4,7 @@ namespace App\Livewire\Components;
 
 use App\Livewire\Forms\ProductForm;
 use App\Models\Category;
+use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
 use Livewire\Attributes\Computed;
@@ -74,6 +75,12 @@ class ProductFormEdit extends Component
         $this->reset('stockToAdd');
         $this->dispatch('add-product-stock-success');
 
+    }
+
+    public function softDeleteProduct(int $productId): void
+    {
+        Product::find($productId)->delete();
+        $this->dispatch('delete-success');
     }
 
     public function render()

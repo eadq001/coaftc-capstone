@@ -57,22 +57,6 @@
                             wire:model.live.debounce.500ms="searchText"
                     />
 
-{{--                    search results display --}}
-{{--                    @if($searchText)--}}
-{{--                        <div class="absolute z-50 bg-gray-50 p-2 w-full rounded-lg mt-12" wire:transition>--}}
-{{--                            @forelse($searchResults as $result)--}}
-{{--                                <div class="flex justify-between text-sm text-zinc-600 text-left hover:text-green-400 cursor-pointer"--}}
-{{--                                     wire:key="{{ $result->id }}" wire:click="$set('productToEdit', {{ $result->id }})">--}}
-{{--                                    <p>{{ $result->name }}</p>--}}
-{{--                                    <p>stock: {{ $result->stock_level }}</p>--}}
-{{--                                    <p>price: {{ $result->price }}</p>--}}
-{{--                                </div>--}}
-{{--                            @empty--}}
-{{--                                <p class="text-sm">No results found</p>--}}
-{{--                            @endforelse--}}
-{{--                        </div>--}}
-{{--                    @endif--}}
-
                     <button type="button"
                             class="hover:bg-green-300  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5"
                             wire:click="clearSearchText">
@@ -285,4 +269,5 @@
                                                @add-edit-product-success="refreshData; $refresh"/>
     @endif
 
+    <x-delete-restore-message message="Successfully deleted the product" event="delete-success"/>
 </div>
