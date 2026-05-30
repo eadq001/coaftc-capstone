@@ -16,9 +16,9 @@
             </flux:field>
             <flux:field>
                 <flux:label class="mb-0.5!">Stock Level</flux:label>
-                <flux:input type="number" wire:model="productForm.stock_level"
+                <flux:input type="number" wire:model.live.debounce.1000ms="stockLevel"
                             placeholder="Stock Level" x-bind:readonly="!active"/>
-                <flux:error name="productForm.stock_level"/>
+                <flux:error name="stockLevel"/>
             </flux:field>
 
             <flux:field>
@@ -36,9 +36,9 @@
 
             <flux:field>
                 <flux:label class="mb-0.5!">Price</flux:label>
-                <flux:input type="number" wire:model="productForm.price" placeholder="Price"
+                <flux:input type="number" wire:model.live.debounce.1000ms="price" placeholder="Price"
                             x-bind:readonly="!active"/>
-                <flux:error name="productForm.price"/>
+                <flux:error name="price"/>
             </flux:field>
             <div class="flex items-center gap-x-2">
                 <div class="flex-7">
@@ -114,8 +114,7 @@
                     <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all disabled:bg-gray-300"
                             type="submit"
                             x-show="active"
-                            disabled
-                            wire:dirty.attr.remove="disabled"
+                            {{((int)$oldStockLevel !== (int)$stockLevel || $oldPrice !== $price) ? '' : 'disabled'}}
                     >
                         Update
                     </button>
@@ -142,7 +141,8 @@
         </form>
 
 
-        <div x-show="showAddStockForm" wire:cloak>
+        <div x-show="showAddStockForm" wire:cloak x-on:add-product-stock-success.window="setTimeout(()=> {showAddStockForm=false}, 2000)"
+        >
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/20 backdrop-blur-xs">
                 <div class="relative bg-white p-4 w-2xl rounded-lg">
                     <form wire:submit="addStock" class="space-y-3 text-sm ">
@@ -173,7 +173,6 @@
 
                             <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                                     type="submit"
-                                    @click="setTimeout(()=> {showAddStockForm=false}, 2000)"
                             >Add
                             </button>
 

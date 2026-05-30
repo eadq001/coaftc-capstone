@@ -11,8 +11,8 @@
         </flux:field>
         <flux:field>
             <flux:label class="mb-0.5!">Stock Level</flux:label>
-            <flux:input type="number" wire:model.live.debounce.1000ms="productForm.stock_level" placeholder="Stock Level"/>
-            <flux:error name="productForm.stock_level" class="mt-1!"/>
+            <flux:input type="number" wire:model.live.debounce.1000ms="stockLevel" placeholder="Stock Level"/>
+            <flux:error name="stockLevel" class="mt-1!"/>
         </flux:field>
 
         <flux:field>
@@ -29,11 +29,9 @@
 
         <flux:field>
             <flux:label class="mb-0.5!">Price</flux:label>
-            <flux:input type="number" wire:model="productForm.price" placeholder="Price"/>
-            <flux:error name="productForm.price" class="mt-1!"/>
+            <flux:input type="number" wire:model.live.debounce.1000ms="price" placeholder="Price"/>
+            <flux:error name="price" class="mt-1!"/>
         </flux:field>
-
-
 
         <flux:field>
             <flux:label class="mb-0.5!">Category</flux:label>
@@ -46,7 +44,6 @@
         </flux:select>
             <flux:error name="productForm.category_id" class="mt-1!"/>
         </flux:field>
-
 
         <flux:field>
             <flux:label class="mb-0.5!">Subcategory</flux:label>
@@ -79,18 +76,6 @@
         </flux:select>
             <flux:error name="productForm.size" class="mt-1!"/>
         </flux:field>
-
-{{--        <flux:field>--}}
-{{--            <flux:label class="mb-0.5!">Category</flux:label>--}}
-{{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.category" placeholder="Category"/>--}}
-{{--            <flux:error name="productForm.category"/>--}}
-{{--        </flux:field>--}}
-
-{{--        <flux:field>--}}
-{{--            <flux:label class="mb-0.5!">Subcategory</flux:label>--}}
-{{--            <flux:input type="text" wire:model.live.debounce.1000ms="productForm.subcategory" placeholder="Subcategory"/>--}}
-{{--            <flux:error name="productForm.subcategory"/>--}}
-{{--        </flux:field>--}}
 
         <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
 

@@ -13,11 +13,11 @@ class ProductForm extends Form
     #[Validate('required|string|max:255')]
     public string $name = '';
 
-    #[Validate('required|int|min:1')]
-    public ?int $stock_level;
+//    #[Validate('required|min:1')]
+    public $stock_level = null;
 
-    #[Validate('required|integer|min:1')]
-    public ?float $price = null;
+//    #[Validate('required|integer|min:1')]
+    public $price = null;
 
     #[Validate('required')]
     public string $unit_id = '';
@@ -34,14 +34,11 @@ class ProductForm extends Form
     #[Validate('nullable|string|max:100')]
     public ?string $class = '';
 
-//    #[Validate('integer|min:1')]
-//    public ?int $stockToAdd = null;
-
     public ?Product $product;
 
     public string $successMessage = '';
 
-    public function store(): void
+    public function store(int $stockLevel, int $price): void
     {
         $validated = $this->validate();
 
@@ -50,6 +47,11 @@ class ProductForm extends Form
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['user_id'] = auth()->user()->id;
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
+
+        //add the stockLevel and price value from productFormAdd
+        $validated['stock_level'] = $stockLevel;
+        $validated['price'] = $price;
+
         if (! $validated['class']) {
             $validated['class'] = null;
         }
@@ -74,7 +76,7 @@ class ProductForm extends Form
 
     }
 
-    public function update(): void
+    public function update(int $stockLevel, int $price): void
     {
         $validated = $this->validate();
 
@@ -84,12 +86,15 @@ class ProductForm extends Form
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
         $validated['user_id'] = auth()->user()->id;
 
-        $this->product->update($this->validate());
+        //add the stockLevel and price value from productFormAdd
+        $validated['stock_level'] = $stockLevel;
+        $validated['price'] = $price;
+
+        //model update method
+        $this->product->update($validated);
 
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
-
-
 
     public function addStock(int $stockLevel): void
     {

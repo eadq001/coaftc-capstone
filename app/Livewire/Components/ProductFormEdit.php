@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Session;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -17,37 +18,83 @@ class ProductFormEdit extends Component
 
     public int $productToEdit;
 
+    public $oldStockLevel = null;
+    public $oldPrice = null;
+
+    public array $oldValues = [];
+    public array $newValues = [];
+
+    public $stockLevel = null;
+
+    public $price = null;
+
     #[Validate('min:1')]
     public $stockToAdd = null;
 
     public function mount(): void
     {
+
+        $product = Product::find($this->productToEdit);
+        $this->stockLevel = $product->stock_level;
+        $this->price = $product->price;
+
+        $this->oldStockLevel = $product->stock_level;
+        $this->oldPrice = $product->price;
+
+
         $this->productForm->set($this->productToEdit);
     }
 
     public function update(): void
     {
-        $this->productForm->update();
+        $this->validate([
+            'stockLevel' => 'min:1',
+            'price' => 'min:1'
+        ]);
+
+        $this->productForm->update($this->stockLevel, $this->price);
         $this->dispatch('add-edit-product-success');
+
+        $this->reset('stockLevel', 'price', 'oldPrice', 'oldStockLevel');
     }
 
-    #[Computed]
-    public function categories()
+    public function updatedStockLevel($value)
     {
-        return Category::all();
+        $this->stockLevel = (int) $value;
+        if (strlen($this->stockLevel) > 11 || $this->stockLevel < 1) {
+            $this->reset('stockLevel');
+        }
+
+        $this->validate([
+            'stockLevel' => 'int|min:1|required'
+        ]);
     }
 
-    #[Computed]
-    public function subcategories()
+    public function updatedPrice($value)
     {
-        return Subcategory::all();
+        $this->price = (int) $value;
+        if (strlen($this->price) > 11 || $this->price < 1) {
+            $this->reset('price');
+        }
+
+        $this->validate([
+            'price' => 'int|min:1|required'
+        ]);
     }
 
-    #[Computed]
-    public function units()
+    public function updatedStockToAdd($value): void
     {
-        return Unit::all();
-    }
+        $this->stockToAdd = (int) $value;
+
+        if (strlen($this->stockToAdd) > 11 || $this->stockToAdd < 1) {
+            $this->reset('stockToAdd');
+        }
+
+        $this->validate([
+            'stockToAdd' => 'int|min:1|required'
+        ]);
+        }
+
 
     public function cancel(): void
     {
@@ -61,16 +108,13 @@ class ProductFormEdit extends Component
 //        $this->productForm->resetStockToAdd();
     }
 
-    public function updatedStockToAdd($value): void
-    {
-        if (strlen($value) > 10 || ((int)$value) < 1 ) {
-            $this->addError('stockToAdd', 'the minimum value to add a stock is 1');
-            $this->reset('stockToAdd');
-        }
-    }
 
     public function addStock(): void
     {
+        $this->validate([
+            'stockToAdd' => 'min:1|required'
+        ]);
+
         $this->productForm->addStock((int) $this->stockToAdd);
         $this->reset('stockToAdd');
         $this->dispatch('add-product-stock-success');
@@ -93,5 +137,24 @@ class ProductFormEdit extends Component
     public function render()
     {
         return view('livewire.components.product-form-edit');
+    }
+
+
+    #[Computed]
+    public function categories()
+    {
+        return Category::all();
+    }
+
+    #[Computed]
+    public function subcategories()
+    {
+        return Subcategory::all();
+    }
+
+    #[Computed]
+    public function units()
+    {
+        return Unit::all();
     }
 }
