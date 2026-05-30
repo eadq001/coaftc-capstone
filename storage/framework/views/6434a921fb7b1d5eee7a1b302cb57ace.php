@@ -28,7 +28,7 @@ foreach ($attributes->all() as $__key => $__value) {
 
 unset($__defined_vars, $__key, $__value); ?>
 
-<div x-data="{show:false}" x-on:<?php echo e($event); ?>.window="show=true;setTimeout(()=>show=false, 3000)" x-transition class="absolute top-2 right-2 " x-show="show" >
+<div x-cloak x-data="{show:false}" x-on:<?php echo e($event); ?>.window="show=true;setTimeout(()=>show=false, 2000)" x-transition class="fixed z-50 top-2 right-2" x-show="show" >
     <div class="p-4 rounded-lg border bg-white ">
         <?php echo e($message); ?>
 

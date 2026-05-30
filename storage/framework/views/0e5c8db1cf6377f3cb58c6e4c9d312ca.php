@@ -1416,27 +1416,5 @@ unset($__split);
 ?>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-    <?php if (isset($component)) { $__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df = $component; } ?>
-<?php if (isset($attributes)) { $__attributesOriginalcdabf6a216fa87a0f89c8be37c7d30df = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.delete-restore-message','data' => ['message' => 'Successfully deleted the product','event' => 'delete-success']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
-<?php $component->withName('delete-restore-message'); ?>
-<?php if ($component->shouldRender()): ?>
-<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
-<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
-<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
-<?php endif; ?>
-<?php $component->withAttributes(['message' => 'Successfully deleted the product','event' => 'delete-success']); ?>
-<?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-
-<?php echo $__env->renderComponent(); ?>
-<?php endif; ?>
-<?php if (isset($__attributesOriginalcdabf6a216fa87a0f89c8be37c7d30df)): ?>
-<?php $attributes = $__attributesOriginalcdabf6a216fa87a0f89c8be37c7d30df; ?>
-<?php unset($__attributesOriginalcdabf6a216fa87a0f89c8be37c7d30df); ?>
-<?php endif; ?>
-<?php if (isset($__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df)): ?>
-<?php $component = $__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df; ?>
-<?php unset($__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df); ?>
-<?php endif; ?>
 </div>
 <?php /**PATH C:\Herd\coaftcorig\resources\views/livewire/dashboard/products.blade.php ENDPATH**/ ?>

@@ -92,7 +92,7 @@
                                 <div>
                                     <flux:heading size="lg">Restore product?</flux:heading>
                                     <flux:text class="mt-2">
-                                        Do you want to restore "{{ $product->id }}" to the products inventory
+                                        Do you want to restore "{{ $product->name }}" to the products inventory
                                     </flux:text>
                                 </div>
 

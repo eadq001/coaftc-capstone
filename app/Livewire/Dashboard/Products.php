@@ -172,8 +172,16 @@ class Products extends Dashboard
         $this->resetValidation();
     }
 
+
     #[On('add-edit-product-success')]
     public function resetProductToEdit(): void
+    {
+        sleep(1);
+        $this->reset('productToEdit');
+    }
+
+    #[On('product-delete-success')]
+    public function closeProductToEditForm(): void
     {
         sleep(1);
         $this->reset('productToEdit');

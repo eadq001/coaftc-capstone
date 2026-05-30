@@ -776,7 +776,7 @@ Restore product? <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['class' => 'mt-2']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                                        Do you want to restore "<?php echo e($product->id); ?>" to the products inventory
+                                        Do you want to restore "<?php echo e($product->name); ?>" to the products inventory
                                      <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>

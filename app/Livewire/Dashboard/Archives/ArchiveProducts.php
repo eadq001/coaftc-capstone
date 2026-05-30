@@ -14,7 +14,7 @@ class ArchiveProducts extends Dashboard
     #[Computed]
     public function products()
     {
-        return Product::onlyTrashed()->paginate(3, pageName: 'archived-products');
+        return Product::onlyTrashed()->paginate(10, pageName: 'archived-products');
     }
 
     public function restoreProduct(int $id)

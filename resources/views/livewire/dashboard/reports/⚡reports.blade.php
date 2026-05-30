@@ -359,7 +359,7 @@ class extends Component {
                         <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.longest.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
-                                <th colspan="10"
+                                <th colspan="12"
                                     class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.18em]">
                                     <div class="space-x-8">
                                         {{ date_format(date_create($key), 'F j, Y') }}
@@ -370,8 +370,10 @@ class extends Component {
                                 <th class="px-4 py-3 text-left">PRF No.</th>
                                 <th class="px-4 py-3 text-left">Product Name</th>
                                 <th class="px-4 py-3 text-left">Category</th>
-                                <th class="px-4 py-3 text-left">Quantity</th>
+                                <th class="px-4 py-3 text-left">Qty</th>
                                 <th class="px-4 py-3 text-left">Unit</th>
+                                <th class="px-4 py-3 text-left">Class</th>
+                                <th class="px-4 py-3 text-left">Size</th>
                                 <th class="px-4 py-3 text-left">Start</th>
                                 <th class="px-4 py-3 text-left">End</th>
                                 <th class="px-4 py-3 text-left">Price</th>
@@ -384,14 +386,16 @@ class extends Component {
                             @foreach($saleDate as $item)
                                 <tr class="transition hover:bg-emerald-50/60">
                                     <td class="px-4 py-4 font-medium text-zinc-900">{{ $item->sale->prf_number }}</td>
-                                    <td class="px-4 py-4 text-zinc-800">{{ $item->product->name }}</td>
+                                    <td class="px-4 py-4 text-zinc-800">{{ $item->product?->name }}</td>
                                     <td class="px-4 py-4 text-zinc-600">{{ $item->product->category?->category_name ?? 'Uncategorized' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->quantity }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->quantity }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->unit?->unit_name ?? 'N/A' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_start }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->inventory_end }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item->unit_price }}</td>
-                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item->subtotal }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->class ?? '' }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->size ?? '' }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->inventory_start }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->inventory_end }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->unit_price }}</td>
+                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item?->subtotal }}</td>
                                     <td class="px-4 py-4 text-zinc-600">
                                         <span>{{ $item->sale->user?->name ?? 'N/A' }}</span>
                                     </td>

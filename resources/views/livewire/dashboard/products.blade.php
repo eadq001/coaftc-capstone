@@ -269,5 +269,4 @@
                                                @add-edit-product-success="refreshData; $refresh"/>
     @endif
 
-    <x-delete-restore-message message="Successfully deleted the product" event="delete-success"/>
 </div>

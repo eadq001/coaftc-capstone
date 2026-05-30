@@ -79,8 +79,15 @@ class ProductFormEdit extends Component
 
     public function softDeleteProduct(int $productId): void
     {
-        Product::find($productId)->delete();
-        $this->dispatch('delete-success');
+        $product = Product::find($productId);
+
+        if ($product->salesItem->count() !== 0){
+            $this->dispatch('product-delete-error');
+            return;
+        }
+
+        $product->delete();
+        $this->dispatch('product-delete-success');
     }
 
     public function render()

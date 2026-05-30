@@ -192,8 +192,7 @@
                     <div>
                         <flux:heading size="lg">Remove product?</flux:heading>
                         <flux:text class="mt-2">
-                            Do you want to remove "{{ $productForm->name }}" from the current
-                            sale?
+                            Do you want to remove "{{ $productForm->name }}" from the products inventory
                         </flux:text>
                     </div>
 
@@ -206,14 +205,31 @@
 
                         <flux:modal.close>
                             <flux:button variant="danger"
-                                         wire:click.stop="softDeleteProduct({{ $productForm->id }}); $parent.cancel()">
+                                         wire:click.stop="softDeleteProduct({{ $productForm->id }})">
                                 Yes
                             </flux:button>
                         </flux:modal.close>
                     </div>
                 </div>
             </flux:modal>
+
+            <div wire:transition x-data="{show:false}" x-on:product-delete-error.window="show=true" @keydown.enter.window="show=false;" x-show="show"
+                 class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
+                    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
+                        <flux:icon.x-mark class="h-8 w-8 text-red-600"/>
+                    </div>
+                    <flux:heading size="lg" class="text-zinc-950">Product Deletion Problem</flux:heading>
+                    <p class="mt-3 text-sm text-zinc-500">cannot delete a product that has a sales record already.
+                    </p>
+                    <button type="button" wire:click="show=false"
+                            class="mt-8 w-full rounded-xl bg-zinc-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2">
+                        OK
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
-
+    <x-delete-restore-message message="Successfully deleted the product" event="product-delete-success"/>
 </div>

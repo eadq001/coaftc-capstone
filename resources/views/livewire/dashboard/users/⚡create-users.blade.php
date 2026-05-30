@@ -51,11 +51,12 @@ class extends Component {
         try {
             $this->verification_token = Str::random(64);
             $this->validate();
-            $this->password = Hash::make($this->password);
-            UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
 
             $url = URL::temporarySignedRoute('verification.verify', now()->addMinutes(10), ['token' => $this->verification_token]);
             Mail::to($this->email)->send(New UserEmailVerification($url));
+
+            $this->password = Hash::make($this->password);
+            UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
             $this->reset();
 
             $this->userCreated = true;
@@ -167,9 +168,9 @@ class extends Component {
                 </flux:field>
 
                 <div class="flex justify-between">
-                    <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
+                    <flux:button size="sm" class="bg-green-300! w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400! transition-all"
                             type="submit">Register
-                    </button>
+                    </flux:button>
 
                     <x-success-message success-message="User added" event="add-user-successful"/>
                 </div>
@@ -180,8 +181,8 @@ class extends Component {
             <div wire:transition x-data @keydown.enter.window="$wire.set('userCreated', false);"
                  class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
                 <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
-                    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">
-                        <flux:icon.x-mark class="h-8 w-8 text-red-600"/>
+                    <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                        <flux:icon.check class="h-8 w-8 text-green-600"/>
                     </div>
                     <flux:heading size="lg" class="text-zinc-950">User Created</flux:heading>
                     <p class="mt-3 text-sm text-zinc-500">We send you an email verification link. open it to register
