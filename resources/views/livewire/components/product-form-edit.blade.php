@@ -10,7 +10,24 @@
             <p class="text-center" x-text="active ? 'Edit Product' : 'View Product'"></p>
             <flux:field>
                 <flux:label class="mb-0.5!">Product Name</flux:label>
-                <flux:input type="text" wire:model="productForm.name" placeholder="Product Name"
+
+               <div class="text-xs">
+
+{{--                   for troubleshooting in the live validation of edit form  --}}
+{{--                @foreach($formValuesChangeState as $key => $liveValue)--}}
+{{--                    {{ $key.':' . $liveValue }}--}}
+{{--                @endforeach--}}
+{{--                    <br/>--}}
+{{--                @foreach($liveValues as $key => $liveValue)--}}
+{{--                        {{ $key. ':' .$liveValue }}--}}
+{{--                    @endforeach--}}
+{{--                    <br/>--}}
+{{--                    @foreach($oldValues as $key => $liveValue)--}}
+{{--                        {{ $key. ':' .$liveValue }}--}}
+{{--                    @endforeach--}}
+               </div>
+
+                <flux:input type="text" wire:model.live.debounce.1000ms="productForm.name" placeholder="Product Name"
                             x-bind:readonly="!active"/>
                 <flux:error name="productForm.name"/>
             </flux:field>
@@ -59,7 +76,7 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Subcategory</flux:label>
-                        <flux:select wire:model="productForm.subcategory_id" class="mb-0.5!"
+                        <flux:select wire:model.live.debounce.1000ms="productForm.subcategory_id" class="mb-0.5!"
                                      placeholder="Choose a subcategory" x-bind:disabled="!active">
                             @forelse($this->subcategories as $subcategory)
                                 <flux:select.option
@@ -73,7 +90,8 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Class</flux:label>
-                        <flux:select wire:model="productForm.class" class="mb-0.5!" placeholder="Optional"
+                        <flux:select wire:model.live.debounce.1000ms="productForm.class" class="mb-0.5!"
+                                     placeholder="Optional"
                                      x-bind:disabled="!active">
                             @foreach(App\Enums\ProductClass::cases() as $class)
                                 <flux:select.option>{{ $class->value }}</flux:select.option>
@@ -84,8 +102,9 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Size</flux:label>
-                        <flux:select wire:model="productForm.size" class="mb-0.5!"
-                                     placeholder="Optional" x-bind:disabled="!active">
+                        <flux:select wire:model.live.debounce.1000ms="productForm.size" class="mb-0.5!"
+                                     placeholder="Optional"
+                                     x-bind:disabled="!active">
                             @foreach(App\Enums\EggSizes::cases() as $eggSize)
                                 <flux:select.option>{{ $eggSize->label() }}</flux:select.option>
                             @endforeach
@@ -114,7 +133,7 @@
                     <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all disabled:bg-gray-300"
                             type="submit"
                             x-show="active"
-                            {{((int)$oldStockLevel !== (int)$stockLevel || $oldPrice !== $price) ? '' : 'disabled'}}
+                            {{$isFormValuesChange ? '' : 'disabled'}}
                     >
                         Update
                     </button>
@@ -131,7 +150,8 @@
 
                     <div>
                         <flux:modal.trigger name="remove-item-{{ $productForm->id }}">
-                            <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove</flux:button>
+                            <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove
+                            </flux:button>
                         </flux:modal.trigger>
                     </div>
 
@@ -141,8 +161,8 @@
         </form>
 
 
-        <div x-show="showAddStockForm" wire:cloak x-on:add-product-stock-success.window="setTimeout(()=> {showAddStockForm=false}, 2000)"
-        >
+        <div x-show="showAddStockForm" wire:cloak
+             x-on:add-product-stock-success.window="setTimeout(()=> {showAddStockForm=false}, 2000)">
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/20 backdrop-blur-xs">
                 <div class="relative bg-white p-4 w-2xl rounded-lg">
                     <form wire:submit="addStock" class="space-y-3 text-sm ">
@@ -212,7 +232,8 @@
                 </div>
             </flux:modal>
 
-            <div wire:transition x-data="{show:false}" x-on:product-delete-error.window="show=true" @keydown.enter.window="show=false;" x-show="show"
+            <div wire:transition x-data="{show:false}" x-on:product-delete-error.window="show=true"
+                 @keydown.enter.window="show=false;" x-show="show"
                  class="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm">
                 <div class="bg-white rounded-[2rem] p-10 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)] max-w-sm w-full mx-4">
                     <div class="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-red-100">

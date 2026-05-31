@@ -71,7 +71,7 @@ class ProductForm extends Form
         $this->category_id = $product->category_id;
         $this->subcategory_id = $product->subcategory_id;
         $this->size = $product->size ?? '';
-        $this->class = $product->class->value ?? null;
+        $this->class = $product->class->value ?? '';
         $this->product = $product;
 
     }
@@ -85,6 +85,7 @@ class ProductForm extends Form
         $validated['category_id'] = (int) $validated['category_id'];
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
         $validated['user_id'] = auth()->user()->id;
+        $validated['class'] = $validated['class'] ?: null;
 
         //add the stockLevel and price value from productFormAdd
         $validated['stock_level'] = $stockLevel;
