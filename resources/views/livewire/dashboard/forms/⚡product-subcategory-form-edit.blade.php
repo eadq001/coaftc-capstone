@@ -48,6 +48,7 @@ new class extends Component {
             </flux:field>
 
             <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
+                <div>
 
                 <button class="bg-gray-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                         x-bind:class="active ? 'block' : 'hidden'"
@@ -61,10 +62,19 @@ new class extends Component {
                         type="button">Edit
                 </button>
 
+                    <flux:modal.trigger name="remove-item-{{ $subcategoryToEdit }}">
+                        <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove
+                        </flux:button>
+                    </flux:modal.trigger>
+                </div>
+
                 <x-success-message event="add-edit-product-subcategory-success"
                                    successMessage="{{$successMessage ?? ''}}"/>
 
             </div>
+            <livewire:components.remove-modal :id="$subcategoryToEdit" :name="$subcategoryToEditModel->subcategory_name"
+                                              modelName="Subcategory" />
         </form>
     </div>
+    <x-delete-restore-message message="Successfully deleted the subcategory" event="product-subcategory-delete-success"/>
 </div>

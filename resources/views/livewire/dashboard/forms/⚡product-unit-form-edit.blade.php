@@ -47,7 +47,7 @@ new class extends Component {
             </flux:field>
 
             <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
-
+                <div class="flex gap-2">
                 <button class="bg-gray-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                         x-bind:class="active ? 'block' : 'hidden'"
                         wire:dirty.class="bg-green-300"
@@ -60,10 +60,19 @@ new class extends Component {
                         type="button">Edit
                 </button>
 
+                    <flux:modal.trigger name="remove-item-{{ $unitToEdit }}">
+                        <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove
+                        </flux:button>
+                    </flux:modal.trigger>
+            </div>
+
                 <x-success-message event="add-edit-product-unit-success"
                                    successMessage="{{$successMessage ?? ''}}"/>
 
             </div>
+            <livewire:components.remove-modal :id="$unitToEdit" :name="$unitToEditModel->unit_name"
+                                              modelName="Unit" />
         </form>
     </div>
+    <x-delete-restore-message message="Successfully deleted the unit" event="product-unit-delete-success"/>
 </div>

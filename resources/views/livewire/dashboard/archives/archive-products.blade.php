@@ -3,7 +3,7 @@
 
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
         <div>
-            <flux:heading size="xl" level="1">Archive</flux:heading>
+            <flux:heading size="xl" level="1">Archives</flux:heading>
             <flux:text class="mt-1 text-zinc-600">You can restore the deleted products.</flux:text>
         </div>
     </div>
@@ -130,4 +130,58 @@
         </div>
         </div>
     </flux:card>
+
+    {{--    Product Categories and Subcategories grid display --}}
+    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6" >
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.11s>
+            <div class="mb-4 text-lg">Categories</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->categories as $category)
+                    <p class="bg-green-200  px-2 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('categoryToEdit', {{ $category->id }})"
+                       title="click to edit">{{ $category->category_name }}</p>
+                @empty
+                    <p>No categories added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->categories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+
+
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.12s>
+            <div class="mb-4 text-lg">Subcategories</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->subcategories as $subcategory)
+                    <p class="bg-gray-200 px-1 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})"
+                       title="click to edit">{{ $subcategory->subcategory_name }}</p>
+                @empty
+                    <p>No subcategory added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->subcategories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+
+        <div class="p-8 bg-white rounded-lg w-full" wire:poll.13s>
+            <div class="mb-4 text-lg">Units</div>
+            <div class="grid grid-cols-3 gap-4">
+                @forelse($this->units as $unit)
+                    <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer"
+                       wire:click="$set('unitToEdit', {{ $unit->id }})" title="click to edit">{{ $unit->unit_name }}</p>
+                @empty
+                    <p>No subcategory added yet</p>
+                @endforelse
+            </div>
+
+            <div class="mt-8!">
+                {{ $this->subcategories->links(data:['scrollTo' => false])}}
+            </div>
+        </div>
+    </div>
 </div>

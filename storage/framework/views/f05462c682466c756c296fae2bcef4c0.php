@@ -1,5 +1,6 @@
 <?php
 use App\Models\Category;
+use App\Models\Subcategory;
 use Livewire\Component;
 ?>
 
@@ -9,14 +10,14 @@ use Livewire\Component;
             <div class="absolute top-0 right-0 p-2" title="exit this form">
                 <?php if (isset($component)) { $__componentOriginal155e76c41fe51242bc25d269fabf82f5 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal155e76c41fe51242bc25d269fabf82f5 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.x-mark','data' => ['class' => 'w-5 h-5 hover:rotate-180 transition-all','wire:click' => '$parent.cancel','@click' => 'showCategoryForm=false']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::icon.x-mark','data' => ['class' => 'w-5 h-5 hover:rotate-180 transition-all','wire:click' => '$parent.cancel','@click' => 'showSubcategoryForm=false']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::icon.x-mark'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['class' => 'w-5 h-5 hover:rotate-180 transition-all','wire:click' => '$parent.cancel','@click' => 'showCategoryForm=false']); ?>
+<?php $component->withAttributes(['class' => 'w-5 h-5 hover:rotate-180 transition-all','wire:click' => '$parent.cancel','@click' => 'showSubcategoryForm=false']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -66,14 +67,14 @@ Category Name <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                 <?php if (isset($component)) { $__componentOriginal26c546557cdc09040c8dd00b2090afd0 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal26c546557cdc09040c8dd00b2090afd0 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'text','wire:model' => 'category_name','placeholder' => 'Category Name','xBind:readonly' => '!active']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::input.index','data' => ['type' => 'text','wire:model' => 'subcategory_name','placeholder' => 'Subcategory Name','xBind:readonly' => '!active']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::input'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['type' => 'text','wire:model' => 'category_name','placeholder' => 'Category Name','x-bind:readonly' => '!active']); ?>
+<?php $component->withAttributes(['type' => 'text','wire:model' => 'subcategory_name','placeholder' => 'Subcategory Name','x-bind:readonly' => '!active']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -88,14 +89,14 @@ Category Name <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
                 <?php if (isset($component)) { $__componentOriginal5730b1630871592dc0d77210545c88c1 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal5730b1630871592dc0d77210545c88c1 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::error','data' => ['name' => 'category_name']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::error','data' => ['name' => 'subcategory_name']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::error'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'category_name']); ?>
+<?php $component->withAttributes(['name' => 'subcategory_name']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -120,30 +121,30 @@ Category Name <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 
             <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
-                <div class="flex gap-2">
+                <div>
+
                 <button class="bg-gray-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
-                        x-bind:class = "active ? 'block' : 'hidden'"
+                        x-bind:class="active ? 'block' : 'hidden'"
                         wire:dirty.class="bg-green-300"
                         type="submit">Update
                 </button>
 
                 <button class="bg-green-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                         @click="active=true"
-                        x-bind:class = "active ? 'hidden' : ''"
+                        x-bind:class="active ? 'hidden' : ''"
                         type="button">Edit
                 </button>
 
-
                     <?php if (isset($component)) { $__componentOriginal1db8c57e729d67f7d4103875cf3230cb = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal1db8c57e729d67f7d4103875cf3230cb = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.trigger','data' => ['name' => 'remove-item-'.e($categoryToEdit).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.trigger','data' => ['name' => 'remove-item-'.e($subcategoryToEdit).'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::modal.trigger'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'remove-item-'.e($categoryToEdit).'']); ?>
+<?php $component->withAttributes(['name' => 'remove-item-'.e($subcategoryToEdit).'']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
                         <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
@@ -180,17 +181,16 @@ Remove
 <?php endif; ?>
                 </div>
 
-
                 <?php if (isset($component)) { $__componentOriginala5e77f3594f8b6318da2dcd4db70cfc8 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginala5e77f3594f8b6318da2dcd4db70cfc8 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.success-message','data' => ['event' => 'add-edit-product-category-success','successMessage' => ''.e($successMessage ?? '').'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.success-message','data' => ['event' => 'add-edit-product-subcategory-success','successMessage' => ''.e($successMessage ?? '').'']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('success-message'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['event' => 'add-edit-product-category-success','successMessage' => ''.e($successMessage ?? '').'']); ?>
+<?php $component->withAttributes(['event' => 'add-edit-product-subcategory-success','successMessage' => ''.e($successMessage ?? '').'']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -205,19 +205,18 @@ Remove
 <?php endif; ?>
 
             </div>
-
             <?php
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('components.remove-modal', ['id' => $categoryToEdit,'name' => $categoryToEditModel->category_name,'modelName' => 'Category']);
+[$__name, $__params] = $__split('components.remove-modal', ['id' => $subcategoryToEdit,'name' => $subcategoryToEditModel->subcategory_name,'modelName' => 'Subcategory']);
 
 $__keyOuter = $__key ?? null;
 
 $__key = null;
 $__componentSlots = [];
 
-$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2344991873-0', $__key);
+$__key ??= \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::generateKey('lw-2789470434-0', $__key);
 
 $__html = app('livewire')->mount($__name, $__params, $__key, $__componentSlots);
 
@@ -232,19 +231,18 @@ unset($__params);
 unset($__componentSlots);
 unset($__split);
 ?>
-
         </form>
     </div>
     <?php if (isset($component)) { $__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalcdabf6a216fa87a0f89c8be37c7d30df = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.delete-restore-message','data' => ['message' => 'Successfully deleted the category','event' => 'product-category-delete-success']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.delete-restore-message','data' => ['message' => 'Successfully deleted the subcategory','event' => 'product-subcategory-delete-success']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('delete-restore-message'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['message' => 'Successfully deleted the category','event' => 'product-category-delete-success']); ?>
+<?php $component->withAttributes(['message' => 'Successfully deleted the subcategory','event' => 'product-subcategory-delete-success']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
 <?php echo $__env->renderComponent(); ?>
@@ -257,4 +255,4 @@ unset($__split);
 <?php $component = $__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df; ?>
 <?php unset($__componentOriginalcdabf6a216fa87a0f89c8be37c7d30df); ?>
 <?php endif; ?>
-</div><?php /**PATH C:\Herd\coaftcorig\storage\framework/views/livewire/views/d72d6827.blade.php ENDPATH**/ ?>
+</div><?php /**PATH C:\Herd\coaftcorig\storage\framework/views/livewire/views/3ecdf65b.blade.php ENDPATH**/ ?>

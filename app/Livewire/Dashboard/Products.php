@@ -180,13 +180,6 @@ class Products extends Dashboard
         $this->reset('productToEdit');
     }
 
-    #[On('product-delete-success')]
-    public function closeProductToEditForm(): void
-    {
-        sleep(1);
-        $this->reset('productToEdit');
-    }
-
     #[On('add-edit-product-category-success')]
     public function resetCategoryToEdit(): void
     {
@@ -206,5 +199,38 @@ class Products extends Dashboard
     {
         sleep(1);
         $this->reset('unitToEdit');
+    }
+
+    #[On('product-delete-success')]
+    public function closeProductToEditForm(): void
+    {
+        sleep(1);
+        $this->reset('productToEdit');
+    }
+
+    #[On('product-category-delete-success')]
+    public function closeCategoryToEditForm(): void
+    {
+        sleep(1);
+        $this->reset('categoryToEdit');
+        $this->resetPage('category-table');
+    }
+
+    #[On('product-subcategory-delete-success')]
+    public function closeSubcategoryToEditForm(): void
+    {
+        sleep(1);
+        $this->reset('subcategoryToEdit');
+        $this->resetPage('subcategory-table');
+
+    }
+
+    #[On('product-unit-delete-success')]
+    public function closeUnitToEditForm(): void
+    {
+        sleep(1);
+        $this->reset('unitToEdit');
+        $this->resetPage('unit-table');
+
     }
 }

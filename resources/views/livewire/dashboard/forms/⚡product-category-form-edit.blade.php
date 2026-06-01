@@ -8,6 +8,9 @@ new class extends Component {
 
     public string $successMessage = '';
 
+    public int $id;
+    public string $name;
+
     public ?int $categoryToEdit = null;
 
     public ?Category $categoryToEditModel = null;
@@ -32,6 +35,8 @@ new class extends Component {
     }
 };
 ?>
+
+
 <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
     <div class="relative bg-white p-4 w-2xl rounded-lg" wire:transition wire:cloak>
         <form wire:submit="update" class="space-y-3 text-sm" x-data="{active:false}">
@@ -47,7 +52,7 @@ new class extends Component {
             </flux:field>
 
             <div class="flex justify-between mt-3 mr-3 items-center gap-x-7">
-
+                <div class="flex gap-2">
                 <button class="bg-gray-300 w-24 px-3 py-1 rounded-lg cursor-pointer hover:bg-green-400 transition-all"
                         x-bind:class = "active ? 'block' : 'hidden'"
                         wire:dirty.class="bg-green-300"
@@ -60,10 +65,23 @@ new class extends Component {
                         type="button">Edit
                 </button>
 
+
+                    <flux:modal.trigger name="remove-item-{{ $categoryToEdit }}">
+                        <flux:button variant="danger" size="sm" class="cursor-pointer text-[16px]!">Remove
+                        </flux:button>
+                    </flux:modal.trigger>
+                </div>
+
+
                 <x-success-message event="add-edit-product-category-success"
                                    successMessage="{{$successMessage ?? ''}}"/>
 
             </div>
+
+            <livewire:components.remove-modal :id="$categoryToEdit" :name="$categoryToEditModel->category_name"
+                                              modelName="Category" />
+
         </form>
     </div>
+    <x-delete-restore-message message="Successfully deleted the category" event="product-category-delete-success"/>
 </div>
