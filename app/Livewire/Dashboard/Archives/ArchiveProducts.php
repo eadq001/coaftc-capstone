@@ -37,13 +37,6 @@ class ArchiveProducts extends Dashboard
         return Unit::onlyTrashed()->paginate(6, pageName: 'archived-units');
     }
 
-    public function restoreProduct(int $id)
-    {
-        $product = Product::withTrashed()->where('id', '=', $id);
-        $product->restore();
-        $this->dispatch('restore-success');
-    }
-
     public function render()
     {
         return view('livewire.dashboard.archives.archive-products');

@@ -1,13 +1,13 @@
 <?php if (isset($component)) { $__componentOriginal8cc9d3143946b992b324617832699c5f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal8cc9d3143946b992b324617832699c5f = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => 'remove-item-'.e($id).'','class' => 'min-w-[22rem]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::modal.index','data' => ['name' => ''.e(strtolower($modelName) . '-' . $id).'','class' => 'min-w-[22rem]']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::modal'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['name' => 'remove-item-'.e($id).'','class' => 'min-w-[22rem]']); ?>
+<?php $component->withAttributes(['name' => ''.e(strtolower($modelName) . '-' . $id).'','class' => 'min-w-[22rem]']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
     <div class="space-y-6 text-left">
@@ -23,7 +23,7 @@
 <?php endif; ?>
 <?php $component->withAttributes(['size' => 'lg']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
-Remove product? <?php echo $__env->renderComponent(); ?>
+Restore product? <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9)): ?>
 <?php $attributes = $__attributesOriginale0fd5b6a0986beffac17a0a103dfd7b9; ?>
@@ -45,7 +45,7 @@ Remove product? <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['class' => 'mt-2']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-                Do you want to remove "<?php echo e($name); ?>" from the products inventory
+                Do you want to restore "<?php echo e($itemName); ?>" to the products inventory
              <?php echo $__env->renderComponent(); ?>
 <?php endif; ?>
 <?php if (isset($__attributesOriginal0638ebfbd490c7a414275d493e14cb4e)): ?>
@@ -140,14 +140,14 @@ No <?php echo $__env->renderComponent(); ?>
 
                 <?php if (isset($component)) { $__componentOriginalc04b147acd0e65cc1a77f86fb0e81580 = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginalc04b147acd0e65cc1a77f86fb0e81580 = $attributes; } ?>
-<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['variant' => 'danger','wire:click.stop' => 'softDeleteItem']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'e60dd9d2c3a62d619c9acb38f20d5aa5::button.index','data' => ['variant' => 'primary','color' => 'emerald','wire:click.stop' => 'restoreDeletedItem']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
 <?php $component->withName('flux::button'); ?>
 <?php if ($component->shouldRender()): ?>
 <?php $__env->startComponent($component->resolveView(), $component->data()); ?>
 <?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
 <?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
 <?php endif; ?>
-<?php $component->withAttributes(['variant' => 'danger','wire:click.stop' => 'softDeleteItem']); ?>
+<?php $component->withAttributes(['variant' => 'primary','color' => 'emerald','wire:click.stop' => 'restoreDeletedItem']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
                     Yes
@@ -182,4 +182,5 @@ No <?php echo $__env->renderComponent(); ?>
 <?php if (isset($__componentOriginal8cc9d3143946b992b324617832699c5f)): ?>
 <?php $component = $__componentOriginal8cc9d3143946b992b324617832699c5f; ?>
 <?php unset($__componentOriginal8cc9d3143946b992b324617832699c5f); ?>
-<?php endif; ?><?php /**PATH C:\Herd\coaftcorig\resources\views/livewire/components/remove-modal.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+<?php /**PATH C:\Herd\coaftcorig\resources\views/livewire/components/restore-modal.blade.php ENDPATH**/ ?>

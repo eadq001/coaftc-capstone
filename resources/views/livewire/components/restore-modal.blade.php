@@ -1,9 +1,9 @@
-<flux:modal name="remove-item-{{ $id }}" class="min-w-[22rem]">
+<flux:modal name="{{ strtolower($modelName) . '-' . $id}}" class="min-w-[22rem]">
     <div class="space-y-6 text-left">
         <div>
-            <flux:heading size="lg">Remove product?</flux:heading>
+            <flux:heading size="lg">Restore product?</flux:heading>
             <flux:text class="mt-2">
-                Do you want to remove "{{ $name }}" from the products inventory
+                Do you want to restore "{{$itemName}}" to the products inventory
             </flux:text>
         </div>
 
@@ -15,8 +15,8 @@
             </flux:modal.close>
 
             <flux:modal.close>
-                <flux:button variant="danger"
-                             wire:click.stop="softDeleteItem">
+                <flux:button variant="primary" color="emerald"
+                             wire:click.stop="restoreDeletedItem">
                     Yes
                 </flux:button>
             </flux:modal.close>
