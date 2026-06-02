@@ -18,7 +18,7 @@
                     </flux:text>
                 </div>
 
-                <flux:button type="button" variant="primary" icon="arrow-down-tray" class="sm:w-auto" wire:click="backupDb">
+                <flux:button type="button" variant="primary" icon="arrow-down-tray" class="sm:w-auto data-loading:pointer-events-none data-loading:opacity-70" wire:click="backupDb">
                     Backup
                 </flux:button>
             </div>
@@ -52,6 +52,19 @@
             </div>
         </div>
 
+        <div wire:loading.flex wire:target="backupDb" class="fixed inset-0 z-50 items-center justify-center bg-zinc-950/60 p-4 backdrop-blur-sm">
+            <div class="w-full max-w-sm rounded-lg border border-zinc-200 bg-white p-6 text-center shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+                <div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300">
+                    <flux:icon.arrow-path class="h-6 w-6 animate-spin" />
+                </div>
+
+                <flux:heading size="lg" level="2">Backing up the database</flux:heading>
+                <flux:text class="mt-2 text-zinc-600 dark:text-zinc-300">
+                    Please wait while the backup file is being prepared.
+                </flux:text>
+            </div>
+        </div>
+
         <flux:table class="border! border-gray-200! px-2 transition-opacity dark:border-zinc-700!">
             <flux:table.columns>
                 <flux:table.column>Action</flux:table.column>
@@ -60,107 +73,74 @@
                 <flux:table.column>File Size</flux:table.column>
                 <flux:table.column>Started</flux:table.column>
                 <flux:table.column>Completed</flux:table.column>
-                <flux:table.column>Remarks</flux:table.column>
+                <flux:table.column>User</flux:table.column>
             </flux:table.columns>
 
-            <flux:table.row>
-                <flux:table.cell>
-                    <div class="flex items-center gap-2">
-                        <flux:icon.arrow-down-tray class="h-4 w-4 text-green-600" />
-                        <span class="font-small text-zinc-900 dark:text-zinc-100">Backup</span>
-                    </div>
-                </flux:table.cell>
+            @forelse ($this->histories as $history)
+                <flux:table.row wire:key="backup-restore-history-{{ $history->id }}">
+                    <flux:table.cell>
+                        <div class="flex items-center gap-2">
+                            @if ($history->action === 'backup')
+                                <flux:icon.arrow-down-tray class="h-4 w-4 text-green-600" />
+                            @else
+                                <flux:icon.arrow-path class="h-4 w-4 text-blue-600" />
+                            @endif
+                            <span class="font-small text-zinc-900 capitalize dark:text-zinc-100">{{ $history->action }}</span>
+                        </div>
+                    </flux:table.cell>
 
-                <flux:table.cell>
-                    <span class="font-small text-zinc-900 dark:text-zinc-100">coaftc-backup-2026-06-02.sql</span>
-                </flux:table.cell>
+                    <flux:table.cell>
+                        <span class="font-small text-zinc-900 dark:text-zinc-100">{{ $history->file_name ?? '-' }}</span>
+                    </flux:table.cell>
 
-                <flux:table.cell>
-                    <flux:badge color="green" variant="subtle">Completed</flux:badge>
-                </flux:table.cell>
+                    <flux:table.cell>
+                        @php
+                            $statusColor = match ($history->status) {
+                                'completed' => 'green',
+                                'failed' => 'red',
+                                default => 'blue',
+                            };
+                        @endphp
 
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">18.4 MB</span>
-                </flux:table.cell>
+                        <flux:badge :color="$statusColor" variant="subtle">{{ str($history->status)->headline() }}</flux:badge>
+                    </flux:table.cell>
 
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Jun 02, 2026 05:00 PM</span>
-                </flux:table.cell>
+                    <flux:table.cell>
+                        @if ($history->file_size)
+                            <span class="text-zinc-700 dark:text-zinc-300">{{ Number::fileSize($history->file_size) }}</span>
+                        @else
+                            <span class="text-zinc-500 dark:text-zinc-400">-</span>
+                        @endif
+                    </flux:table.cell>
 
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Jun 02, 2026 05:02 PM</span>
-                </flux:table.cell>
+                    <flux:table.cell>
+                        <span class="text-zinc-700 dark:text-zinc-300">{{ $history->started_at?->format('M d, Y h:i A') ?? '-' }}</span>
+                    </flux:table.cell>
 
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Manual backup created.</span>
-                </flux:table.cell>
-            </flux:table.row>
+                    <flux:table.cell>
+                        @if ($history->completed_at)
+                            <span class="text-zinc-700 dark:text-zinc-300">{{ $history->completed_at->format('M d, Y h:i A') }}</span>
+                        @else
+                            <span class="text-zinc-500 dark:text-zinc-400">Pending</span>
+                        @endif
+                    </flux:table.cell>
 
-            <flux:table.row>
-                <flux:table.cell>
-                    <div class="flex items-center gap-2">
-                        <flux:icon.arrow-path class="h-4 w-4 text-blue-600" />
-                        <span class="font-small text-zinc-900 dark:text-zinc-100">Restore</span>
-                    </div>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="font-small text-zinc-900 dark:text-zinc-100">coaftc-backup-2026-05-31.sql</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <flux:badge color="blue" variant="subtle">In Progress</flux:badge>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">17.9 MB</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Jun 02, 2026 04:42 PM</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-500 dark:text-zinc-400">Pending</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Restore verification running.</span>
-                </flux:table.cell>
-            </flux:table.row>
-
-            <flux:table.row>
-                <flux:table.cell>
-                    <div class="flex items-center gap-2">
-                        <flux:icon.arrow-down-tray class="h-4 w-4 text-green-600" />
-                        <span class="font-small text-zinc-900 dark:text-zinc-100">Backup</span>
-                    </div>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="font-small text-zinc-900 dark:text-zinc-100">coaftc-backup-2026-05-29.sql</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <flux:badge color="red" variant="subtle">Failed</flux:badge>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-500 dark:text-zinc-400">-</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">May 29, 2026 08:15 PM</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">May 29, 2026 08:16 PM</span>
-                </flux:table.cell>
-
-                <flux:table.cell>
-                    <span class="text-zinc-700 dark:text-zinc-300">Storage location unavailable.</span>
-                </flux:table.cell>
-            </flux:table.row>
+                    <flux:table.cell>
+                        <span class="text-zinc-700 dark:text-zinc-300">{{ $history->user->name }}</span>
+                    </flux:table.cell>
+                </flux:table.row>
+            @empty
+                <flux:table.row>
+                    <flux:table.cell colspan="6">
+                        <div class="py-8 text-center text-sm text-zinc-500 dark:text-zinc-400">
+                            No backup or restore history yet.
+                        </div>
+                    </flux:table.cell>
+                </flux:table.row>
+            @endforelse
         </flux:table>
+        <div class="mt-2">
+                {{ $this->histories->links(data:['scrollTo' => false]) }}
+        </div>
     </flux:card>
 </div>
