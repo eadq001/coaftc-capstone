@@ -27,6 +27,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('/dashboard')->group(function 
     Route::livewire('/users', 'dashboard.users.create-users')->name('dashboard.users');
     Route::livewire('/employees', 'dashboard.employees')->name('dashboard.employees');
     Route::livewire('/archived-products', 'dashboard.archives.archive-products')->name('dashboard.archived-products');
+    Route::livewire('/backup-and-restore', 'dashboard.backup-and-restore')->name('dashboard.backup-and-restore');
 });
 
 
