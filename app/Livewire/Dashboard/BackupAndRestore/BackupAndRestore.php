@@ -4,8 +4,10 @@ namespace App\Livewire\Dashboard\BackupAndRestore;
 
 use App\Livewire\Dashboard;
 use App\Models\BackupRestoreHistory;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\WithPagination;
@@ -47,7 +49,6 @@ class BackupAndRestore extends Dashboard
             ]);
 
             return Storage::disk('local')->download($filePath, $fileName);
-
         } catch (Throwable) {
             $this->dispatch('backup-error');
 
@@ -55,10 +56,63 @@ class BackupAndRestore extends Dashboard
         }
     }
 
-    #[Computed]
-    public function histories()
+    public function restoreDb(): void
     {
-        return BackupRestoreHistory::query()->latest()->paginate(15, pageName: 'histories');
+        $startedAt = now();
+
+        try {
+            $backupDirectory = config('backup.backup.name', 'coaftc-backup');
+            $latestBackup = collect(Storage::disk('local')->files($backupDirectory))
+                ->filter(fn ($file) => str_ends_with($file, '.zip'))
+                ->sortByDesc(fn ($file) => Storage::disk('local')->lastModified($file))
+                ->map(fn ($file) => [
+                    'name' => basename($file),
+                    'path' => $file,
+                    'size' => Storage::disk('local')->size($file),
+                    'last_modified' => Storage::disk('local')->lastModified($file),
+                ])
+                ->first();
+
+            if (! $latestBackup) {
+                $this->dispatch('restore-error');
+
+                return;
+            }
+
+            $exitCode = Artisan::call('backup:restore', [
+                '--backup' => 'latest',
+                '--no-interaction' => true,
+            ]);
+
+            if ($exitCode === 0) {
+                BackupRestoreHistory::create([
+                    'user_id' => auth()->id(),
+                    'action' => 'restore',
+                    'file_name' => $latestBackup['name'],
+                    'file_size' => $latestBackup['size'],
+                    'file_path' => $latestBackup['path'],
+                    'status' => 'completed',
+                    'started_at' => $startedAt,
+                    'completed_at' => now(),
+                ]);
+
+                $this->dispatch('restore-success');
+            } else {
+                $this->dispatch('restore-error');
+            }
+        } catch (Throwable $e) {
+            Log::error('Restore failed: '.$e->getMessage());
+            $this->dispatch('restore-error');
+        }
+    }
+
+    #[Computed]
+    public function histories(): LengthAwarePaginator
+    {
+        return BackupRestoreHistory::query()
+            ->with('user')
+            ->latest()
+            ->paginate(15, pageName: 'histories');
     }
 
     public function render(): View
