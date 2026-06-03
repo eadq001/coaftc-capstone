@@ -11,9 +11,17 @@ export default defineConfig({
         tailwindcss(),
     ],
     server: {
+        host: true,
+        port: 5173,
         allowedHosts: true,
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+        // hmr: {
+        //     host: 'https://breezy-masks-knock.loca.lt/',
+        //     protocol: 'wss',
+        //     port: 443,
+        // },
     },
+
 });

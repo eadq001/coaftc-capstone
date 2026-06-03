@@ -37,6 +37,8 @@ class BackupAndRestore extends Dashboard
                 return null;
             }
 
+            Artisan::call('backup:clean');
+
             BackupRestoreHistory::create([
                 'user_id' => auth()->id(),
                 'action' => 'backup',
