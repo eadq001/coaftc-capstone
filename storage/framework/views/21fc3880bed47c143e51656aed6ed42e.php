@@ -1,4 +1,5 @@
 <?php
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Subcategory;
 use Livewire\Component;

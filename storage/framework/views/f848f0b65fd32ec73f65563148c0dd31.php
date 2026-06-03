@@ -1,4 +1,5 @@
 <?php
+use App\Models\ActivityLog;
 use App\Models\Unit;
 use Livewire\Component;
 ?>

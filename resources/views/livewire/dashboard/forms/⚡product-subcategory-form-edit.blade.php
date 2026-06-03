@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Subcategory;
 use Livewire\Component;
@@ -25,7 +26,24 @@ new class extends Component {
             'subcategory_name' => 'required|min:5|string',
         ]);
 
-        $this->subcategoryToEditModel->update($validated);
+        $this->subcategoryToEditModel->fill($validated);
+        $changes = $this->subcategoryToEditModel->getDirty();
+
+        if ($changes !== []) {
+            $oldValues = collect(array_keys($changes))
+                ->mapWithKeys(fn (string $key): array => [$key => $this->subcategoryToEditModel->getOriginal($key)])
+                ->all();
+
+            $this->subcategoryToEditModel->save();
+
+            ActivityLog::record(
+                action: 'update',
+                model: 'Subcategory',
+                oldValues: $oldValues,
+                newValues: $changes,
+            );
+        }
+
         $this->reset('subcategory_name');
         $this->successMessage = 'Subcategory Successfully updated';
         $this->dispatch('add-edit-product-subcategory-success');

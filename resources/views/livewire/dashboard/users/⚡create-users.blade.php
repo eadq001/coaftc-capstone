@@ -3,6 +3,7 @@
 use App\Enums\UserRoles;
 use App\Livewire\Dashboard;
 use App\Mail\UserEmailVerification;
+use App\Models\ActivityLog;
 use App\Models\UnverifiedUser;
 use Illuminate\Http\Client\ConnectionException;
 use Livewire\Attributes\Layout;
@@ -56,7 +57,21 @@ class extends Component {
             Mail::to($this->email)->send(New UserEmailVerification($url));
 
             $this->password = Hash::make($this->password);
-            UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
+            $unverifiedUser = UnverifiedUser::create($this->only('username', 'password', 'user_role', 'email', 'verification_token'));
+
+            ActivityLog::record(
+                action: 'create',
+                model: 'User',
+                newValues: [
+                    'id' => $unverifiedUser->id,
+                    'name' => $unverifiedUser->username,
+                    'email' => $unverifiedUser->email,
+                    'user_role' => $unverifiedUser->user_role,
+                    'status' => 'pending_email_verification',
+                    'created_at' => $unverifiedUser->created_at,
+                ],
+            );
+
             $this->reset();
 
             $this->userCreated = true;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use Livewire\Component;
 
@@ -17,7 +18,13 @@ new class extends Component {
 
         $this->reset('category_name');
 
-        Category::create($validated);
+        $category = Category::create($validated);
+
+        ActivityLog::record(
+            action: 'create',
+            model: 'Category',
+            newValues: ActivityLog::valuesFor($category),
+        );
 
         $this->dispatch('add-edit-product-category-success');
         $this->successMessage = 'Category Successfully added';

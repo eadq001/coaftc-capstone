@@ -3,6 +3,7 @@
 namespace App\Livewire\Components;
 
 use App\Models\Category;
+use App\Models\ActivityLog;
 use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
@@ -26,7 +27,18 @@ class RestoreModal extends Component
             'Unit' => 'product-unit-restore-success'
         ];
 
+        $oldValues = ActivityLog::valuesFor($model);
+
         $model->restore();
+        $model->refresh();
+
+        ActivityLog::record(
+            action: 'restore',
+            model: $this->modelName,
+            oldValues: $oldValues,
+            newValues: ActivityLog::valuesFor($model),
+        );
+
         $this->dispatch($events[$this->modelName]);
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use Livewire\Component;
 
@@ -27,7 +28,24 @@ new class extends Component {
             'category_name' => 'required|min:5|string',
         ]);
 
-        $this->categoryToEditModel->update($validated);
+        $this->categoryToEditModel->fill($validated);
+        $changes = $this->categoryToEditModel->getDirty();
+
+        if ($changes !== []) {
+            $oldValues = collect(array_keys($changes))
+                ->mapWithKeys(fn (string $key): array => [$key => $this->categoryToEditModel->getOriginal($key)])
+                ->all();
+
+            $this->categoryToEditModel->save();
+
+            ActivityLog::record(
+                action: 'update',
+                model: 'Category',
+                oldValues: $oldValues,
+                newValues: $changes,
+            );
+        }
+
         $this->reset('category_name');
 //        $this->js('setTimeout()=>Livewire.dispatch("add-edit-product-category-success"), 0)');
         $this->successMessage = 'Category Successfully updated';

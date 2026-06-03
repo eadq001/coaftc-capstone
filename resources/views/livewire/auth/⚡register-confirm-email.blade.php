@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\UnverifiedUser;
 use App\Models\User;
 use Livewire\Attributes\Layout;
@@ -16,12 +17,28 @@ class extends Component {
 
         if ($user) {
             DB::transaction(function () use ($user) {
-                User::create(['name' => $user->username,
+                $verifiedUser = User::create(['name' => $user->username,
                     'email' => $user->email,
                     'password' => $user->password,
                     'user_role' => $user->user_role,
                     'email_verified_at' => now()
                 ]);
+
+                ActivityLog::record(
+                    action: 'verify_email',
+                    model: 'User',
+                    oldValues: [
+                        'email' => $user->email,
+                        'email_verified_at' => null,
+                    ],
+                    newValues: [
+                        'id' => $verifiedUser->id,
+                        'email' => $verifiedUser->email,
+                        'email_verified_at' => $verifiedUser->email_verified_at,
+                    ],
+                    userId: $verifiedUser->id,
+                );
+
                 $user->delete();
                 $this->verified = true;
             });

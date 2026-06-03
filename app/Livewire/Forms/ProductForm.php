@@ -58,16 +58,14 @@ class ProductForm extends Form
             $validated['class'] = null;
         }
 
-        DB::transaction(function () use($validated) {
+        DB::transaction(function () use ($validated): void {
 
-            Product::create($validated);
-            ActivityLog::create([
-                'user_id' => auth()->user()->id,
-                'action' => 'create',
-                'model' => 'product',
-                'new_values' => $validated
-
-            ]);
+            $product = Product::create($validated);
+            ActivityLog::record(
+                action: 'create',
+                model: 'Product',
+                newValues: ActivityLog::valuesFor($product),
+            );
         });
 
         $this->reset();
@@ -104,16 +102,50 @@ class ProductForm extends Form
         $validated['stock_level'] = $stockLevel;
         $validated['price'] = $price;
 
-        //model update method
-        $this->product->update($validated);
+        DB::transaction(function () use ($validated): void {
+            $this->product->fill($validated);
+            $changes = $this->product->getDirty();
+
+            if ($changes !== []) {
+                $oldValues = collect(array_keys($changes))
+                    ->mapWithKeys(fn (string $key): array => [$key => $this->product->getOriginal($key)])
+                    ->all();
+
+                $this->product->save();
+
+                ActivityLog::record(
+                    action: 'update',
+                    model: 'Product',
+                    oldValues: $oldValues,
+                    newValues: $changes,
+                );
+            }
+        });
 
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
 
     public function addStock(int $stockLevel): void
     {
+        $oldValues = [
+            'stock_level' => $this->product->stock_level,
+            'user_id' => $this->product->user_id,
+        ];
+
         $this->product->increment('stock_level', $stockLevel);
         $this->product->update(['user_id' => auth()->user()->id]);
+        $this->product->refresh();
+
+        ActivityLog::record(
+            action: 'update',
+            model: 'Product',
+            oldValues: $oldValues,
+            newValues: [
+                'stock_level' => $this->product->stock_level,
+                'user_id' => $this->product->user_id,
+            ],
+        );
+
         $this->stock_level = $this->product->stock_level;
         $this->resetStockToAdd();
     }

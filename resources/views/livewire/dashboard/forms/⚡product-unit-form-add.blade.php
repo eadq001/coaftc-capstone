@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Unit;
 use Livewire\Component;
 
@@ -17,7 +18,13 @@ new class extends Component {
 
         $this->reset('unit_name');
 
-        Unit::create($validated);
+        $unit = Unit::create($validated);
+
+        ActivityLog::record(
+            action: 'create',
+            model: 'Unit',
+            newValues: ActivityLog::valuesFor($unit),
+        );
 
         $this->dispatch('add-edit-product-unit-success');
         $this->successMessage = 'Unit Successfully added';

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Subcategory;
 use Livewire\Component;
@@ -18,7 +19,13 @@ new class extends Component {
 
         $this->reset('subcategory_name');
 
-        Subcategory::create($validated);
+        $subcategory = Subcategory::create($validated);
+
+        ActivityLog::record(
+            action: 'create',
+            model: 'Subcategory',
+            newValues: ActivityLog::valuesFor($subcategory),
+        );
 
         $this->dispatch('add-edit-product-subcategory-success');
         $this->successMessage = 'Subcategory Successfully added';

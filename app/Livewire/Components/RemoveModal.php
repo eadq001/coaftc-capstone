@@ -3,6 +3,7 @@
 namespace App\Livewire\Components;
 
 use App\Models\Category;
+use App\Models\ActivityLog;
 use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
@@ -29,7 +30,19 @@ class RemoveModal extends Component
 
         $eventToDispatch = $events[$this->modelName];
 
+        $oldValues = ActivityLog::valuesFor($model);
+
         $model->delete();
+
+        ActivityLog::record(
+            action: 'delete',
+            model: $this->modelName,
+            oldValues: $oldValues,
+            newValues: [
+                'deleted_at' => $model->deleted_at,
+            ],
+        );
+
         $this->dispatch($eventToDispatch);
     }
 

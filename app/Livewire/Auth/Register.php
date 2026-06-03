@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Models\ActivityLog;
 use App\Models\User;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\View;
@@ -21,7 +22,14 @@ class Register extends Component
 
     public function save(): void
     {
-        User::create($this->validate());
+        $user = User::create($this->validate());
+
+        ActivityLog::record(
+            action: 'create',
+            model: 'User',
+            newValues: ActivityLog::valuesFor($user),
+            userId: $user->id,
+        );
 
         $this->redirect('/login', true);
     }

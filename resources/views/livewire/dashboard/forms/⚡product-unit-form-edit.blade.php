@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\ActivityLog;
 use App\Models\Unit;
 use Livewire\Component;
 
@@ -24,7 +25,24 @@ new class extends Component {
             'unit_name' => 'required|min:1|string',
         ]);
 
-        $this->unitToEditModel->update($validated);
+        $this->unitToEditModel->fill($validated);
+        $changes = $this->unitToEditModel->getDirty();
+
+        if ($changes !== []) {
+            $oldValues = collect(array_keys($changes))
+                ->mapWithKeys(fn (string $key): array => [$key => $this->unitToEditModel->getOriginal($key)])
+                ->all();
+
+            $this->unitToEditModel->save();
+
+            ActivityLog::record(
+                action: 'update',
+                model: 'Unit',
+                oldValues: $oldValues,
+                newValues: $changes,
+            );
+        }
+
         $this->reset('unit_name');
         $this->successMessage = 'Unit Successfully updated';
         $this->dispatch('add-edit-product-unit-success');
