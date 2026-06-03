@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Forms;
 
+use App\Models\ActivityLog;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
 
@@ -56,7 +58,18 @@ class ProductForm extends Form
             $validated['class'] = null;
         }
 
-        Product::create($validated);
+        DB::transaction(function () use($validated) {
+
+            Product::create($validated);
+            ActivityLog::create([
+                'user_id' => auth()->user()->id,
+                'action' => 'create',
+                'model' => 'product',
+                'new_values' => $validated
+
+            ]);
+        });
+
         $this->reset();
     }
 

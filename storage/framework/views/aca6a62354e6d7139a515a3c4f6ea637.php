@@ -58,7 +58,7 @@ You can restore the deleted products. <?php echo $__env->renderComponent(); ?>
 <?php $component->withAttributes(['class' => 'border border-zinc-300 rounded-lg shadow-sm bg-white overflow-hidden']); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
-        <div class="p-6 border-b border-zinc-200">
+        <div class="p-6 border-zinc-200">
 
             <?php if (isset($component)) { $__componentOriginal0a72bb2009468dece2d4608a050e87ba = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal0a72bb2009468dece2d4608a050e87ba = $attributes; } ?>

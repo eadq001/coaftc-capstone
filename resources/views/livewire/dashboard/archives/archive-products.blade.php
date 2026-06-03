@@ -7,7 +7,7 @@
     </div>
 
     <flux:card class="border border-zinc-300 rounded-lg shadow-sm bg-white overflow-hidden">
-        <div class="p-6 border-b border-zinc-200">
+        <div class="p-6 border-zinc-200">
 
             <flux:table class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
                 <flux:table.columns>

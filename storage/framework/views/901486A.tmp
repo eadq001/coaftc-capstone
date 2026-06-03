@@ -275,11 +275,11 @@ User <?php echo $__env->renderComponent(); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
                             <?php
-                                $oldValues = collect($log->old_values ?? [])
+                                $newValues = collect($log->new_values)
                                 ->map(fn($key, $value) => $key . ':' . $value)
                                 ->implode(',');
 
-                                $changeValues = Str::limit($oldValues, 30);
+                                $changeValues = Str::limit($newValues, 30);
                             ?>
 
                             <?php echo e($changeValues); ?>
@@ -310,7 +310,7 @@ User <?php echo $__env->renderComponent(); ?>
 <?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::processComponentKey($component); ?>
 
                             <?php
-                            $newValues = collect($log->new_values)
+                            $newValues = collect($log->old_values ?? [])
                             ->map(fn($key, $value) => $key . ':' . $value)
                             ->implode(',');
 
