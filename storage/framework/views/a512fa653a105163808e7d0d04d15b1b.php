@@ -21,10 +21,6 @@
     <body class="h-screen bg-gray-100 dark:bg-gray-900 p-6">
     <div class="flex items-center justify-center h-full">
 
-
-
-
-
         <?php echo e($slot); ?>
 
 
