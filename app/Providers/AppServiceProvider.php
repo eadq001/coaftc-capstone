@@ -24,21 +24,21 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::automaticallyEagerLoadRelationships();
 
-//        if (str_starts_with(config('app.url'), 'https://')) {
-//            URL::forceScheme('https');
-//
-//            // Trust forwarded headers from tunnels (ngrok, localtunnel, herd)
-//            // Trust all proxies; limit this in production if desired.
-//            $trustedHeaders = \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_FOR
-//                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_HOST
-//                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PROTO
-//                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PORT
-//                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PREFIX;
-//
-//            Request::setTrustedProxies(
-//                ['0.0.0.0/0', '::/0'],
-//                $trustedHeaders
-//            );
-//        }
+        if (str_starts_with(config('app.url'), 'https://')) {
+            URL::forceScheme('https');
+
+            // Trust forwarded headers from tunnels (ngrok, localtunnel, herd)
+            // Trust all proxies; limit this in production if desired.
+            $trustedHeaders = \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_FOR
+                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_HOST
+                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PROTO
+                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PORT
+                | \Symfony\Component\HttpFoundation\Request::HEADER_X_FORWARDED_PREFIX;
+
+            Request::setTrustedProxies(
+                ['0.0.0.0/0', '::/0'],
+                $trustedHeaders
+            );
+        }
     }
 }

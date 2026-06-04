@@ -17,7 +17,6 @@
         };
     @endphp
 
-
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <flux:heading size="xl" level="1">Activity Logs</flux:heading>
@@ -98,6 +97,9 @@
                     </flux:table.row>
                 @endforelse
             </flux:table>
+            <div class="mt-4">
+            {{ $this->logs->links(data:['scrollTo' => false]) }}
+            </div>
         </div>
     </flux:card>
 

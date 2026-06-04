@@ -6,9 +6,12 @@ use App\Livewire\Dashboard;
 use App\Models\ActivityLog;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
+use Livewire\WithPagination;
 
 class Logs extends Dashboard
 {
+    use WithPagination;
+
     public bool $showLogDetails = false;
 
     /**
@@ -28,7 +31,7 @@ class Logs extends Dashboard
     {
         return ActivityLog::with('user')
             ->latest('date_time')
-            ->paginate(15, pageName: 'activity-logs');
+            ->paginate(10, pageName: 'activity-logs');
     }
 
     public function showDetails(int $logId): void
