@@ -25,6 +25,12 @@ class extends Component {
 
     public bool $paid = false;
 
+    public string $prfSearch = '';
+
+    public ?array $prfReceipt = null;
+
+    public bool $showPrfNotFound = false;
+
     #[Session]
     public float $grandTotal = 0;
 
@@ -188,6 +194,68 @@ class extends Component {
     {
         $this->reset();
         $this->js("document.getElementById('product-search').focus();");
+    }
+
+    public function updatedPrfSearch(string $value): void
+    {
+        $this->reset('prfReceipt', 'showPrfNotFound');
+
+        $value = trim($value);
+
+        if (strlen($value) < 4) {
+            return;
+        }
+
+        $sale = Sale::query()
+            ->with(['salesItem.product.unit', 'user'])
+            ->where('prf_number', 'like', "%{$value}%")
+            ->latest('id')
+            ->first();
+
+        if (!$sale) {
+            $this->showPrfNotFound = true;
+
+            return;
+        }
+
+        $this->prfReceipt = $this->receiptPayload($sale);
+    }
+
+    public function resetPrfSearch(): void
+    {
+        $this->reset('prfSearch', 'prfReceipt', 'showPrfNotFound');
+    }
+
+    public function printPrfReceipt(): void
+    {
+        if (!$this->prfReceipt) {
+            return;
+        }
+
+        PrintReceipt::print($this->prfReceipt);
+    }
+
+    private function receiptPayload(Sale $sale): array
+    {
+        return [
+            'salesItems' => $sale->salesItem
+                ->map(fn ($salesItem) => [
+                    'product_id' => $salesItem->product_id,
+                    'quantity' => $salesItem->quantity,
+                    'inventory_start' => $salesItem->inventory_start,
+                    'inventory_end' => $salesItem->inventory_end,
+                    'unit_price' => $salesItem->unit_price,
+                    'subtotal' => $salesItem->subtotal,
+                    'product_name' => $salesItem->product?->name,
+                    'product_unit' => $salesItem->product?->unit?->unit_name,
+                ])
+                ->toArray(),
+            'prfNumber' => $sale->prf_number,
+            'cashier' => $sale->user?->name ?? 'Unknown',
+            'date' => $sale->created_at?->format('d/m/Y') ?? now()->format('d/m/Y'),
+            'time' => $sale->created_at?->format('g:i:s A') ?? now()->format('g:i:s A'),
+            'grandTotal' => $sale->total_amount,
+        ];
     }
 
     public function pay(): void
@@ -392,6 +460,14 @@ class extends Component {
                                     Transaction
                                 </button>
                             </div>
+                            <flux:modal.trigger name="print-prf-receipt">
+                                <button type="button"
+                                        class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center font-semibold">
+                                    Print PRF
+                                </button>
+                            </flux:modal.trigger>
+                        </div>
+
                         </div>
 
                         <div class="px-6 py-5 sm:px-8">
@@ -401,7 +477,6 @@ class extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
             </aside>
         </div>
     </div>
@@ -472,6 +547,98 @@ class extends Component {
             </div>
         </div>
     @endif
+
+    <flux:modal name="print-prf-receipt" class="min-w-[32rem]" @close="$wire.resetPrfSearch()">
+        <div class="space-y-6">
+            <div>
+                <flux:heading size="lg">Print PRF Receipt</flux:heading>
+                <flux:text class="mt-2">Search the PRF number to load the receipt details.</flux:text>
+            </div>
+
+            <flux:field>
+                <flux:label>PRF Number</flux:label>
+                <flux:input icon="magnifying-glass"
+                            placeholder="PRF26-000001"
+                            autocomplete="on"
+                            wire:model.live.debounce.400ms="prfSearch"/>
+            </flux:field>
+
+            <div wire:loading wire:target="prfSearch" class="text-sm text-zinc-500">
+                Searching receipt...
+            </div>
+
+            @if($showPrfNotFound)
+                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    No receipt found for "{{ $prfSearch }}".
+                </div>
+            @endif
+
+            @if($prfReceipt)
+                <div class="overflow-hidden rounded-xl border border-zinc-200">
+                    <div class="grid gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-sm sm:grid-cols-2">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">PRF No.</p>
+                            <p class="font-semibold text-zinc-900">{{ $prfReceipt['prfNumber'] }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">Associate</p>
+                            <p class="font-semibold text-zinc-900">{{ $prfReceipt['cashier'] }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">Date</p>
+                            <p class="font-semibold text-zinc-900">{{ $prfReceipt['date'] }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">Total</p>
+                            <p class="font-semibold text-zinc-900">₱{{ number_format($prfReceipt['grandTotal'], 2) }}</p>
+                        </div>
+                    </div>
+
+                    <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
+                        @foreach($prfReceipt['salesItems'] as $salesItem)
+                            <div class="grid grid-cols-[minmax(0,1fr)_90px_110px] gap-3 px-4 py-3 text-sm"
+                                 wire:key="prf-item-{{ $salesItem['product_id'] }}-{{ $loop->index }}">
+                                <div>
+                                    <p class="font-medium text-zinc-900">{{ $salesItem['product_name'] ?? 'Unknown product' }}</p>
+                                    <p class="text-xs text-zinc-500">{{ $salesItem['product_unit'] ?? 'unit' }}</p>
+                                </div>
+                                <p class="text-right text-zinc-700">{{ $salesItem['quantity'] }}</p>
+                                <p class="text-right font-semibold text-zinc-900">₱{{ number_format($salesItem['subtotal'], 2) }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <div class="flex gap-2">
+                <flux:spacer/>
+
+                <flux:modal.close>
+                    <flux:button variant="ghost">Close</flux:button>
+                </flux:modal.close>
+
+                <flux:button variant="primary"
+                             icon="printer"
+                             wire:click="printPrfReceipt"
+                             wire:loading.attr="disabled"
+                             wire:target="printPrfReceipt"
+                             :disabled="!$prfReceipt">
+                    Print
+                </flux:button>
+            </div>
+        </div>
+    </flux:modal>
+
+    <div wire:loading.flex wire:target="printPrfReceipt"
+         class="fixed inset-0 z-[70] items-center justify-center bg-black/40 backdrop-blur-sm">
+        <div class="w-full max-w-sm rounded-[2rem] bg-white p-8 text-center shadow-[0_32px_80px_rgba(0,0,0,0.35)]">
+            <div class="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100">
+                <flux:icon.printer class="h-7 w-7 text-emerald-700"/>
+            </div>
+            <flux:heading size="lg" class="text-zinc-950">Printing receipt</flux:heading>
+            <p class="mt-3 text-sm text-zinc-500">Please wait while the PRF receipt is sent to the printer.</p>
+        </div>
+    </div>
 
     @if($showProductNotFound)
         <div x-data @keydown.enter.window="$wire.set('showProductNotFound', false);$wire.resetCurrentItems()"
