@@ -406,11 +406,11 @@ class extends Component {
 
                             <tfoot>
                             <tr class="border-t-2 border-emerald-600 bg-emerald-50">
-                                <td colspan="8"
+                                <td colspan="10"
                                     class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
                                     Total
                                 </td>
-                                <td colspan="3"
+                                <td colspan="2"
                                     class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
                                     {{ $salesTotal }}
                                 </td>

@@ -21,6 +21,7 @@ class extends Component {
 
 //    #[Session]
     public array $currentItem = [];
+    public ?int $price = null;
 
     public bool $paid = false;
 
@@ -60,9 +61,12 @@ class extends Component {
                 'name' => $product->name,
                 'price' => $product->price,
                 'availableStock' => $product->stock_level,
+                'category' => strtolower($product->category->category_name),
                 'quantity' => 0,
                 'class' => $product->class->value ?? null,
             ];
+
+            $this->price = $product->price;
 
             if (!empty($product['size'])) {
                 $this->currentItem['size'] = $product->size;
@@ -115,7 +119,10 @@ class extends Component {
             return;
         }
 
-        $this->validateOnly('currentItemQuantity');
+        $this->validate([
+            'currentItemQuantity' => 'min:1',
+            'price' => 'min:1|integer'
+            ]);
 
         // Editing existing item — replace quantity directly
         if ($this->editingItemIndex !== null) {
@@ -149,6 +156,7 @@ class extends Component {
         }
 
         $this->currentItem['quantity'] = $this->currentItemQuantity;
+        $this->currentItem['price'] = $this->price;
 
         $this->items[] = $this->currentItem;
         $this->resetCurrentItems();
@@ -287,7 +295,11 @@ class extends Component {
                                     <div class="px-4 py-4 text-right font-medium">{{ $item['quantity'] }}</div>
                                     <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
+                                        @if(in_array($item['category'], ['livestock', 'poultry']))
+                                            ₱{{ number_format($item['price'], 2) }}
+                                        @else
                                         ₱{{ number_format($item['quantity'] * $item['price'], 2) }}
+                                        @endif
                                     </div>
 
                                     <div
@@ -411,8 +423,10 @@ class extends Component {
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Price</flux:label>
-                        <flux:input type="text" value="{{ $currentItem['price'] }}" placeholder="Price" readonly/>
+                        <flux:input type="number" wire:model="price" placeholder="Price" :readonly="!in_array($currentItem['category'], ['livestock', 'poultry'])"/>
+                        <flux:error name="price"/>
                     </flux:field>
+
                     <flux:field>
                         <flux:label class="mb-0.5!">Stocks Available</flux:label>
                         <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity"

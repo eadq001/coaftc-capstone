@@ -28,9 +28,9 @@ class extends Component {
     public bool $passwordResetSuccess = false;
 
     public function mount() {
-       if(!DB::table('password_resets')->where('email', $this->email)->first()) {
-        $this->redirect('/');
-       }
+//       if(!DB::table('password_resets')->where('email', $this->email)->first()) {
+//        $this->redirect('/');
+//       }
     }
 
     public function sendResetLink(): void

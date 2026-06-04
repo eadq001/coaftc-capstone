@@ -6,6 +6,7 @@
 .phpactor.json
 .phpunit.result.cache
 /node_modules
+/storage/framework/views
 /vendor
 /nativephp
 /.fleet

@@ -1,12 +1,12 @@
 <x-mail::message>
-# Introduction
+# Email Verification
 
-The body of your message.
+Click the button to verify your email.
 
 <x-mail::button :url="$url">
 Verify Email
 </x-mail::button>
 
 Thanks,<br>
-{{ config('app.name') }}
+{{ 'Coaftc' }}
 </x-mail::message>
