@@ -232,7 +232,7 @@ class extends Component {
             return;
         }
 
-        PrintReceipt::print($this->prfReceipt);
+        PrintReceipt::print($this->prfReceipt, true);
     }
 
     private function receiptPayload(Sale $sale): array
@@ -301,7 +301,7 @@ class extends Component {
 
                 ];
 
-                PrintReceipt::print($transactionInfo, true);
+                PrintReceipt::print($transactionInfo);
                 $this->paid = true;
             });
         }

@@ -29,6 +29,7 @@ class BackupAndRestore extends Dashboard
             $exitCode = Artisan::call('backup:run', [
                 '--only-db' => true,
                 '--filename' => $fileName,
+                '--timeout' => 60
             ]);
 
             if ($exitCode !== 0 || ! Storage::disk('local')->exists($filePath)) {

@@ -8,9 +8,10 @@ use Mike42\Escpos\Printer;
 
 class PrintReceipt
 {
-    public static function print($transactionInfo, bool $reprint = false): void
+    public static function print($transactionInfo, $reprint = false): void
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
+//        $copies = ['COAFTC copy'];
 
         foreach ($copies as $copy) {
 
@@ -39,18 +40,18 @@ class PrintReceipt
                 $product = Product::find($salesItem['product_id']);
                 $productName = $product->name;
                 $productUnit = $product->unit->unit_name;
-                //            dd($productName, $productUnit);
 
                 $printer->text($productName.' ');
                 $printer->text($salesItem['quantity'].' '.$productUnit."\n");
             }
             $printer->feed();
 
-            $printer->text('                 '.$copy);
-            $date = \Illuminate\Support\now()->format('d/m/y h:i s A');
+            $printer->text('                    '.$copy . "\n");
+            $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
 
-            $printer->text('             '.$date);
-
+            if ($reprint) {
+            $printer->text('         '.$date);
+            }
 
             $printer->feed(2);
 
