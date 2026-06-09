@@ -11,7 +11,7 @@ class PrintReceipt
     public static function print($transactionInfo, $reprint = false): void
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
-//        $copies = ['COAFTC copy'];
+        //        $copies = ['COAFTC copy'];
 
         foreach ($copies as $copy) {
 
@@ -46,17 +46,74 @@ class PrintReceipt
             }
             $printer->feed();
 
-            $printer->text('                    '.$copy . "\n");
+            $printer->text('                    '.$copy."\n");
             $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
 
             if ($reprint) {
-            $printer->text('         '.$date);
+                $printer->text('         '.$date);
             }
 
             $printer->feed(2);
 
             $printer->text('-------------------------------');
             //        $printer->text("Total Amount: {$transactionInfo['grandTotal']}");
+
+            $printer->feed(2);
+
+            $printer->cut();
+            $printer->close();
+        }
+    }
+
+    public static function printDispersal($transactionInfo, $reprint = false): void
+    {
+        $copies = ['LGU copy', "Guard's copy", 'COAFTC copy'];
+
+        foreach ($copies as $copy) {
+            $connector = new WindowsPrintConnector('POS58');
+
+            $printer = new Printer($connector);
+
+            $printer->setTextSize(1, 1);
+            $printer->setJustification(Printer::JUSTIFY_CENTER);
+            $printer->text("COAFTC - LGU Dispersal\n");
+            $printer->text("Sian, Sta. Cruz, Bislig City\n");
+            $printer->feed();
+
+            $printer->text("Associate: {$transactionInfo['cashier']}\n");
+            $printer->text("Dispersal No: {$transactionInfo['dispersalNumber']}\n");
+            $printer->text("Date: {$transactionInfo['date']}\n");
+            $printer->text("  Time: {$transactionInfo['time']}");
+
+            if (! empty($transactionInfo['remarks'])) {
+                $printer->feed();
+                $printer->text("Remarks: {$transactionInfo['remarks']}\n");
+            }
+
+            $printer->feed(2);
+
+            $printer->setJustification(Printer::JUSTIFY_LEFT);
+            foreach ($transactionInfo['dispersalItems'] as $dispersalItem) {
+                $product = Product::find($dispersalItem['product_id']);
+                $productName = $product->name;
+                $productUnit = $product->unit->unit_name;
+                $class = $dispersalItem['class'] ?? 'N/A';
+
+                $printer->text($productName.' ');
+                $printer->text($dispersalItem['quantity'].' '.$productUnit.' (Class: '.$class.")\n");
+            }
+            $printer->feed();
+
+            $printer->text('                    '.$copy."\n");
+            $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
+
+            if ($reprint) {
+                $printer->text('         '.$date);
+            }
+
+            $printer->feed(2);
+
+            $printer->text('-------------------------------');
 
             $printer->feed(2);
 

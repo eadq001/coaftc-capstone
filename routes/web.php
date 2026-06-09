@@ -30,8 +30,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('/dashboard')->group(function 
     Route::livewire('/archived-products', 'dashboard.archives.archive-products')->name('dashboard.archived-products');
     Route::livewire('/backup-and-restore', 'dashboard.backup-and-restore')->name('dashboard.backup-and-restore');
     Route::livewire('/logs', 'dashboard.logs')->name('dashboard.logs');
+    Route::livewire('/lgu-support', 'dashboard.lgu.lgu-support')->name('dashboard.lgu-support');
 });
-
 
 Route::middleware(['auth', 'role:admin,inventory_clerk'])->prefix('/dashboard')->group(function () {
     Route::livewire('/products', Products::class)->name('dashboard.products');
@@ -45,4 +45,3 @@ Route::middleware(['auth', 'role:admin,inventory_clerk,cashier'])->prefix('/dash
     Route::livewire('/', Home::class)->name('dashboard.home');
     Route::livewire('/profile', 'dashboard.profile.edit-profile')->name('profile.edit');
 });
-

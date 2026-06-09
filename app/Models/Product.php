@@ -35,8 +35,13 @@ class Product extends Model
         return $this->belongsTo(Unit::class);
     }
 
-    public function salesItem():HasMany
+    public function salesItem(): HasMany
     {
         return $this->hasMany(SalesItem::class);
+    }
+
+    public function dispersalItems(): HasMany
+    {
+        return $this->hasMany(DispersalItem::class);
     }
 }
