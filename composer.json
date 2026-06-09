@@ -18,7 +18,7 @@
         "livewire/livewire": "^4.2",
         "maatwebsite/excel": "^3.1",
         "mike42/escpos-php": "^4.0",
-        "nativephp/desktop": "^2.2",
+        "nativephp/php-bin": "^1.2",
         "spatie/laravel-backup": "^10.2",
         "wnx/laravel-backup-restore": "^1.9"
     },

@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Dashboard;
+use App\Models\ActivityLog;
 use App\Models\Employee;
 use Livewire\Attributes\Computed;
 
@@ -56,6 +57,12 @@ new class extends Dashboard {
 
         Employee::create($validated);
 
+        ActivityLog::record(
+            action: 'create',
+            model: 'Employee',
+            newValues: ActivityLog::valuesFor(Employee::latest()->first()),
+        );
+
         $this->loadEmployees();
         $this->successMessage = 'Employee added successfully.';
 
@@ -109,9 +116,25 @@ new class extends Dashboard {
             'last_name',
             'middle_name',
             'position',
-            'editSuccessMessage'
+            'editSuccessMessage',
 
         ]);
+    }
+
+    public function deleteEmployee(int $id): void
+    {
+        $employee = Employee::findOrFail($id);
+        $oldValues = ActivityLog::valuesFor($employee);
+
+        $employee->delete();
+
+        ActivityLog::record(
+            action: 'delete',
+            model: 'Employee',
+            oldValues: $oldValues,
+        );
+
+        $this->loadEmployees();
     }
 };
 ?>
@@ -153,6 +176,9 @@ new class extends Dashboard {
                     <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
                         Position
                     </th>
+                    <th class="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                        Action
+                    </th>
                 </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-200 bg-white">
@@ -167,7 +193,39 @@ new class extends Dashboard {
                         <td class="px-6 py-4 text-sm text-zinc-900">{{ $employee['last_name'] }}</td>
                         <td class="px-6 py-4 text-sm text-zinc-600">{{ $employee['middle_name'] ?: 'N/A' }}</td>
                         <td class="px-6 py-4 text-sm text-zinc-600">{{ $employee['position'] }}</td>
+                        <td class="px-6 py-4 text-sm text-zinc-600">
+                            <flux:modal.trigger name="employee-modal-{{ $employee['id'] }}" wire:click.stop>
+                                <flux:button size="sm" variant="danger">Delete</flux:button>
+                            </flux:modal.trigger>
+                        </td>
                     </tr>
+
+                    <flux:modal name="employee-modal-{{ $employee['id'] }}" class="min-w-[22rem]">
+                        <div class="space-y-6">
+                            <div>
+                                <flux:heading size="lg">Delete employee?</flux:heading>
+                                <flux:text class="mt-2">
+                                    You're about to delete {{ $employee['first_name'] }} {{ $employee['last_name'] }}.
+                                    This action cannot be undone.
+                                </flux:text>
+                            </div>
+
+                            <div class="flex gap-2">
+                                <flux:spacer/>
+
+                                <flux:modal.close>
+                                    <flux:button variant="ghost">Cancel</flux:button>
+                                </flux:modal.close>
+
+                                <flux:modal.close>
+                                    <flux:button variant="danger"
+                                                 wire:click.stop="deleteEmployee({{ $employee['id'] }})">
+                                        Delete
+                                    </flux:button>
+                                </flux:modal.close>
+                            </div>
+                        </div>
+                    </flux:modal>
                 @empty
                     <tr>
                         <td colspan="5" class="px-6 py-8 text-center text-sm text-zinc-500">

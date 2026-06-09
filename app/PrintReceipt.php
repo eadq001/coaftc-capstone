@@ -8,7 +8,7 @@ use Mike42\Escpos\Printer;
 
 class PrintReceipt
 {
-    public static function print($transactionInfo): void
+    public static function print($transactionInfo, bool $reprint = false): void
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
 
@@ -47,6 +47,10 @@ class PrintReceipt
             $printer->feed();
 
             $printer->text('                 '.$copy);
+            $date = \Illuminate\Support\now()->format('d/m/y h:i s A');
+
+            $printer->text('             '.$date);
+
 
             $printer->feed(2);
 

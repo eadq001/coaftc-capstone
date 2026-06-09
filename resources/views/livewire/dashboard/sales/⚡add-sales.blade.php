@@ -301,7 +301,7 @@ class extends Component {
 
                 ];
 
-                PrintReceipt::print($transactionInfo);
+                PrintReceipt::print($transactionInfo, true);
                 $this->paid = true;
             });
         }

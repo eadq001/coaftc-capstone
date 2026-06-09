@@ -27,11 +27,11 @@
 
                 <div class="max-w-2xl">
                     <div class="inline-flex items-center rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-emerald-50 backdrop-blur-md">
-                        Organic agriculture and fisheries operations
+                        City Organic Agri-Fishery Tourism Complex
                     </div>
 
                     <h2 class="mt-6 max-w-xl text-5xl font-semibold leading-tight text-white">
-                        Secure access for inventory, workforce, and field operations.
+                        InvenSales Pro
                     </h2>
 
                     <p class="mt-5 max-w-xl text-base leading-7 text-emerald-50/78">
@@ -57,8 +57,7 @@
                 </div>
 
                 <div class="flex items-center justify-between border-t border-white/12 pt-6 text-sm text-emerald-50/70">
-                    <span>City Organic Agriculture and Fisheries Training Center</span>
-                    <span>Internal System</span>
+                    <span>Daily Production</span>
                 </div>
             </div>
         </section>
