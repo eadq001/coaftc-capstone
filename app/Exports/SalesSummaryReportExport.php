@@ -163,12 +163,14 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
             $this->tableRanges[] = [$headerRow, $currentRow];
             $currentRow++;
 
+            $rows[] = array_fill(0, count($this->headerRow()), '');
+            $currentRow++;
+
             $allItems = $allItems->merge($items);
             $allDispersals = $allDispersals->merge($monthDispersals);
         }
 
         if ($this->includeGrandTotal && ($allItems->isNotEmpty() || $allDispersals->isNotEmpty())) {
-            $currentRow++;
             $this->grandTotalRow = $currentRow;
             $rows[] = $this->grandTotalRow($allItems, $allDispersals);
         }

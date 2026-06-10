@@ -17,11 +17,11 @@ class DatabaseSeeder extends Seeder
     {
        $this->call(EmployeeSeeder::class);
 
-    //    User::factory()->create([
-    //        'email' => 'eadq1999@gmail.com',
-    //        'password' => '12345678',
-    //        'user_role' => 'admin',
-    //    ]);
+        User::factory()->create([
+            'email' => 'eadq1999@gmail.com',
+            'password' => '12345678',
+            'user_role' => 'admin',
+        ]);
 
         User::factory()->create([
             'email' => 'ashley@gmail.com',

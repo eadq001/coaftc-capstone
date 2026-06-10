@@ -70,7 +70,7 @@ trait ReportHeaderLayout
         $leftLogo->setCoordinates('A1');
         $leftLogo->setWidth(109);
         $leftLogo->setHeight(109);
-        $leftLogo->setOffsetX(22);
+        $leftLogo->setOffsetX(19);
         $leftLogo->setOffsetY(11);
         $leftLogo->setWorksheet($sheet);
 

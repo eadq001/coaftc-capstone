@@ -21,7 +21,6 @@ class EmployeeFactory extends Factory
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'middle_name' => fake()->optional()->firstName(),
-            'address' => fake()->address(),
             'position' => fake()->jobTitle(),
         ];
     }

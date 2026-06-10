@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sale extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected static function booted()
@@ -25,7 +28,7 @@ class Sale extends Model
             if ($latestPrf) {
                 $nextNumber = ((int) substr($latestPrf, strlen($prefix))) + 1;
             }
-            $sale->prf_number = $prefix . str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
+            $sale->prf_number = $prefix.str_pad($nextNumber, 6, '0', STR_PAD_LEFT);
         });
     }
 

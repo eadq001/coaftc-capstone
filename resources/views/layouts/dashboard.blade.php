@@ -83,6 +83,7 @@
 
                 @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
                     <flux:sidebar.item icon="currency-dollar" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
+                    <flux:sidebar.item icon="document-minus" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.void-sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Void Sales</flux:sidebar.item>
                     <flux:sidebar.item icon="document-text" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.reports') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
                 @endif
 

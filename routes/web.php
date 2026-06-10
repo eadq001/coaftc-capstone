@@ -4,6 +4,7 @@ use App\Http\Controllers\LogoutController;
 use App\Livewire\Auth\Register;
 use App\Livewire\Dashboard\Home;
 use App\Livewire\Dashboard\Products;
+use App\Livewire\Dashboard\Sales\VoidSales;
 use App\Livewire\Login;
 use Illuminate\Support\Facades\Route;
 
@@ -39,6 +40,9 @@ Route::middleware(['auth', 'role:admin,inventory_clerk'])->prefix('/dashboard')-
 
 Route::middleware(['auth', 'role:admin,cashier'])->prefix('/dashboard')->group(function () {
     Route::livewire('/sales', 'dashboard.sales.add-sales')->name('dashboard.sales');
+    Route::livewire('/void-sales', VoidSales::class)->name('dashboard.void-sales');
+    Route::livewire('/reports', 'dashboard.reports')->name('dashboard.reports');
+
 });
 
 Route::middleware(['auth', 'role:admin,inventory_clerk,cashier'])->prefix('/dashboard')->group(function () {
