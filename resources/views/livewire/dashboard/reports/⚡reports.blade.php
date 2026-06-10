@@ -133,7 +133,10 @@ class extends Component {
         $this->getSalesReportToday();
 
         return Excel::download(
-            new DailySalesReportExport($this->itemsByCategory ?? collect()),
+            new DailySalesReportExport(
+                $this->itemsByCategory ?? collect(),
+                $this->startDate ?: now()->format('Y-m-d'),
+            ),
             "daily-sales-report-$date.xlsx"
         );
     }
@@ -175,6 +178,7 @@ class extends Component {
 
         [$year, $monthNumber] = $monthParts;
         $items = $this->salesItemsForPeriod($year, $monthNumber);
+        $dispersalItems = $this->dispersalItemsForPeriod($year, $monthNumber);
 
         if ($items->isEmpty()) {
             $this->loadReportPeriods();
@@ -183,7 +187,11 @@ class extends Component {
         }
 
         return Excel::download(
-            new SalesSummaryReportExport(collect([$month => $items])),
+            new SalesSummaryReportExport(
+                collect([$month => $items]),
+                false,
+                collect([$month => $dispersalItems]),
+            ),
             "monthly-sales-report-{$year}-" . str_pad((string) $monthNumber, 2, '0', STR_PAD_LEFT) . '.xlsx'
         );
     }
@@ -197,6 +205,7 @@ class extends Component {
         }
 
         $items = $this->salesItemsForPeriod($reportYear);
+        $dispersalItems = $this->dispersalItemsForPeriod($reportYear);
 
         if ($items->isEmpty()) {
             $this->loadReportPeriods();
@@ -209,7 +218,10 @@ class extends Component {
                 $items
                     ->groupBy(fn ($item) => $item->sale->created_at->format('Y-m'))
                     ->sortKeys(),
-                true
+                true,
+                $dispersalItems
+                    ->groupBy(fn ($item) => $item->dispersal->created_at->format('Y-m'))
+                    ->sortKeys(),
             ),
             "yearly-sales-report-{$reportYear}.xlsx"
         );
@@ -241,6 +253,20 @@ class extends Component {
             ->get()
             ->flatMap
             ->salesItem
+            ->values();
+    }
+
+    private function dispersalItemsForPeriod(int $year, ?int $month = null): Collection
+    {
+        return Dispersal::query()
+            ->whereYear('created_at', $year)
+            ->when($month !== null, fn ($query) => $query->whereMonth('created_at', $month))
+            ->whereHas('dispersalItems')
+            ->with(['dispersalItems.product.category', 'dispersalItems.dispersal'])
+            ->oldest('created_at')
+            ->get()
+            ->flatMap
+            ->dispersalItems
             ->values();
     }
 

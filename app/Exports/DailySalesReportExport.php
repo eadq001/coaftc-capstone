@@ -2,17 +2,24 @@
 
 namespace App\Exports;
 
+use App\Exports\Concerns\ReportHeaderLayout;
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
+use Maatwebsite\Excel\Concerns\WithCustomStartCell;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 
-class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWidths, WithEvents
+class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWidths, WithCustomStartCell, WithEvents
 {
+    use ReportHeaderLayout;
+
+    private const TABLE_START_ROW = 10;
+
     /**
      * @var array<int, int>
      */
@@ -28,19 +35,53 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
      */
     private array $categoryTotalRows = [];
 
-    public function __construct(private readonly Collection $itemsByDate) {}
+    private string $reportDate;
+
+    public function __construct(
+        private readonly Collection $itemsByDate,
+        ?string $reportDate = null,
+    ) {
+        $this->reportDate = $reportDate ?? now()->format('F j, Y');
+    }
+
+    protected function titlePeriod(): string
+    {
+        return 'daily';
+    }
+
+
+    public function startCell(): string
+    {
+        return 'A'.self::TABLE_START_ROW;
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    protected function titlePeriodValues(): array
+    {
+        $parsed = CarbonImmutable::parse($this->reportDate);
+
+        return [
+            $parsed->format('F j, Y'),
+            '',
+        ];
+    }
 
     /**
      * @return array<int, array<int, mixed>>
      */
     public function array(): array
     {
-        $rows = [
-            ['Ref No.', 'Product Name', 'Subcategory', 'Quantity', 'Unit', 'Class', 'Size', 'Inventory', '', 'Price', 'Subtotal', 'Remarks', 'Associate'],
-            ['', '', '', '', '', '', '', 'Start', 'End', '', '', ''],
-        ];
+        $rows = [];
 
-        $currentRow = 3;
+        $currentRow = self::TABLE_START_ROW;
+
+        $rows[] = ['Ref No.', 'Product Name', 'Subcategory', 'Quantity', 'Unit', 'Class', 'Size', 'Inventory', '', 'Price', 'Subtotal', 'Remarks', 'Associate'];
+        $currentRow++;
+
+        $rows[] = ['', '', '', '', '', '', '', 'Start', 'End', '', '', ''];
+        $currentRow++;
 
         foreach ($this->itemsByDate as $date => $items) {
             $this->dateRows[] = $currentRow;
@@ -123,11 +164,10 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             'G' => 10,
             'H' => 10,
             'I' => 10,
-            'J' => 24,
+            'J' => 20,
             'K' => 14,
             'L' => 20,
             'M' => 14,
-
         ];
     }
 
@@ -139,7 +179,11 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
         return [
             AfterSheet::class => function (AfterSheet $event): void {
                 $sheet = $event->sheet->getDelegate();
+                $this->applyHeader($sheet, 'M');
+
                 $highestRow = $sheet->getHighestRow();
+                $tableStart = self::TABLE_START_ROW;
+                $tableHeaderEnd = $tableStart + 1;
 
                 // adjust the page margins
                 $sheet->getPageMargins()->setTop(0.5511);
@@ -154,28 +198,29 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 $sheet->getPageSetup()->setOrientation('landscape');
                 $sheet->getPageSetup()->setFitToPage(true);
 
-                //                $sheet->getSheetView()->setZoomScale(85);
+                $sheet->mergeCells("A{$tableHeaderEnd}:B{$tableHeaderEnd}");
+                $sheet->mergeCells('H10:I10');
+                //                $sheet->mergeCells("A{$tableStart}:M{$tableStart}");
 
-                $sheet->mergeCells('H1:I1');
-                $sheet->getStyle("A1:M{$highestRow}")->applyFromArray([
+                $sheet->getStyle("A{$tableStart}:M{$highestRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
                         ],
                     ],
-                    'alignment' => [
-                        'vertical' => Alignment::VERTICAL_CENTER,
-                    ],
+                    //                    'alignment' => [
+                    //                        'vertical' => Alignment::VERTICAL_CENTER,
+                    //                    ],
                 ]);
-                $sheet->getStyle("H1:H{$highestRow}")->getAlignment()->setWrapText(true);
+                $sheet->getStyle("H{$tableStart}:H{$highestRow}")->getAlignment()->setWrapText(true);
 
-                $sheet->getStyle('A1:J2')->applyFromArray([
+                $sheet->getStyle("A{$tableStart}:M{$tableHeaderEnd}")->applyFromArray([
                     'font' => [
                         'bold' => true,
                     ],
-                    'alignment' => [
-                        'horizontal' => Alignment::HORIZONTAL_LEFT,
-                    ],
+                    //                    'alignment' => [
+                    //                        'horizontal' => Alignment::HORIZONTAL_CENTER,
+                    //                    ],
                 ]);
 
                 foreach ($this->dateRows as $dateRow) {
@@ -189,29 +234,23 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                         ],
                     ]);
 
-                    $sheet->getStyle("H4:I{$highestRow}")->applyFromArray([
-                        //                    'font' => [
-                        //                        'bold' => true,
-                        //                    ],
+                    $sheet->getStyle("H{$dateRow}:I{$highestRow}")->applyFromArray([
                         'alignment' => [
                             'horizontal' => Alignment::HORIZONTAL_CENTER,
                         ],
                     ]);
 
-                    $sheet->getStyle("D4:D{$highestRow}")->applyFromArray([
-                        //                    'font' => [
-                        //                        'bold' => true,
-                        //                    ],
+                    $sheet->getStyle("D{$dateRow}:D{$highestRow}")->applyFromArray([
                         'alignment' => [
                             'horizontal' => Alignment::HORIZONTAL_CENTER,
                         ],
                     ]);
 
-                    $sheet->getStyle("J4:K{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
+                    $sheet->getStyle("J{$dateRow}:K{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
                 }
 
                 foreach ($this->categoryTotalRows as $categoryTotalRow) {
-                    $sheet->getStyle("A{$categoryTotalRow}:J{$categoryTotalRow}")->applyFromArray([
+                    $sheet->getStyle("A{$categoryTotalRow}:M{$categoryTotalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
@@ -219,7 +258,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 }
 
                 foreach ($this->totalRows as $totalRow) {
-                    $sheet->getStyle("A{$totalRow}:L{$totalRow}")->applyFromArray([
+                    $sheet->getStyle("A{$totalRow}:M{$totalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
