@@ -65,8 +65,26 @@
                                         />
                                         <flux:error name="editItems.{{ $index }}.quantity" />
                                     </div>
-                                    <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
-                                    <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item['subtotal'], 2) }}</p>
+                                    <div class="text-right">
+                                        @if(in_array($item['category'], ['livestock', 'poultry']))
+                                            <flux:input
+                                                type="number"
+                                                size="sm"
+                                                min="1"
+                                                wire:change="updateEditPrice({{ $index }}, $event.target.value)"
+                                                value="{{ $item['unit_price'] }}"
+                                            />
+                                        @else
+                                            <p class="text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
+                                        @endif
+                                    </div>
+                                    <p class="text-right font-semibold text-zinc-900">
+                                        @if(in_array($item['category'], ['livestock', 'poultry']))
+                                            ₱{{ number_format($item['unit_price'], 2) }}
+                                        @else
+                                            ₱{{ number_format($item['subtotal'], 2) }}
+                                        @endif
+                                    </p>
                                     <div class="text-right">
                                         <flux:button variant="danger" size="xs" wire:click="removeEditItem({{ $index }})">Remove</flux:button>
                                     </div>
@@ -81,7 +99,13 @@
                                     </div>
                                     <p class="text-right text-zinc-700">{{ $item->quantity }}</p>
                                     <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }}</p>
-                                    <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item->subtotal, 2) }}</p>
+                                    <p class="text-right font-semibold text-zinc-900">
+                                        @if(in_array(strtolower($item->product?->category?->category_name ?? ''), ['livestock', 'poultry']))
+                                            ₱{{ number_format($item->unit_price, 2) }}
+                                        @else
+                                            ₱{{ number_format($item->subtotal, 2) }}
+                                        @endif
+                                    </p>
                                 </div>
                             @endforeach
                         @endif
@@ -121,7 +145,11 @@
 
                     <div class="divide-y divide-zinc-200">
                         @foreach($voidedSales as $voided)
-                            <div class="grid grid-cols-[minmax(0,1fr)_120px_120px_140px_140px_140px_160px] bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60" wire:key="voided-{{ $voided->id }}">
+                            <div
+                                wire:key="voided-{{ $voided->id }}"
+                                wire:click="showVoidedDetails({{ $voided->id }})"
+                                class="grid grid-cols-[minmax(0,1fr)_120px_120px_140px_140px_140px_160px] bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer"
+                            >
                                 <div class="px-4 py-4">
                                     <p class="font-semibold text-zinc-900">{{ $voided->prf_number }}</p>
                                     @if($voided->reason)
@@ -201,5 +229,73 @@
                 <flux:button variant="danger" wire:click="voidSale">Void Sale</flux:button>
             </div>
         </div>
+    </flux:modal>
+
+    <flux:modal name="voided-details" class="min-w-[40rem] max-w-[50rem]" wire:model="showVoidedDetailsModal">
+        @if($selectedVoidedSale)
+            <div class="space-y-6 text-left">
+                <div>
+                    <flux:heading size="lg">{{ $selectedVoidedSale->prf_number }}</flux:heading>
+                    <div class="mt-2 flex flex-wrap gap-3 text-sm">
+                        <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {{ $selectedVoidedSale->action === 'voided' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }}">
+                            {{ ucfirst($selectedVoidedSale->action) }}
+                        </span>
+                        <span class="text-zinc-500">Cashier: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->originalCashier?->name ?? 'Unknown' }}</span></span>
+                        <span class="text-zinc-500">Authorized By: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->authorizedBy?->name ?? 'Unknown' }}</span></span>
+                        <span class="text-zinc-500">Date: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->voided_at?->format('d/m/Y g:i A') ?? 'Unknown' }}</span></span>
+                    </div>
+                    @if($selectedVoidedSale->reason)
+                        <p class="mt-2 text-sm text-zinc-600"><span class="font-medium">Reason:</span> {{ $selectedVoidedSale->reason }}</p>
+                    @endif
+                </div>
+
+                <div class="overflow-hidden rounded-xl border border-zinc-200">
+                    <div class="border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                        Original Items — Total: ₱{{ number_format($selectedVoidedSale->original_total_amount, 2) }}
+                    </div>
+                    <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
+                        @foreach($selectedVoidedSale->original_items as $item)
+                            <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="original-item-{{ $loop->index }}">
+                                <div>
+                                    <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
+                                    <p class="text-xs text-zinc-500">ID: {{ $item['product_id'] ?? '-' }}</p>
+                                </div>
+                                <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
+                                <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
+                                <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item['subtotal'], 2) }}</p>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                @if($selectedVoidedSale->action === 'modified' && $selectedVoidedSale->modified_items)
+                    <div class="overflow-hidden rounded-xl border border-zinc-200">
+                        <div class="border-b border-zinc-200 bg-zinc-50 px-4 py-3 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                            Modified Items — Total: ₱{{ number_format($selectedVoidedSale->modified_total_amount, 2) }}
+                        </div>
+                        <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
+                            @foreach($selectedVoidedSale->modified_items as $item)
+                                <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="modified-item-{{ $loop->index }}">
+                                    <div>
+                                        <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
+                                        <p class="text-xs text-zinc-500">ID: {{ $item['product_id'] ?? '-' }}</p>
+                                    </div>
+                                    <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
+                                    <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
+                                    <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item['subtotal'], 2) }}</p>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <div class="flex gap-2">
+                    <flux:spacer />
+                    <flux:modal.close>
+                        <flux:button variant="ghost" wire:click="closeVoidedDetails">Close</flux:button>
+                    </flux:modal.close>
+                </div>
+            </div>
+        @endif
     </flux:modal>
 </div>

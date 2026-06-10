@@ -43,6 +43,10 @@ class VoidSales extends Component
 
     public string $voidReason = '';
 
+    public ?VoidedSale $selectedVoidedSale = null;
+
+    public bool $showVoidedDetailsModal = false;
+
     public function updatedPrfSearch(string $value): void
     {
         $this->reset('sale', 'showPrfNotFound', 'authorizedAdminId', 'isEditing', 'editItems', 'showVoidConfirm', 'voidReason');
@@ -55,7 +59,7 @@ class VoidSales extends Component
         }
 
         $this->sale = Sale::query()
-            ->with(['salesItem.product.unit', 'user'])
+            ->with(['salesItem.product.unit', 'salesItem.product.category', 'user'])
             ->where('prf_number', 'like', "%{$value}%")
             ->latest('id')
             ->first();
@@ -119,6 +123,7 @@ class VoidSales extends Component
                 'product_id' => $item->product_id,
                 'product_name' => $item->product?->name,
                 'product_unit' => $item->product?->unit?->unit_name,
+                'category' => strtolower($item->product?->category?->category_name ?? ''),
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,
                 'inventory_start' => $item->inventory_start,
@@ -132,6 +137,15 @@ class VoidSales extends Component
     {
         $this->isEditing = false;
         $this->editItems = [];
+    }
+
+    public function isLivestockOrPoultry(int $index): bool
+    {
+        if (! isset($this->editItems[$index])) {
+            return false;
+        }
+
+        return in_array($this->editItems[$index]['category'], ['livestock', 'poultry'], true);
     }
 
     public function updateEditQuantity(int $index, int $value): void
@@ -157,7 +171,24 @@ class VoidSales extends Component
         }
 
         $this->editItems[$index]['quantity'] = $value;
-        $this->editItems[$index]['subtotal'] = $value * $item['unit_price'];
+
+        if ($this->isLivestockOrPoultry($index)) {
+            $this->editItems[$index]['subtotal'] = $item['unit_price'];
+        } else {
+            $this->editItems[$index]['subtotal'] = $value * $item['unit_price'];
+        }
+
+        $this->resetValidation();
+    }
+
+    public function updateEditPrice(int $index, int $value): void
+    {
+        if ($value < 1 || ! isset($this->editItems[$index]) || ! $this->isLivestockOrPoultry($index)) {
+            return;
+        }
+
+        $this->editItems[$index]['unit_price'] = $value;
+        $this->editItems[$index]['subtotal'] = $value;
         $this->resetValidation();
     }
 
@@ -183,6 +214,7 @@ class VoidSales extends Component
             $originalItems = $this->sale->salesItem
                 ->map(fn ($item) => [
                     'product_id' => $item->product_id,
+                    'product_name' => $item->product?->name ?? 'Unknown',
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
                     'subtotal' => $item->subtotal,
@@ -224,8 +256,8 @@ class VoidSales extends Component
             // Delete original items
             $this->sale->salesItem()->delete();
 
-            // Create new items
-            $newItems = collect($this->editItems)->map(fn ($item) => [
+            // Create new items for database (without product_name)
+            $newDbItems = collect($this->editItems)->map(fn ($item) => [
                 'product_id' => $item['product_id'],
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],
@@ -234,10 +266,21 @@ class VoidSales extends Component
                 'inventory_end' => $item['inventory_start'] - $item['quantity'],
             ])->toArray();
 
-            $this->sale->salesItem()->createMany($newItems);
+            $this->sale->salesItem()->createMany($newDbItems);
 
             // Update sale total
             $this->sale->update(['total_amount' => $newTotal]);
+
+            // Build modified items for JSON record (with product_name)
+            $newItemsForRecord = collect($this->editItems)->map(fn ($item) => [
+                'product_id' => $item['product_id'],
+                'product_name' => $item['product_name'] ?? Product::find($item['product_id'])?->name ?? 'Unknown',
+                'quantity' => $item['quantity'],
+                'unit_price' => $item['unit_price'],
+                'subtotal' => $item['subtotal'],
+                'inventory_start' => $item['inventory_start'],
+                'inventory_end' => $item['inventory_start'] - $item['quantity'],
+            ])->toArray();
 
             // Record in voided_sales
             VoidedSale::create([
@@ -249,7 +292,7 @@ class VoidSales extends Component
                 'authorized_by' => $this->authorizedAdminId,
                 'original_cashier_id' => $this->sale->user_id,
                 'original_items' => $originalItems,
-                'modified_items' => $newItems,
+                'modified_items' => $newItemsForRecord,
                 'reason' => null,
                 'voided_at' => now(),
             ]);
@@ -281,6 +324,7 @@ class VoidSales extends Component
             $originalItems = $this->sale->salesItem
                 ->map(fn ($item) => [
                     'product_id' => $item->product_id,
+                    'product_name' => $item->product?->name ?? 'Unknown',
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
                     'subtotal' => $item->subtotal,
@@ -324,6 +368,21 @@ class VoidSales extends Component
     {
         $this->showVoidConfirm = false;
         $this->voidReason = '';
+    }
+
+    public function showVoidedDetails(int $id): void
+    {
+        $this->selectedVoidedSale = VoidedSale::query()
+            ->with(['authorizedBy', 'originalCashier', 'originalSale'])
+            ->find($id);
+
+        $this->showVoidedDetailsModal = true;
+    }
+
+    public function closeVoidedDetails(): void
+    {
+        $this->showVoidedDetailsModal = false;
+        $this->selectedVoidedSale = null;
     }
 
     public function render()
