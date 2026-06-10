@@ -2,6 +2,7 @@
 
 use App\Exports\DailySalesReportExport;
 use App\Exports\SalesSummaryReportExport;
+use App\Models\Dispersal;
 use App\Models\Sale;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
@@ -34,6 +35,7 @@ class extends Component {
         if ($this->startDate && $this->endDate) {
             $searchText = trim($this->searchText);
 
+            // Fetch sales
             $this->result = Sale::query()
                 ->whereDate('created_at', '>=', $this->startDate)
                 ->whereDate('created_at', '<=', $this->endDate)
@@ -55,10 +57,73 @@ class extends Component {
                 ])
                 ->get();
 
-            $this->itemsByCategory = $this->result
-                ->flatMap
-                ->salesItem
-                ->groupBy(fn($item) => $item->sale->created_at->format('Y-m-d'));
+            // Fetch dispersals
+            $dispersals = Dispersal::query()
+                ->whereDate('created_at', '>=', $this->startDate)
+                ->whereDate('created_at', '<=', $this->endDate)
+                ->when($searchText !== '', function ($query) use ($searchText) {
+                    $query->whereHas('dispersalItems.product', function ($query) use ($searchText) {
+                        $query->where('name', 'like', "%{$searchText}%");
+                    });
+                })
+                ->with([
+                    'dispersalItems' => function ($query) use ($searchText) {
+                        $query
+                            ->when($searchText !== '', function ($query) use ($searchText) {
+                                $query->whereHas('product', function ($query) use ($searchText) {
+                                    $query->where('name', 'like', "%{$searchText}%");
+                                });
+                            })
+                            ->with(['product.category', 'product.unit', 'dispersal.user']);
+                    },
+                ])
+                ->get();
+
+            // Transform sales items to unified format
+            $salesItems = $this->result->flatMap->salesItem->map(function ($item) {
+                return [
+                    'transaction_number' => $item->sale->prf_number,
+                    'product_name' => $item->product->name,
+                    'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
+                    'quantity' => $item->quantity,
+                    'unit_name' => $item->product->unit?->unit_name ?? '',
+                    'class' => $item->product->class?->value ?? '',
+                    'size' => $item->product->size ?? '',
+                    'inventory_start' => $item->inventory_start,
+                    'inventory_end' => (string) $item->inventory_end ?? '0',
+                    'unit_price' => $item->unit_price,
+                    'subtotal' => $item->subtotal,
+                    'remarks' => '',
+                    'user_name' => $item->sale->user?->name ?? 'N/A',
+                    'created_at' => $item->sale->created_at,
+                    'type' => 'sale',
+                ];
+            });
+
+            // Transform dispersal items to unified format
+            $dispersalItems = $dispersals->flatMap->dispersalItems->map(function ($item) {
+                return [
+                    'transaction_number' => $item->dispersal->dispersal_number,
+                    'product_name' => $item->product->name,
+                    'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
+                    'quantity' => $item->quantity,
+                    'unit_name' => $item->product->unit?->unit_name ?? '',
+                    'class' => $item->class ?? '',
+                    'size' => $item->product->size ?? '',
+                    'inventory_start' => $item->inventory_start,
+                    'inventory_end' => (string) $item->inventory_end ?? '0',
+                    'unit_price' => $item->unit_price,
+                    'subtotal' => $item->subtotal,
+                    'remarks' => $item->dispersal->remarks ?? '',
+                    'user_name' => $item->dispersal->user?->name ?? 'N/A',
+                    'created_at' => $item->dispersal->created_at,
+                    'type' => 'dispersal',
+                ];
+            });
+
+            // Combine and group by date
+            $this->itemsByCategory = $salesItems->merge($dispersalItems)
+                ->groupBy(fn ($item) => $item['created_at']->format('Y-m-d'));
         }
     }
 
@@ -359,7 +424,7 @@ class extends Component {
                         <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.longest.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
-                                <th colspan="12"
+                                <th colspan="13"
                                     class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.18em]">
                                     <div class="space-x-8">
                                         {{ date_format(date_create($key), 'F j, Y') }}
@@ -367,7 +432,7 @@ class extends Component {
                                 </th>
                             </tr>
                             <tr class="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
-                                <th class="px-4 py-3 text-left">PRF No.</th>
+                                <th class="px-4 py-3 text-left">Ref No.</th>
                                 <th class="px-4 py-3 text-left">Product Name</th>
                                 <th class="px-4 py-3 text-left">Category</th>
                                 <th class="px-4 py-3 text-left">Qty</th>
@@ -378,6 +443,7 @@ class extends Component {
                                 <th class="px-4 py-3 text-left">End</th>
                                 <th class="px-4 py-3 text-left">Price</th>
                                 <th class="px-4 py-3 text-left">Subtotal</th>
+                                <th class="px-4 py-3 text-left">Remarks</th>
                                 <th class="px-4 py-3 text-left">Associate</th>
                             </tr>
                             </thead>
@@ -385,19 +451,20 @@ class extends Component {
                             <tbody class="divide-y divide-zinc-100 bg-white">
                             @foreach($saleDate as $item)
                                 <tr class="transition hover:bg-emerald-50/60">
-                                    <td class="px-4 py-4 font-medium text-zinc-900">{{ $item->sale->prf_number }}</td>
-                                    <td class="px-4 py-4 text-zinc-800">{{ $item->product?->name }}</td>
-                                    <td class="px-4 py-4 text-zinc-600">{{ $item->product->category?->category_name ?? 'Uncategorized' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->quantity }}</td>
-                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->unit?->unit_name ?? 'N/A' }}</td>
-                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->class ?? '' }}</td>
-                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item->product->size ?? '' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->inventory_start }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->inventory_end }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item?->unit_price }}</td>
-                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item?->subtotal }}</td>
+                                    <td class="px-4 py-4 font-medium text-zinc-900">{{ $item['transaction_number'] }}</td>
+                                    <td class="px-4 py-4 text-zinc-800">{{ $item['product_name'] }}</td>
+                                    <td class="px-4 py-4 text-zinc-600">{{ $item['category_name'] ?? 'Uncategorized' }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['quantity'] }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item['unit_name'] ?? 'N/A' }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item['class'] ?? '' }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item['size'] ?? '' }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['inventory_start'] }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['inventory_end'] }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['unit_price'] }}</td>
+                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item['subtotal'] }}</td>
+                                    <td class="px-4 py-4 text-left text-zinc-600">{{ $item['remarks'] }}</td>
                                     <td class="px-4 py-4 text-zinc-600">
-                                        <span>{{ $item->sale->user?->name ?? 'N/A' }}</span>
+                                        <span>{{ $item['user_name'] ?? 'N/A' }}</span>
                                     </td>
                                 </tr>
                             @endforeach
@@ -410,7 +477,7 @@ class extends Component {
                                     class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
                                     Total
                                 </td>
-                                <td colspan="2"
+                                <td colspan="3"
                                     class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
                                     {{ $salesTotal }}
                                 </td>
@@ -419,7 +486,7 @@ class extends Component {
                         </table>
 
                         <div class="p-4 flex gap-4 text-sm ">
-                        @foreach($saleDate->groupBy(fn($item) => $item->product->category?->category_name ?? 'Uncategorized') as $category => $item)
+                        @foreach($saleDate->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
                         <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
                             <span>{{ $category . ':'}}</span>
                             <span>{{ $item->sum('subtotal') }}</span>

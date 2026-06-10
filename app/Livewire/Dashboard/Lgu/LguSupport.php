@@ -104,7 +104,7 @@ class LguSupport extends Dashboard
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound', 'remarks');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
     }

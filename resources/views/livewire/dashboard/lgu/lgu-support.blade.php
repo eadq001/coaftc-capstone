@@ -119,7 +119,6 @@
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
                             <button type="button" wire:click="submit" @disabled($submitted) x-data
-                                    @keydown.window.s="$wire.submit()"
                                     class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
                                 Submit
                             </button>
@@ -127,7 +126,7 @@
                             <div wire:click="newTransaction"
                                  class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
                                 <button type="button" class="font-semibold" x-data
-                                        @keydown.window.n="$wire.newTransaction()">New
+                                        >New
                                     Transaction
                                 </button>
                             </div>
@@ -182,11 +181,8 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Class</flux:label>
-                        <flux:select wire:model="currentItemClass">
-                            <option value="">Select class</option>
-                            <option value="A">A</option>
-                            <option value="B">B</option>
-                        </flux:select>
+                        <flux:input type="text" value="{{ $currentItem['class'] }}" wire:model="currentItemClass"/>
+
                         <flux:error name="currentItemClass"/>
                     </flux:field>
 

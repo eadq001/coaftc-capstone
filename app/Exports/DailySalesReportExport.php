@@ -36,7 +36,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
     public function array(): array
     {
         $rows = [
-            ['PRF No.', 'Product Name', 'Subcategory', 'Quantity', 'Unit', 'Class', 'Size', 'Inventory', '', 'Price', 'Subtotal', 'Associate'],
+            ['Ref No.', 'Product Name', 'Subcategory', 'Quantity', 'Unit', 'Class', 'Size', 'Inventory', '', 'Price', 'Subtotal', 'Remarks', 'Associate'],
             ['', '', '', '', '', '', '', 'Start', 'End', '', '', ''],
         ];
 
@@ -49,26 +49,26 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
 
             foreach ($items as $item) {
                 $rows[] = [
-                    $item->sale->prf_number,
-                    $item->product->name,
-                    $item->product->category?->category_name ?? 'Uncategorized',
-                    $item->quantity,
-                    $item->product->unit?->unit_name ?? '',
-                    $item->product->class->value ?? '',
-                    $item->product->size ?? '',
-                    $item->inventory_start,
-                    (string)$item->inventory_end ?? '0',
-                    number_format((float)$item->unit_price, 2, '.', ','),
-                    $item->subtotal,
-                    $item->sale->user?->name ?? 'N/A',
+                    $item['transaction_number'],
+                    $item['product_name'],
+                    $item['category_name'],
+                    $item['quantity'],
+                    $item['unit_name'],
+                    $item['class'],
+                    $item['size'],
+                    $item['inventory_start'],
+                    $item['inventory_end'],
+                    number_format((float) $item['unit_price'], 2, '.', ','),
+                    $item['subtotal'],
+                    $item['remarks'],
+                    $item['user_name'],
                 ];
                 $currentRow++;
             }
 
-
-            foreach ($items->groupBy(fn ($item) => $item->product->category?->category_name ?? 'Uncategorized') as $category => $categoryItems) {
+            foreach ($items->groupBy(fn ($item) => $item['category_name'] ?? 'Uncategorized') as $category => $categoryItems) {
                 $this->categoryTotalRows[] = $currentRow;
-                $rows[] = ['', '', '', '', '', '', '',  '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
+                $rows[] = ['', '', '', '', '', '', '', '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
                 $currentRow++;
             }
 
@@ -98,6 +98,8 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             'J' => 18,
             'K' => 14,
             'L' => 20,
+            'M' => 14,
+
         ];
     }
 
@@ -111,7 +113,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 $sheet = $event->sheet->getDelegate();
                 $highestRow = $sheet->getHighestRow();
 
-                //adjust the page margins
+                // adjust the page margins
                 $sheet->getPageMargins()->setTop(0.5511);
                 $sheet->getPageMargins()->setHeader(0.3149);
                 $sheet->getPageMargins()->setLeft(0.1181);
@@ -119,15 +121,15 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 $sheet->getPageMargins()->setBottom(0.3543);
                 $sheet->getPageMargins()->setFooter(0.3149);
 
-                //long paper in landscape orientation and already fit to page scaling for printing
+                // long paper in landscape orientation and already fit to page scaling for printing
                 $sheet->getPageSetup()->setPaperSize(18);
                 $sheet->getPageSetup()->setOrientation('landscape');
                 $sheet->getPageSetup()->setFitToPage(true);
 
-//                $sheet->getSheetView()->setZoomScale(85);
+                //                $sheet->getSheetView()->setZoomScale(85);
 
                 $sheet->mergeCells('H1:I1');
-                $sheet->getStyle("A1:L{$highestRow}")->applyFromArray([
+                $sheet->getStyle("A1:M{$highestRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -160,18 +162,18 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                     ]);
 
                     $sheet->getStyle("H4:I{$highestRow}")->applyFromArray([
-//                    'font' => [
-//                        'bold' => true,
-//                    ],
+                        //                    'font' => [
+                        //                        'bold' => true,
+                        //                    ],
                         'alignment' => [
                             'horizontal' => Alignment::HORIZONTAL_CENTER,
                         ],
                     ]);
 
                     $sheet->getStyle("D4:D{$highestRow}")->applyFromArray([
-//                    'font' => [
-//                        'bold' => true,
-//                    ],
+                        //                    'font' => [
+                        //                        'bold' => true,
+                        //                    ],
                         'alignment' => [
                             'horizontal' => Alignment::HORIZONTAL_CENTER,
                         ],
@@ -179,7 +181,6 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
 
                     $sheet->getStyle("J4:K{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
                 }
-
 
                 foreach ($this->categoryTotalRows as $categoryTotalRow) {
                     $sheet->getStyle("A{$categoryTotalRow}:J{$categoryTotalRow}")->applyFromArray([
