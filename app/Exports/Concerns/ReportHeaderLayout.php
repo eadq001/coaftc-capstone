@@ -15,8 +15,7 @@ trait ReportHeaderLayout
      */
     abstract protected function titlePeriodValues(): array;
 
-
-    protected function applyHeader(Worksheet $sheet, string $end): void
+    protected function applyHeader(Worksheet $sheet, string $end = 'U'): void
     {
         [$year, $period] = $this->titlePeriodValues();
 
@@ -78,7 +77,7 @@ trait ReportHeaderLayout
         $rightLogo = new Drawing;
         $rightLogo->setPath(public_path('images/coaftc.png'));
         $rightLogo->setName('COAFTC Logo');
-        $rightLogo->setCoordinates($end . '1');
+        $rightLogo->setCoordinates($end.'1');
         $rightLogo->setWidth(101);
         $rightLogo->setHeight(99);
         $rightLogo->setOffsetX(-22);

@@ -134,7 +134,6 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
 
             $monthDispersals = $this->dispersalsByMonth->get($month, collect());
 
-            $currentRow++;
             $headerRow = $currentRow;
             $this->headerRows[] = $headerRow;
             $rows[] = $this->headerRow();
@@ -218,8 +217,10 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                 $this->applyHeader($sheet);
 
                 $highestRow = $sheet->getHighestRow();
+                $tableStartRow = self::TABLE_START_ROW;
+                $endCol = $this->headerEndColumn();
 
-                $sheet->getStyle("A1:U{$highestRow}")->applyFromArray([
+                $sheet->getStyle("A{$tableStartRow}:{$endCol}{$highestRow}")->applyFromArray([
                     'alignment' => [
                         'vertical' => Alignment::VERTICAL_CENTER,
                         'horizontal' => Alignment::HORIZONTAL_CENTER,
@@ -227,21 +228,21 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                     ],
                 ]);
 
-                // default font
-                $sheet->getStyle("A1:U{$highestRow}")
+                // default font for entire sheet
+                $sheet->getStyle("A1:{$endCol}{$highestRow}")
                     ->getFont()
                     ->setName('Arial Narrow')
                     ->setSize(11);
 
-                // rotate the month to 90 degree
-                $sheet->getStyle("A1:A{$highestRow}")->applyFromArray([
+                // rotate the month column in data area only
+                $sheet->getStyle("A{$tableStartRow}:A{$highestRow}")->applyFromArray([
                     'alignment' => [
                         'textRotation' => 90,
                     ],
                 ]);
 
                 // prices are with .00
-                $sheet->getStyle("D1:U{$highestRow}")
+                $sheet->getStyle("D{$tableStartRow}:{$endCol}{$highestRow}")
                     ->getNumberFormat()
                     ->setFormatCode('#,##0.00');
 
@@ -261,7 +262,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                 $sheet->getSheetView()->setZoomScale(85);
 
                 foreach ($this->tableRanges as [$startRow, $endRow]) {
-                    $sheet->getStyle("A{$startRow}:U{$endRow}")->applyFromArray([
+                    $sheet->getStyle("A{$startRow}:{$endCol}{$endRow}")->applyFromArray([
                         'borders' => [
                             'allBorders' => [
                                 'borderStyle' => Border::BORDER_THIN,
@@ -271,7 +272,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                 }
 
                 foreach ($this->headerRows as $headerRow) {
-                    $sheet->getStyle("B{$headerRow}:U{$headerRow}")->applyFromArray([
+                    $sheet->getStyle("B{$headerRow}:{$endCol}{$headerRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
@@ -301,7 +302,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                 }
 
                 foreach ($this->totalRows as $totalRow) {
-                    $sheet->getStyle("A{$totalRow}:U{$totalRow}")->applyFromArray([
+                    $sheet->getStyle("A{$totalRow}:{$endCol}{$totalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],
@@ -316,7 +317,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
 
                 if ($this->grandTotalRow !== null) {
                     $sheet->mergeCells("A{$this->grandTotalRow}:C{$this->grandTotalRow}");
-                    $sheet->getStyle("A{$this->grandTotalRow}:U{$this->grandTotalRow}")->applyFromArray([
+                    $sheet->getStyle("A{$this->grandTotalRow}:{$endCol}{$this->grandTotalRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                             'vertical' => Alignment::VERTICAL_CENTER,
