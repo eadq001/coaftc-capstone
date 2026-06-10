@@ -47,6 +47,9 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             $rows[] = [date_format(date_create($date), 'F j, Y'), '', '', '', '', '', '', '', '', ''];
             $currentRow++;
 
+            $sales = $items->filter(fn ($item) => ! str_starts_with($item['transaction_number'], 'LGU'));
+            $dispersals = $items->filter(fn ($item) => str_starts_with($item['transaction_number'], 'LGU'));
+
             foreach ($items as $item) {
                 $rows[] = [
                     $item['transaction_number'],
@@ -66,15 +69,40 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 $currentRow++;
             }
 
-            foreach ($items->groupBy(fn ($item) => $item['category_name'] ?? 'Uncategorized') as $category => $categoryItems) {
-                $this->categoryTotalRows[] = $currentRow;
-                $rows[] = ['', '', '', '', '', '', '', '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
-                $currentRow++;
+            if ($dispersals->isNotEmpty()) {
+                foreach ($dispersals->groupBy(fn ($item) => $item['category_name'] ?? 'Uncategorized') as $category => $categoryItems) {
+                    $this->categoryTotalRows[] = $currentRow;
+                    $rows[] = ['', '', '', '', '', '', '', '', '', "{$category} Dispersal", $categoryItems->sum('subtotal'), ''];
+                    $currentRow++;
+                }
+            }
+
+            if ($sales->isNotEmpty()) {
+                foreach ($sales->groupBy(fn ($item) => $item['category_name'] ?? 'Uncategorized') as $category => $categoryItems) {
+                    $this->categoryTotalRows[] = $currentRow;
+                    $rows[] = ['', '', '', '', '', '', '', '', '', "{$category}", $categoryItems->sum('subtotal'), ''];
+                    $currentRow++;
+                }
             }
 
             $this->totalRows[] = $currentRow;
-            $rows[] = ['', '', '', '', '', '', '', '', '', 'Total', $items->sum('subtotal'), ''];
-            $currentRow++;
+
+            $hasSales = $sales->isNotEmpty();
+            $hasDispersals = $dispersals->isNotEmpty();
+
+            if ($hasSales && $hasDispersals) {
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Dispersal', $dispersals->sum('subtotal'), ''];
+                $currentRow++;
+                $this->totalRows[] = $currentRow;
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total', $sales->sum('subtotal'), ''];
+                $currentRow++;
+            } elseif ($hasDispersals) {
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Dispersal', $dispersals->sum('subtotal'), ''];
+                $currentRow++;
+            } else {
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total', $sales->sum('subtotal'), ''];
+                $currentRow++;
+            }
         }
 
         return $rows;
@@ -95,7 +123,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             'G' => 10,
             'H' => 10,
             'I' => 10,
-            'J' => 18,
+            'J' => 24,
             'K' => 14,
             'L' => 20,
             'M' => 14,
@@ -151,8 +179,8 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
                 ]);
 
                 foreach ($this->dateRows as $dateRow) {
-                    $sheet->mergeCells("A{$dateRow}:L{$dateRow}");
-                    $sheet->getStyle("A{$dateRow}:L{$dateRow}")->applyFromArray([
+                    $sheet->mergeCells("A{$dateRow}:M{$dateRow}");
+                    $sheet->getStyle("A{$dateRow}:M{$dateRow}")->applyFromArray([
                         'font' => [
                             'bold' => true,
                         ],

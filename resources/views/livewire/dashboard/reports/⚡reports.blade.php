@@ -417,7 +417,10 @@ class extends Component {
             <section class="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm" >
                 @forelse($itemsByCategory as $key => $saleDate)
                     @php
-                        $salesTotal = $saleDate->sum('subtotal');
+                        $sales = $saleDate->filter(fn ($item) => ! str_starts_with($item['transaction_number'], 'LGU'));
+                        $dispersals = $saleDate->filter(fn ($item) => str_starts_with($item['transaction_number'], 'LGU'));
+                        $hasSales = $sales->isNotEmpty();
+                        $hasDispersals = $dispersals->isNotEmpty();
                     @endphp
 
                     <div class="overflow-x-hidden">
@@ -472,26 +475,52 @@ class extends Component {
                             </tbody>
 
                             <tfoot>
-                            <tr class="border-t-2 border-emerald-600 bg-emerald-50">
-                                <td colspan="10"
-                                    class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
-                                    Total
-                                </td>
-                                <td colspan="3"
-                                    class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
-                                    {{ $salesTotal }}
-                                </td>
-                            </tr>
+                            @if($hasDispersals)
+                                <tr class="border-t-2 border-orange-400 bg-orange-50">
+                                    <td colspan="10"
+                                        class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-orange-700">
+                                        Total Dispersal
+                                    </td>
+                                    <td colspan="3"
+                                        class="px-4 py-4 text-left text-base font-bold tabular-nums text-orange-900">
+                                        {{ $dispersals->sum('subtotal') }}
+                                    </td>
+                                </tr>
+                            @endif
+                            @if($hasSales)
+                                <tr class="border-t-2 border-emerald-600 bg-emerald-50">
+                                    <td colspan="10"
+                                        class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
+                                        Total
+                                    </td>
+                                    <td colspan="3"
+                                        class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
+                                        {{ $sales->sum('subtotal') }}
+                                    </td>
+                                </tr>
+                            @endif
                             </tfoot>
                         </table>
 
                         <div class="p-4 flex gap-4 text-sm ">
-                        @foreach($saleDate->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
-                        <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
-                            <span>{{ $category . ':'}}</span>
-                            <span>{{ $item->sum('subtotal') }}</span>
-                        </span>
-                        @endforeach
+                        @if($hasDispersals)
+                            <span class="text-zinc-900 bg-orange-200 rounded-lg p-2 font-semibold">Dispersal</span>
+                            @foreach($dispersals->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
+                            <span class="text-zinc-900 bg-orange-200 rounded-lg p-2">
+                                <span>{{ $category . ':'}}</span>
+                                <span>{{ $item->sum('subtotal') }}</span>
+                            </span>
+                            @endforeach
+                        @endif
+                        @if($hasSales)
+                            <span class="text-zinc-900 bg-green-200 rounded-lg p-2 font-semibold">Sales</span>
+                            @foreach($sales->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
+                            <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
+                                <span>{{ $category . ':'}}</span>
+                                <span>{{ $item->sum('subtotal') }}</span>
+                            </span>
+                            @endforeach
+                        @endif
                         </div>
                     </div>
 
