@@ -16,8 +16,9 @@
                 <div class="px-6 py-5 sm:px-8">
 
                     <div class="overflow-hidden rounded-2xl border border-zinc-200">
-                        <div class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_110px_110px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                        <div class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
                             <div class="px-4 py-3">Product</div>
+                            <div class="px-4 py-3 text-right">Size</div>
                             <div class="px-4 py-3 text-right">Qty</div>
                             <div class="px-4 py-3 text-right">Price</div>
                             <div class="px-4 py-3 text-right">Amount</div>
@@ -28,10 +29,11 @@
                             @forelse($items as $item)
                                 <div wire:key="{{ $item['id'] }}"
                                      wire:click="editItem({{ $loop->index }})"
-                                     class="grid grid-cols-[minmax(0,1.6fr)_110px_110px_110px_110px]  bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
+                                     class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px]  bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                     </div>
+                                    <div class="px-4 py-4 text-right font-medium">{{ $item['size'] ?? '-' }}</div>
                                     <div class="px-4 py-4 text-right font-medium">{{ $item['quantity'] }}</div>
                                     <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
@@ -133,7 +135,7 @@
                             <flux:modal.trigger name="print-dispersal-receipt">
                                 <button type="button"
                                         class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center font-semibold">
-                                    Print Dispersal
+                                    Print LGU Support
                                 </button>
                             </flux:modal.trigger>
                         </div>
@@ -168,8 +170,8 @@
                     </flux:field>
 
                     <flux:field>
-                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
-                        <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Stock"
+                        <flux:label class="mb-0.5!">Size</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['size'] ?? '' }}" placeholder="Size"
                                     readonly/>
                     </flux:field>
 
@@ -195,7 +197,7 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Remarks</flux:label>
-                        <flux:input type="text" wire:model="remarks" placeholder="Enter remarks..."/>
+                        <flux:input type="text" wire:model="remarks" placeholder="Enter remarks for this dispersal..."/>
                         <flux:error name="remarks"/>
                     </flux:field>
 
@@ -235,12 +237,12 @@
     <flux:modal name="print-dispersal-receipt" class="min-w-[32rem]" @close="$wire.resetDispersalSearch()">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Print Dispersal Receipt</flux:heading>
-                <flux:text class="mt-2">Search the dispersal number to load the receipt details.</flux:text>
+                <flux:heading size="lg">Print LGU Support</flux:heading>
+                <flux:text class="mt-2">Search the LGU Support number to load the receipt details.</flux:text>
             </div>
 
             <flux:field>
-                <flux:label>Dispersal Number</flux:label>
+                <flux:label>LGU Support Number</flux:label>
                 <flux:input icon="magnifying-glass"
                             placeholder="LGU26-0000001"
                             autocomplete="on"
@@ -276,12 +278,13 @@
 
                     <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
                         @foreach($dispersalReceipt['dispersalItems'] as $dispersalItem)
-                            <div class="grid grid-cols-[minmax(0,1fr)_90px_110px] gap-3 px-4 py-3 text-sm"
+                            <div class="grid grid-cols-[minmax(0,1fr)_90px_90px_110px] gap-3 px-4 py-3 text-sm"
                                  wire:key="dispersal-item-{{ $dispersalItem['product_id'] }}-{{ $loop->index }}">
                                 <div>
                                     <p class="font-medium text-zinc-900">{{ $dispersalItem['product_name'] ?? 'Unknown product' }}</p>
                                     <p class="text-xs text-zinc-500">{{ $dispersalItem['product_unit'] ?? 'unit' }}</p>
                                 </div>
+                                <p class="text-right text-zinc-700">{{ $dispersalItem['size'] ?? '-' }}</p>
                                 <p class="text-right text-zinc-700">{{ $dispersalItem['quantity'] }}</p>
                                 <p class="text-right font-semibold text-zinc-900">{{ $dispersalItem['class'] ?? 'N/A' }}</p>
                             </div>

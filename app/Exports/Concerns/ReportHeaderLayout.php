@@ -20,10 +20,10 @@ trait ReportHeaderLayout
         [$year, $period] = $this->titlePeriodValues();
 
         $title = match ($this->titlePeriod()) {
-            'daily' => "COAFTC TRUST FUND MONITORING DAILY {$year}",
-            'monthly' => "COAFTC TRUST FUND MONITORING MONTHLY {$period}",
-            'yearly' => "COAFTC TRUST FUND MONITORING YEARLY {$year}",
-            default => "COAFTC TRUST FUND MONITORING {$year}",
+            'daily' => 'COAFTC DAILY PRODUCT MONITORING',
+            'monthly' => "COAFTC MONTHLY PRODUCT MONITORING {$period}",
+            'yearly' => "COAFTC YEARLY PRODUCT MONITORING {$year}",
+            default => "COAFTC YEARLY PRODUCT MONITORING {$year}",
         };
 
         $sheet->mergeCells("A1:{$end}1");

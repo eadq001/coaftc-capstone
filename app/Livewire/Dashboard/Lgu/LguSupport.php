@@ -66,6 +66,7 @@ class LguSupport extends Dashboard
                 'category' => strtolower($product->category->category_name),
                 'quantity' => 0,
                 'class' => $product->class?->value ?? '',
+                'size' => $product->size ?? '',
                 'price' => $product->price,
             ];
 
@@ -104,7 +105,7 @@ class LguSupport extends Dashboard
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound', 'remarks');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
     }
@@ -117,7 +118,7 @@ class LguSupport extends Dashboard
 
         $this->validate([
             'currentItemQuantity' => 'min:1',
-            'currentItemClass' => 'required|string',
+            'currentItemClass' => 'nullable|string',
             'price' => 'min:1|integer',
         ]);
 
@@ -129,6 +130,7 @@ class LguSupport extends Dashboard
             }
             $this->items[$this->editingItemIndex]['quantity'] = $this->currentItemQuantity;
             $this->items[$this->editingItemIndex]['class'] = $this->currentItemClass;
+            $this->items[$this->editingItemIndex]['size'] = $this->currentItem['size'];
             $this->items[$this->editingItemIndex]['price'] = $this->price;
             $this->resetCurrentItems();
             $this->dispatch('add-quantity-success');
@@ -153,6 +155,7 @@ class LguSupport extends Dashboard
 
                 $this->items[$index]['quantity'] += $this->currentItemQuantity;
                 $this->items[$index]['class'] = $this->currentItemClass;
+                $this->items[$index]['size'] = $this->currentItem['size'];
                 $this->items[$index]['price'] = $this->price;
                 $this->resetCurrentItems();
                 $this->dispatch('add-quantity-success');
@@ -164,6 +167,7 @@ class LguSupport extends Dashboard
 
         $this->currentItem['quantity'] = $this->currentItemQuantity;
         $this->currentItem['class'] = $this->currentItemClass;
+        $this->currentItem['size'] = $this->currentItem['size'];
         $this->currentItem['price'] = $this->price;
 
         $this->items[] = $this->currentItem;
@@ -217,6 +221,7 @@ class LguSupport extends Dashboard
                 'product_id' => $item['id'],
                 'quantity' => $item['quantity'],
                 'class' => $item['class'],
+                'size' => $item['size'] ?? null,
                 'unit_price' => $item['price'],
                 'subtotal' => $item['quantity'] * $item['price'],
                 'inventory_start' => $item['availableStock'],
@@ -297,6 +302,7 @@ class LguSupport extends Dashboard
                     'product_id' => $item->product_id,
                     'quantity' => $item->quantity,
                     'class' => $item->class,
+                    'size' => $item->size,
                     'inventory_start' => $item->inventory_start,
                     'inventory_end' => $item->inventory_end,
                     'product_name' => $item->product?->name,

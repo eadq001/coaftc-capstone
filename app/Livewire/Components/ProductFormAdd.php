@@ -33,7 +33,6 @@ class ProductFormAdd extends Component
 
         $this->reset('stockLevel', 'price');
 
-
     }
 
     public function updatedStockLevel($value)
@@ -44,7 +43,7 @@ class ProductFormAdd extends Component
         }
 
         $this->validate([
-            'stockLevel' => 'int|min:1|required'
+            'stockLevel' => 'int|min:1|required',
         ]);
     }
 
@@ -56,10 +55,9 @@ class ProductFormAdd extends Component
         }
 
         $this->validate([
-            'price' => 'int|min:1|required'
+            'price' => 'int|min:1|required',
         ]);
     }
-
 
     #[On('add-edit-product-category-success')]
     public function clearCategoriesValue(): void

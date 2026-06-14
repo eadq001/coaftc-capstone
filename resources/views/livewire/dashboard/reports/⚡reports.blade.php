@@ -337,15 +337,13 @@ class extends Component {
 {{--                            </flux:button>--}}
 
                             <flux:modal.trigger name="monthly-sales-report">
-                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                             wire:click="loadReportPeriods">
+                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10">
                                     Generate Monthly Sales
                                 </flux:button>
                             </flux:modal.trigger>
 
                             <flux:modal.trigger name="yearly-sales-report">
-                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10"
-                                             wire:click="loadReportPeriods">
+                                <flux:button type="button" variant="primary" icon="document-chart-bar" class="h-10">
                                     Generate Yearly Report
                                 </flux:button>
                             </flux:modal.trigger>

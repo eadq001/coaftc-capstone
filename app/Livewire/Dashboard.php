@@ -3,13 +3,11 @@
 namespace App\Livewire;
 
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 #[Layout('layouts.dashboard')]
 class Dashboard extends Component
 {
-
     public $username;
 
     public function mount()

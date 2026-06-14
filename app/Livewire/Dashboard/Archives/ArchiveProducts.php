@@ -19,6 +19,7 @@ class ArchiveProducts extends Dashboard
     {
         return Product::onlyTrashed()->paginate(10, pageName: 'archived-products');
     }
+
     #[Computed]
     public function categories()
     {

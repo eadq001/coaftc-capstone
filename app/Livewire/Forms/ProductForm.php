@@ -15,10 +15,10 @@ class ProductForm extends Form
     #[Validate('required|string|max:255')]
     public string $name = '';
 
-//    #[Validate('required|min:1')]
+    //    #[Validate('required|min:1')]
     public $stock_level = null;
 
-//    #[Validate('required|integer|min:1')]
+    //    #[Validate('required|integer|min:1')]
     public $price = null;
 
     #[Validate('required')]
@@ -50,7 +50,7 @@ class ProductForm extends Form
         $validated['user_id'] = auth()->user()->id;
         $validated['subcategory_id'] = (int) $validated['subcategory_id'];
 
-        //add the stockLevel and price value from productFormAdd
+        // add the stockLevel and price value from productFormAdd
         $validated['stock_level'] = $stockLevel;
         $validated['price'] = $price;
 
@@ -98,7 +98,7 @@ class ProductForm extends Form
         $validated['user_id'] = auth()->user()->id;
         $validated['class'] = $validated['class'] ?: null;
 
-        //add the stockLevel and price value from productFormAdd
+        // add the stockLevel and price value from productFormAdd
         $validated['stock_level'] = $stockLevel;
         $validated['price'] = $price;
 

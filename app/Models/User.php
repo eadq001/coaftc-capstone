@@ -32,8 +32,8 @@ class User extends Authenticatable
         ];
     }
 
-//    public function sale()
-//    {
-//        return $this->hasMany(Sale::class);
-//    }
+    //    public function sale()
+    //    {
+    //        return $this->hasMany(Sale::class);
+    //    }
 }

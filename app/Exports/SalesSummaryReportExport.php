@@ -358,7 +358,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
             'OR Number',
             ...self::CATEGORIES,
             'TOTAL',
-            'Dispersal',
+            'LGU Support',
         ];
     }
 

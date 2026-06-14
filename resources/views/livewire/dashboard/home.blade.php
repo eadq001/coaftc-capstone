@@ -95,7 +95,11 @@
                 <div>
                     <flux:heading size="lg">Sales comparison</flux:heading>
                     <flux:text class="mt-1 text-zinc-600 dark:text-zinc-400">
-                        {{ $salesComparison['current_label'] }} vs {{ $salesComparison['previous_label'] }}.
+                        @if ($analyticsPeriod === 'yearly')
+                            5-year annual comparison.
+                        @else
+                            {{ $salesComparison['current_label'] }} vs {{ $salesComparison['previous_label'] }}.
+                        @endif
                     </flux:text>
                 </div>
                 <flux:icon.presentation-chart-bar class="size-8 text-primary" />
@@ -147,7 +151,7 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
+                <a href="{{ route('dashboard.products', ['lowStockOnly' => 1]) }}" class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105 hover:border-red-300 dark:hover:border-red-700">
                     <div>
                         <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Low stock items</flux:text>
                         <div class="mt-1 text-2xl font-semibold text-red-600">{{ $lowStockItems ?? '0' }}</div>
@@ -155,20 +159,37 @@
                     <div class="flex size-11 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
                         <flux:icon.exclamation-triangle class="size-6 text-red-600" />
                     </div>
-                </div>
+                </a>
 
-                <div class="flex items-center justify-between gap-4 rounded-lg border border-zinc-200 p-4 dark:border-zinc-700 transition-transform duration-300 hover:scale-105">
-                    <div>
-                        <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total inventory value</flux:text>
-                        <div class="mt-1 text-2xl font-semibold text-primary">&#8369; {{ number_format($totalInventoryValue) }}</div>
+                <div class="rounded-lg border border-zinc-200 dark:border-zinc-700">
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-200 p-4 dark:border-zinc-700">
+                        <div>
+                            <flux:text class="text-sm text-zinc-500 dark:text-zinc-400">Total inventory value</flux:text>
+                            <div class="mt-1 text-2xl font-semibold text-primary">&#8369; {{ number_format($totalInventoryValue) }}</div>
+                        </div>
+                        <div class="flex size-11 items-center justify-center rounded-full bg-green-100 text-2xl text-primary dark:bg-green-900/30">
+                            &#8369;
+                        </div>
                     </div>
-                    <div class="flex size-11 items-center justify-center rounded-full bg-green-100 text-2xl text-primary dark:bg-green-900/30">
-                        &#8369;
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-200 px-4 py-3 dark:border-zinc-700">
+                        <div>
+                            <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">Poultry & Livestock</flux:text>
+                            <div class="mt-0.5 text-lg font-semibold text-primary">&#8369; {{ number_format($poultryLivestockValue) }}</div>
+                        </div>
+                        <flux:icon.warehouse class="size-5 text-primary" />
+                    </div>
+                    <div class="flex items-center justify-between gap-4 px-4 py-3">
+                        <div>
+                            <flux:text class="text-xs text-zinc-500 dark:text-zinc-400">Other products</flux:text>
+                            <div class="mt-0.5 text-lg font-semibold text-primary">&#8369; {{ number_format($otherProductsValue) }}</div>
+                        </div>
+                        <flux:icon.archive class="size-5 text-primary" />
                     </div>
                 </div>
             </div>
         </flux:card>
     </div>
+
 </div>
 
 @script
@@ -274,6 +295,7 @@
         }
 
         if (comparisonCanvas) {
+            const isMultiYear = charts.comparison.labels.length > 2;
             salesComparisonChart = new window.Chart(comparisonCanvas, {
                 type: 'bar',
                 data: {
@@ -281,9 +303,14 @@
                     datasets: [{
                         label: 'Sales',
                         data: charts.comparison.values,
-                        backgroundColor: [chartColors.zinc, chartColors.primary],
+                        backgroundColor: isMultiYear
+                            ? charts.comparison.values.map((_, i) => {
+                                const colors = ['#22c55e', '#16a34a', '#15803d', '#166534', '#14532d'];
+                                return colors[i % colors.length];
+                            })
+                            : [chartColors.zinc, chartColors.primary],
                         borderRadius: 8,
-                        maxBarThickness: 80,
+                        maxBarThickness: isMultiYear ? 50 : 80,
                     }],
                 },
                 options: {

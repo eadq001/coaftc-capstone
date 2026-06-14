@@ -24,6 +24,10 @@ class Home extends Component
 
     public int $totalInventoryValue;
 
+    public int $poultryLivestockValue;
+
+    public int $otherProductsValue;
+
     public array $revenueTrend = [];
 
     public array $topSellingProducts = [];
@@ -40,7 +44,7 @@ class Home extends Component
     {
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
-        $this->totalInventoryValue = Product::sum('price');
+        $this->calculateInventoryValues();
         $this->username = auth()->user()->name;
         $this->refreshAnalytics();
     }
@@ -74,6 +78,30 @@ class Home extends Component
         $this->analyticsCharts = $this->buildAnalyticsCharts();
 
         $this->dispatch('analytics-charts-updated', charts: $this->analyticsCharts);
+    }
+
+    private function calculateInventoryValues(): void
+    {
+        $products = Product::query()
+            ->select('products.id', 'products.stock_level', 'products.price', 'categories.category_name')
+            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+            ->get();
+
+        $this->totalInventoryValue = 0;
+        $this->poultryLivestockValue = 0;
+        $this->otherProductsValue = 0;
+
+        foreach ($products as $product) {
+            $value = $product->stock_level * $product->price;
+            $this->totalInventoryValue += $value;
+
+            $category = $product->category_name ? strtolower($product->category_name) : '';
+            if (in_array($category, ['poultry', 'livestock'], true)) {
+                $this->poultryLivestockValue += $value;
+            } else {
+                $this->otherProductsValue += $value;
+            }
+        }
     }
 
     private function dateRange(): array
@@ -206,11 +234,54 @@ class Home extends Component
             'is_gain' => $difference >= 0,
             'current_height' => max(4, (int) round(($this->totalSales / $highestSales) * 100)),
             'previous_height' => max(4, (int) round(($previousSales / $highestSales) * 100)),
+            'multi_year' => $this->analyticsPeriod === 'yearly' ? $this->buildYearlySalesComparison() : [],
         ];
+    }
+
+    private function buildYearlySalesComparison(): array
+    {
+        $years = collect(range(0, 4))->map(fn (int $i): int => (int) now()->subYears($i)->format('Y'));
+
+        $yearlySales = Sale::query()
+            ->selectRaw('YEAR(created_at) as year')
+            ->selectRaw('sum(total_amount) as total')
+            ->whereYear('created_at', '>=', $years->last())
+            ->groupBy('year')
+            ->orderBy('year')
+            ->pluck('total', 'year');
+
+        $highest = max($yearlySales->max() ?? 1, 1);
+
+        return $years
+            ->sort()
+            ->values()
+            ->map(fn (int $year): array => [
+                'year' => (string) $year,
+                'total' => (int) ($yearlySales[$year] ?? 0),
+                'formatted_total' => number_format((int) ($yearlySales[$year] ?? 0)),
+                'height' => max(4, (int) round((($yearlySales[$year] ?? 0) / $highest) * 100)),
+            ])
+            ->all();
     }
 
     private function buildAnalyticsCharts(): array
     {
+        $comparison = $this->analyticsPeriod === 'yearly'
+            ? [
+                'labels' => collect($this->salesComparison['multi_year'])->pluck('year')->all(),
+                'values' => collect($this->salesComparison['multi_year'])->pluck('total')->all(),
+            ]
+            : [
+                'labels' => [
+                    $this->salesComparison['previous_label'],
+                    $this->salesComparison['current_label'],
+                ],
+                'values' => [
+                    $this->salesComparison['previous_sales'],
+                    $this->salesComparison['current_sales'],
+                ],
+            ];
+
         return [
             'revenue' => [
                 'labels' => collect($this->revenueTrend)->pluck('label')->all(),
@@ -221,16 +292,7 @@ class Home extends Component
                 'quantities' => collect($this->topSellingProducts)->pluck('quantity_sold')->all(),
                 'revenues' => collect($this->topSellingProducts)->pluck('revenue')->all(),
             ],
-            'comparison' => [
-                'labels' => [
-                    $this->salesComparison['previous_label'],
-                    $this->salesComparison['current_label'],
-                ],
-                'values' => [
-                    $this->salesComparison['previous_sales'],
-                    $this->salesComparison['current_sales'],
-                ],
-            ],
+            'comparison' => $comparison,
         ];
     }
 }

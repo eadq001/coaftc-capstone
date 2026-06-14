@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Session;
@@ -52,7 +53,7 @@ class Products extends Dashboard
 
         $this->totalProducts = Product::count('name');
         $this->lowStockItems = Product::where('stock_level', '<', 20)->count();
-        $this->totalInventoryValue = Product::sum('price');
+        $this->totalInventoryValue = Product::sum(DB::raw('stock_level * price'));
     }
 
     #[Computed]
@@ -172,6 +173,14 @@ class Products extends Dashboard
         $this->resetValidation();
     }
 
+    public function mount(): void
+    {
+        parent::mount();
+
+        if (request()->has('lowStockOnly')) {
+            $this->lowStockOnly = filter_var(request()->query('lowStockOnly'), FILTER_VALIDATE_BOOL);
+        }
+    }
 
     #[On('add-edit-product-success')]
     public function resetProductToEdit(): void

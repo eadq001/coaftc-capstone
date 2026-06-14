@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Components;
 
-use App\Models\Category;
 use App\Models\ActivityLog;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
@@ -13,7 +13,9 @@ use Livewire\Component;
 class RestoreModal extends Component
 {
     public int $id;
+
     public string $modelName;
+
     public string $itemName;
 
     public Model $model;
@@ -24,7 +26,7 @@ class RestoreModal extends Component
             'Product' => 'product-restore-success',
             'Category' => 'product-category-restore-success',
             'Subcategory' => 'product-subcategory-restore-success',
-            'Unit' => 'product-unit-restore-success'
+            'Unit' => 'product-unit-restore-success',
         ];
 
         $oldValues = ActivityLog::valuesFor($model);
@@ -42,7 +44,7 @@ class RestoreModal extends Component
         $this->dispatch($events[$this->modelName]);
     }
 
-    //flexible restore modal for 4 models
+    // flexible restore modal for 4 models
     public function restoreDeletedItem(): void
     {
         strtolower($this->modelName);
@@ -69,7 +71,6 @@ class RestoreModal extends Component
                 $this->restoreWithEvent($this->model);
                 break;
         }
-
 
     }
 

@@ -49,7 +49,6 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
         return 'daily';
     }
 
-
     public function startCell(): string
     {
         return 'A'.self::TABLE_START_ROW;
@@ -113,7 +112,7 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             if ($dispersals->isNotEmpty()) {
                 foreach ($dispersals->groupBy(fn ($item) => $item['category_name'] ?? 'Uncategorized') as $category => $categoryItems) {
                     $this->categoryTotalRows[] = $currentRow;
-                    $rows[] = ['', '', '', '', '', '', '', '', '', "{$category} Dispersal", $categoryItems->sum('subtotal'), ''];
+                    $rows[] = ['', '', '', '', '', '', '', '', '', "{$category} LGU Support", $categoryItems->sum('subtotal'), ''];
                     $currentRow++;
                 }
             }
@@ -132,16 +131,16 @@ class DailySalesReportExport implements FromArray, ShouldAutoSize, WithColumnWid
             $hasDispersals = $dispersals->isNotEmpty();
 
             if ($hasSales && $hasDispersals) {
-                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Dispersal', $dispersals->sum('subtotal'), ''];
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Subtotal LGU Support', $dispersals->sum('subtotal'), ''];
                 $currentRow++;
                 $this->totalRows[] = $currentRow;
-                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total', $sales->sum('subtotal'), ''];
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Subtotal Sales', $sales->sum('subtotal'), ''];
                 $currentRow++;
             } elseif ($hasDispersals) {
-                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Dispersal', $dispersals->sum('subtotal'), ''];
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total LGU Support', $dispersals->sum('subtotal'), ''];
                 $currentRow++;
             } else {
-                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total', $sales->sum('subtotal'), ''];
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Sales', $sales->sum('subtotal'), ''];
                 $currentRow++;
             }
         }
