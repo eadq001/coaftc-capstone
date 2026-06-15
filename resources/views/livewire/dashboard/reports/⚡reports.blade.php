@@ -4,6 +4,7 @@ use App\Exports\DailySalesReportExport;
 use App\Exports\SalesSummaryReportExport;
 use App\Models\Dispersal;
 use App\Models\Sale;
+use App\Models\StockAddition;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
@@ -18,6 +19,8 @@ class extends Component {
     public string $endDate = '';
     public ?Collection $result = null;
     public ?Collection $itemsByCategory = null;
+    public ?Collection $volumeProduced = null;
+    public ?Collection $volumeSold = null;
     public string $searchText = '';
     public array $availableReportMonths = [];
     public array $availableReportYears = [];
@@ -124,6 +127,36 @@ class extends Component {
             // Combine and group by date
             $this->itemsByCategory = $salesItems->merge($dispersalItems)
                 ->groupBy(fn ($item) => $item['created_at']->format('Y-m-d'));
+
+            // Volume produced: stock additions grouped by date and product
+            $this->volumeProduced = StockAddition::query()
+                ->whereDate('created_at', '>=', $this->startDate)
+                ->whereDate('created_at', '<=', $this->endDate)
+                ->when($searchText !== '', function ($query) use ($searchText) {
+                    $query->whereHas('product', fn ($q) => $q->where('name', 'like', "%{$searchText}%"));
+                })
+                ->with('product:id,name')
+                ->get()
+                ->groupBy(fn ($item) => $item->created_at->format('Y-m-d'))
+                ->map(fn (Collection $items) => $items
+                    ->groupBy(fn ($item) => $item->product->name)
+                    ->map(fn (Collection $grouped) => [
+                        'product_name' => $grouped->first()->product->name,
+                        'quantity_added' => $grouped->sum('quantity_added'),
+                    ])
+                    ->values()
+                );
+
+            // Volume sold: aggregate quantities from items by date
+            $this->volumeSold = $this->itemsByCategory
+                ->map(fn (Collection $items) => $items
+                    ->groupBy('product_name')
+                    ->map(fn (Collection $grouped) => [
+                        'product_name' => $grouped->first()['product_name'],
+                        'quantity_sold' => $grouped->sum('quantity'),
+                    ])
+                    ->values()
+                );
         }
     }
 
@@ -135,6 +168,8 @@ class extends Component {
         return Excel::download(
             new DailySalesReportExport(
                 $this->itemsByCategory ?? collect(),
+                $this->volumeProduced ?? collect(),
+                $this->volumeSold ?? collect(),
                 $this->startDate ?: now()->format('Y-m-d'),
             ),
             "daily-sales-report-$date.xlsx"

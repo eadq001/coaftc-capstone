@@ -4,6 +4,7 @@ namespace App\Livewire\Forms;
 
 use App\Models\ActivityLog;
 use App\Models\Product;
+use App\Models\StockAddition;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Form;
@@ -119,6 +120,16 @@ class ProductForm extends Form
                     oldValues: $oldValues,
                     newValues: $changes,
                 );
+
+                if (isset($changes['stock_level'])) {
+                    $added = $changes['stock_level'] - $this->product->getOriginal('stock_level');
+                    if ($added > 0) {
+                        StockAddition::create([
+                            'product_id' => $this->product->id,
+                            'quantity_added' => $added,
+                        ]);
+                    }
+                }
             }
         });
 
@@ -145,6 +156,11 @@ class ProductForm extends Form
                 'user_id' => $this->product->user_id,
             ],
         );
+
+        StockAddition::create([
+            'product_id' => $this->product->id,
+            'quantity_added' => $stockLevel,
+        ]);
 
         $this->stock_level = $this->product->stock_level;
         $this->resetStockToAdd();
