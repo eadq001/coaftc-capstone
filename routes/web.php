@@ -40,12 +40,12 @@ Route::middleware(['auth', 'role:admin,inventory_clerk'])->prefix('/dashboard')-
 
 Route::middleware(['auth', 'role:admin,cashier'])->prefix('/dashboard')->group(function () {
     Route::livewire('/sales', 'dashboard.sales.add-sales')->name('dashboard.sales');
-    Route::livewire('/void-sales', VoidSales::class)->name('dashboard.void-sales');
     Route::livewire('/reports', 'dashboard.reports')->name('dashboard.reports');
 
 });
 
 Route::middleware(['auth', 'role:admin,inventory_clerk,cashier'])->prefix('/dashboard')->group(function () {
+    Route::livewire('/void-sales', VoidSales::class)->name('dashboard.void-sales');
     Route::livewire('/', Home::class)->name('dashboard.home');
     Route::livewire('/profile', 'dashboard.profile.edit-profile')->name('profile.edit');
 });
