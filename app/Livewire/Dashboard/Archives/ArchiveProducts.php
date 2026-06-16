@@ -17,7 +17,7 @@ class ArchiveProducts extends Dashboard
     #[Computed]
     public function products()
     {
-        return Product::onlyTrashed()->paginate(10, pageName: 'archived-products');
+        return Product::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(10, pageName: 'archived-products');
     }
 
     #[Computed]

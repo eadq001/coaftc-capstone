@@ -127,6 +127,9 @@ class DailySalesSheet implements FromArray, ShouldAutoSize, WithColumnWidths, Wi
                 $this->totalRows[] = $currentRow;
                 $rows[] = ['', '', '', '', '', '', '', '', '', 'Subtotal Sales', $sales->sum('subtotal'), ''];
                 $currentRow++;
+                $this->totalRows[] = $currentRow;
+                $rows[] = ['', '', '', '', '', '', '', '', '', 'Total Sales', $sales->sum('subtotal') + $dispersals->sum('subtotal'), ''];
+                $currentRow++;
             } elseif ($hasDispersals) {
                 $rows[] = ['', '', '', '', '', '', '', '', '', 'Total LGU Support', $dispersals->sum('subtotal'), ''];
                 $currentRow++;

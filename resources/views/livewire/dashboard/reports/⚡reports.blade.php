@@ -86,7 +86,7 @@ class extends Component {
             $salesItems = $this->result->flatMap->salesItem->map(function ($item) {
                 return [
                     'transaction_number' => $item->sale->prf_number,
-                    'product_name' => $item->product->name,
+                    'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
                     'unit_name' => $item->product->unit?->unit_name ?? '',
@@ -107,7 +107,7 @@ class extends Component {
             $dispersalItems = $dispersals->flatMap->dispersalItems->map(function ($item) {
                 return [
                     'transaction_number' => $item->dispersal->dispersal_number,
-                    'product_name' => $item->product->name,
+                    'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
                     'unit_name' => $item->product->unit?->unit_name ?? '',
@@ -514,7 +514,7 @@ class extends Component {
                             @foreach($saleDate as $item)
                                 <tr class="transition hover:bg-emerald-50/60">
                                     <td class="px-4 py-4 font-medium text-zinc-900">{{ $item['transaction_number'] }}</td>
-                                    <td class="px-4 py-4 text-zinc-800">{{ $item['product_name'] }}</td>
+                                    <td class="px-4 py-4 text-zinc-800">{{ $item['product_name'] ?? '' }}</td>
                                     <td class="px-4 py-4 text-zinc-600">{{ $item['category_name'] ?? 'Uncategorized' }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['quantity'] }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['unit_name'] ?? 'N/A' }}</td>
