@@ -137,7 +137,7 @@
                         <div class="flex items-center gap-2">
                             <flux:badge color="{{ $product->stock_level < 20 ? 'red' : 'green' }}" variant="subtle"
                                         class="font-small">
-                                {{ $product->stock_level }}
+                                {{ format_qty($product->stock_level) }}
                             </flux:badge>
 
                             @if($product->stock_level < 20)

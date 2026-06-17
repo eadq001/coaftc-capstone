@@ -364,7 +364,7 @@ class extends Component {
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                         {{--                                        <p class="mt-1 text-xs uppercase tracking-[0.18em] text-zinc-500">{{ $item['code'] }}</p>--}}
                                     </div>
-                                    <div class="px-4 py-4 text-right font-medium">{{ $item['quantity'] }}</div>
+                                    <div class="px-4 py-4 text-right font-medium">{{ format_qty($item['quantity']) }}</div>
                                     <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
                                         @if(in_array($item['category'], ['livestock', 'poultry']))
@@ -508,7 +508,7 @@ class extends Component {
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Stocks Available</flux:label>
-                        <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity"
+                        <flux:input type="number" value="{{ format_qty($currentItem['availableStock']) }}" placeholder="Quantity"
                                     readonly/>
                     </flux:field>
 
@@ -531,7 +531,7 @@ class extends Component {
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
-                        <flux:input type="number" step="0.1" wire:model.live.debounce.600ms="currentItemQuantity"
+                        <flux:input type="number" step="0.1" wire:model.live.debounce.1000ms="currentItemQuantity"
                                     placeholder="Quantity" autocomplete="off" id="quantity"/>
                         <flux:error name="currentItemQuantity"/>
                     </flux:field>
@@ -623,7 +623,7 @@ class extends Component {
                                     <p class="font-medium text-zinc-900">{{ $salesItem['product_name'] ?? 'Unknown product' }}</p>
                                     <p class="text-xs text-zinc-500">{{ $salesItem['product_unit'] ?? 'unit' }}</p>
                                 </div>
-                                <p class="text-right text-zinc-700">{{ $salesItem['quantity'] }}</p>
+                                <p class="text-right text-zinc-700">{{ format_qty($salesItem['quantity']) }}</p>
                                 <p class="text-right font-semibold text-zinc-900">₱{{ number_format($salesItem['subtotal'], 2) }}</p>
                             </div>
                         @endforeach

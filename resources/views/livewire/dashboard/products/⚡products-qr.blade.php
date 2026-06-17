@@ -84,7 +84,7 @@ class extends Component {
                         <p class="text-sm font-semibold text-zinc-900">{{ $product->name }}</p>
                         <p class="text-sm text-zinc-600">{{ $product->category?->category_name }}</p>
                         <p class="text-sm text-zinc-500">{{ $product->subcategory?->subcategory_name }}</p>
-                        <p class="text-sm text-zinc-500">remaining stocks: {{ $product->stock_level }}</p>
+                        <p class="text-sm text-zinc-500">remaining stocks: {{ format_qty($product->stock_level) }}</p>
                         @if($product->class)
                         <p class="text-sm text-zinc-500">class: {{ $product->class }}</p>
                         @endif

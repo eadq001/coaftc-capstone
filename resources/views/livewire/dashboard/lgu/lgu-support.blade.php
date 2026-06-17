@@ -34,7 +34,7 @@
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                     </div>
                                     <div class="px-4 py-4 text-right font-medium">{{ $item['size'] ?? '-' }}</div>
-                                    <div class="px-4 py-4 text-right font-medium">{{ $item['quantity'] }}</div>
+                                    <div class="px-4 py-4 text-right font-medium">{{ format_qty($item['quantity']) }}</div>
                                     <div class="px-4 py-4 text-right">₱{{ number_format($item['price'], 2) }}</div>
                                     <div class="px-4 py-4 text-right font-semibold text-zinc-900">
                                         @if(in_array($item['category'], ['livestock', 'poultry']))
@@ -285,7 +285,7 @@
                                     <p class="text-xs text-zinc-500">{{ $dispersalItem['product_unit'] ?? 'unit' }}</p>
                                 </div>
                                 <p class="text-right text-zinc-700">{{ $dispersalItem['size'] ?? '-' }}</p>
-                                <p class="text-right text-zinc-700">{{ $dispersalItem['quantity'] }}</p>
+                                <p class="text-right text-zinc-700">{{ format_qty($dispersalItem['quantity']) }}</p>
                                 <p class="text-right font-semibold text-zinc-900">{{ $dispersalItem['class'] ?? 'N/A' }}</p>
                             </div>
                         @endforeach

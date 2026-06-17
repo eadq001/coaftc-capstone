@@ -516,12 +516,12 @@ class extends Component {
                                     <td class="px-4 py-4 font-medium text-zinc-900">{{ $item['transaction_number'] }}</td>
                                     <td class="px-4 py-4 text-zinc-800">{{ $item['product_name'] ?? '' }}</td>
                                     <td class="px-4 py-4 text-zinc-600">{{ $item['category_name'] ?? 'Uncategorized' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['quantity'] }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['quantity']) }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['unit_name'] ?? 'N/A' }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['class'] ?? '' }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['size'] ?? '' }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['inventory_start'] }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['inventory_end'] }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_start']) }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_end']) }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['unit_price'] }}</td>
                                     <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item['subtotal'] }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['remarks'] }}</td>

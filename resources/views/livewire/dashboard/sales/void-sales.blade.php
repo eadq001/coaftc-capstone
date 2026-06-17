@@ -104,7 +104,7 @@
                                             -
                                         @endif
                                     </p>
-                                    <p class="text-right text-zinc-700">{{ $item->quantity }}</p>
+                                    <p class="text-right text-zinc-700">{{ format_qty($item->quantity) }}</p>
                                     <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }}</p>
                                     <p class="text-right font-semibold text-zinc-900">
                                         @if(in_array(strtolower($item->product?->category?->category_name ?? ''), ['livestock', 'poultry']))
@@ -270,7 +270,7 @@
                                         <span class="text-xs text-zinc-900">{{ $item['class'] ?? '' }}{{ ($item['class'] ?? '') && ($item['size'] ?? '') ? ' / ' : '' }}{{ $item['size'] ?? '' }}</span>
                                     @endif
                                 </div>
-                                <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
+                                <p class="text-right text-zinc-700">{{ format_qty($item['quantity']) }}</p>
                                 <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
                                 <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item['subtotal'], 2) }}</p>
                             </div>
@@ -293,7 +293,7 @@
                                             <span class="text-xs text-zinc-900">{{ $item['class'] ?? '' }}{{ ($item['class'] ?? '') && ($item['size'] ?? '') ? ' / ' : '' }}{{ $item['size'] ?? '' }}</span>
                                         @endif
                                     </div>
-                                    <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
+                                    <p class="text-right text-zinc-700">{{ format_qty($item['quantity']) }}</p>
                                     <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
                                     <p class="text-right font-semibold text-zinc-900">₱{{ number_format($item['subtotal'], 2) }}</p>
                                 </div>
