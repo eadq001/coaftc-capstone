@@ -12,7 +12,7 @@ class PrintReceipt
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
         //        $copies = ['COAFTC copy'];
-        $copies = ["Client's copy"];
+//        $copies = ["Client's copy"];
 
         foreach ($copies as $copy) {
 
@@ -47,7 +47,13 @@ class PrintReceipt
                 if ($product->size) {
                 $printer->text($product->size . "\n");
                 }
+
+                if ($product->class) {
+                    $printer->text($product->class->value . "\n");
+
+                }
             }
+
             $printer->feed();
             if ($copy === "Client's copy") {
                 $printer->text("Total Amount: {$transactionInfo['grandTotal']}\n");
