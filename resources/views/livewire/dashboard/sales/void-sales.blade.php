@@ -59,8 +59,9 @@
                                     <div>
                                         <flux:input
                                             type="number"
+                                            step="0.1"
                                             size="sm"
-                                            min="1"
+                                            min="0.1"
                                             wire:change="updateEditQuantity({{ $index }}, $event.target.value)"
                                             value="{{ $item['quantity'] }}"
                                         />

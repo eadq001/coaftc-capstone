@@ -190,7 +190,7 @@
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
-                        <flux:input type="number" wire:model.live.debounce.600ms="currentItemQuantity"
+                        <flux:input type="number" step="0.1" wire:model.live.debounce.600ms="currentItemQuantity"
                                     placeholder="Quantity" autocomplete="off" id="quantity"/>
                         <flux:error name="currentItemQuantity"/>
                     </flux:field>

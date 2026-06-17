@@ -150,9 +150,9 @@ class VoidSales extends Component
         return in_array($this->editItems[$index]['category'], ['livestock', 'poultry'], true);
     }
 
-    public function updateEditQuantity(int $index, int $value): void
+    public function updateEditQuantity(int $index, float $value): void
     {
-        if ($value < 1 || ! isset($this->editItems[$index])) {
+        if ($value < 0.1 || ! isset($this->editItems[$index])) {
             return;
         }
 

@@ -41,7 +41,7 @@ class ProductForm extends Form
 
     public string $successMessage = '';
 
-    public function store(int $stockLevel, int $price): void
+    public function store(float $stockLevel, int $price): void
     {
         $validated = $this->validate();
 
@@ -88,7 +88,7 @@ class ProductForm extends Form
 
     }
 
-    public function update(int $stockLevel, int $price): void
+    public function update(float $stockLevel, int $price): void
     {
         $validated = $this->validate();
 
@@ -136,7 +136,7 @@ class ProductForm extends Form
         $this->reset(['name', 'stock_level', 'unit_id', 'price', 'category_id', 'subcategory_id', 'product', 'size', 'class']);
     }
 
-    public function addStock(int $stockLevel): void
+    public function addStock(float $stockLevel): void
     {
         $oldValues = [
             'stock_level' => $this->product->stock_level,

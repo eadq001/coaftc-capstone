@@ -574,7 +574,7 @@ class extends Component {
 
                         <div class="p-4 flex gap-4 text-sm ">
                         @if($hasDispersals)
-                            <span class="text-zinc-900 bg-orange-200 rounded-lg p-2 font-semibold">Dispersal</span>
+                            <span class="text-zinc-900 bg-orange-200 rounded-lg p-2 font-semibold">LGU Support</span>
                             @foreach($dispersals->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
                             <span class="text-zinc-900 bg-orange-200 rounded-lg p-2">
                                 <span>{{ $category . ':'}}</span>

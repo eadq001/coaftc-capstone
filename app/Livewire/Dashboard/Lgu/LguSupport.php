@@ -30,7 +30,7 @@ class LguSupport extends Dashboard
 
     public ?int $editingItemIndex = null;
 
-    #[Validate('min:1|integer')]
+    #[Validate('min:0.1|numeric')]
     public $currentItemQuantity = null;
 
     public string $currentItemClass = '';
@@ -82,10 +82,12 @@ class LguSupport extends Dashboard
 
     public function updatedCurrentItemQuantity($value): void
     {
-        $this->currentItemQuantity = (int) $value;
+        $this->currentItemQuantity = (float) $value;
 
-        if (strlen($this->currentItemQuantity) > 11 || $this->currentItemQuantity < 1) {
+        if ($this->currentItemQuantity === 0.0 || $this->currentItemQuantity < 0.1) {
             $this->reset('currentItemQuantity');
+
+            return;
         }
 
         foreach ($this->items as $index => $item) {
@@ -117,7 +119,7 @@ class LguSupport extends Dashboard
         }
 
         $this->validate([
-            'currentItemQuantity' => 'min:1',
+            'currentItemQuantity' => 'min:0.1|numeric',
             'currentItemClass' => 'nullable|string',
             'price' => 'min:1|integer',
         ]);

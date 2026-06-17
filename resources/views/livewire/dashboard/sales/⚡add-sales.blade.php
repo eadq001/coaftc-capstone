@@ -34,13 +34,13 @@ class extends Component {
     #[Session]
     public float $grandTotal = 0;
 
-    public ?int $availableStock = null;
+    public ?float $availableStock = null;
 
     public bool $showProductNotFound = false;
 
     public ?int $editingItemIndex = null;
 
-    #[Validate("min:1|integer")]
+    #[Validate("min:0.1|numeric")]
     public $currentItemQuantity = null;
 
     public function mount(): void
@@ -92,24 +92,26 @@ class extends Component {
 
     public function updatedCurrentItemQuantity($value): void
     {
-        $this->currentItemQuantity = (int)$value;
+        $this->currentItemQuantity = (float) $value;
 
-        if (strlen($this->currentItemQuantity) > 11 || $this->currentItemQuantity < 1) {
+        if ($this->currentItemQuantity === 0.0 || $this->currentItemQuantity < 0.1) {
             $this->reset('currentItemQuantity');
+
+            return;
         }
 
         foreach ($this->items as $index => $item) {
             if ($item['id'] === $this->currentItem['id']) {
                 if ($this->items[$index]['availableStock'] < ($this->currentItemQuantity + $this->items[$index]['quantity'])) {
                     $this->addError('currentItemQuantity', "Quantity cannot exceed available stock ({$item['availableStock']}).");
+
                     return;
                 }
 
                 $this->validate([
-                    'currentItemQuantity' => '|max:' . $this->currentItem['availableStock']
+                    'currentItemQuantity' => '|max:'.$this->currentItem['availableStock'],
                 ]);
             }
-
         }
     }
 
@@ -128,9 +130,9 @@ class extends Component {
         }
 
         $this->validate([
-            'currentItemQuantity' => 'min:1',
-            'price' => 'min:1|integer'
-            ]);
+            'currentItemQuantity' => 'min:0.1|numeric',
+            'price' => 'min:1|integer',
+        ]);
 
         // Editing existing item — replace quantity directly
         if ($this->editingItemIndex !== null) {
@@ -529,7 +531,7 @@ class extends Component {
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
-                        <flux:input type="number" wire:model.live.debounce.600ms="currentItemQuantity"
+                        <flux:input type="number" step="0.1" wire:model.live.debounce.600ms="currentItemQuantity"
                                     placeholder="Quantity" autocomplete="off" id="quantity"/>
                         <flux:error name="currentItemQuantity"/>
                     </flux:field>
