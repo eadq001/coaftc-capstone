@@ -67,6 +67,8 @@ class extends Component {
                 'name' => $product->name,
                 'price' => $product->price,
                 'availableStock' => $product->stock_level,
+                'size' => $product->size,
+                'class' => $product->class,
                 'category' => strtolower($product->category->category_name),
                 'quantity' => 0,
                 'class' => $product->class->value ?? null,
@@ -507,6 +509,23 @@ class extends Component {
                         <flux:input type="number" value="{{ $currentItem['availableStock'] }}" placeholder="Quantity"
                                     readonly/>
                     </flux:field>
+
+                    @if($currentItem['size'])
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['size'] }}" placeholder="size"
+                                    readonly/>
+                    </flux:field>
+                    @endif
+
+                    @if($currentItem['class'])
+                    <flux:field>
+                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['class'] }}" placeholder="class"
+                                    readonly/>
+                    </flux:field>
+                    @endif
+
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>

@@ -12,6 +12,7 @@ class PrintReceipt
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
         //        $copies = ['COAFTC copy'];
+        $copies = ["Client's copy"];
 
         foreach ($copies as $copy) {
 
@@ -42,7 +43,10 @@ class PrintReceipt
                 $productUnit = $product->unit->unit_name;
 
                 $printer->text($productName . ' ');
-                $printer->text($salesItem['quantity'] . ' ' . $productUnit . "\n");
+                $printer->text($salesItem['quantity'] . ' ' . $productUnit . " ");
+                if ($product->size) {
+                $printer->text($product->size . "\n");
+                }
             }
             $printer->feed();
             if ($copy === "Client's copy") {
@@ -103,13 +107,20 @@ class PrintReceipt
                 $product = Product::find($dispersalItem['product_id']);
                 $productName = $product->name;
                 $productUnit = $product->unit->unit_name;
-                $class = $dispersalItem['class'] ?? 'N/A';
+                $class = $dispersalItem['class'] ?? '';
 
                 $printer->text($productName . ' ');
+                if ($class) {
                 $printer->text($dispersalItem['quantity'] . ' ' . $productUnit . ' (Class: ' . $class . ")\n");
+                }
             }
             $printer->feed();
 
+            if ($copy === "Client's copy") {
+                $printer->text("Total Amount: {$transactionInfo['grandTotal']}\n");
+            }
+
+            $printer->feed();
             $printer->text('                  ' . $copy . "\n");
             $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
 

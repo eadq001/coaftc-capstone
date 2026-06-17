@@ -238,12 +238,12 @@
                     <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer"
                        wire:click="$set('unitToEdit', {{ $unit->id }})" title="click to edit">{{ $unit->unit_name }}</p>
                 @empty
-                    <p>No subcategory added yet</p>
+                    <p>No units added yet</p>
                 @endforelse
             </div>
 
             <div class="mt-8!">
-                {{ $this->subcategories->links(data:['scrollTo' => false])}}
+                {{ $this->units->links(data:['scrollTo' => false])}}
             </div>
         </div>
     </div>
