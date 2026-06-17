@@ -46,14 +46,16 @@
                     <div class="max-h-96 divide-y divide-zinc-200 overflow-y-auto">
                         @if($isEditing)
                             @foreach($editItems as $index => $item)
-                                <div class="grid grid-cols-[minmax(0,1fr)_100px_100px_110px_100px] gap-3 px-4 py-3 text-sm items-center" wire:key="edit-item-{{ $item['id'] }}">
-                                    <div>
-                                        <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
-                                        <p class="text-xs text-zinc-500">{{ $item['product_unit'] ?? 'unit' }}</p>
+                                <div class="grid grid-cols-[minmax(0,1fr)_80px_100px_100px_100px_110px_90px] gap-3 px-4 py-3 text-sm items-center" wire:key="edit-item-{{ $item['id'] }}">
+                                    <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
+                                    <p class="text-zinc-500">{{ $item['product_unit'] ?? 'unit' }}</p>
+                                    <p class="text-zinc-400">
                                         @if($item['class'] || $item['size'])
-                                            <p class="text-xs text-zinc-400">{{ $item['class'] }}{{ $item['class'] && $item['size'] ? ' / ' : '' }}{{ $item['size'] }}</p>
+                                            {{ $item['class'] }}{{ $item['class'] && $item['size'] ? ' / ' : '' }}{{ $item['size'] }}
+                                        @else
+                                            -
                                         @endif
-                                    </div>
+                                    </p>
                                     <div>
                                         <flux:input
                                             type="number"
@@ -82,7 +84,6 @@
                                             ₱{{ number_format($item['unit_price'], 2) }}
                                         @else
                                             ₱{{ number_format($item['subtotal'], 2) }}
-
                                         @endif
                                     </p>
                                     <div class="text-right">
@@ -92,16 +93,18 @@
                             @endforeach
                         @else
                             @foreach($sale->salesItem as $item)
-                                <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="sale-item-{{ $item->id }}">
-                                    <div>
-                                        <p class="font-medium text-zinc-900">{{ $item->product?->name ?? 'Unknown' }}</p>
-                                        <p class="text-sm text-zinc-600">{{ $item->product?->unit?->unit_name ?? 'unit' }}</p>
+                                <div class="grid grid-cols-[minmax(0,1fr)_70px_50px_50px_110px_110px] gap-3 px-4 py-3 text-sm items-center" wire:key="sale-item-{{ $item->id }}">
+                                    <p class="font-medium text-zinc-900">{{ $item->product?->name ?? 'Unknown' }}</p>
+                                    <p class="text-zinc-500">{{ $item->product?->unit?->unit_name ?? 'unit' }}</p>
+                                    <p class="text-zinc-400">
                                         @if($item->product?->class || $item->product?->size)
-                                            <p class="text-sm text-zinc-600">{{ $item->product?->class?->value }}{{ $item->product?->class && $item->product?->size ? ' / ' : '' }}{{ $item->product?->size }}</p>
+                                            {{ $item->product?->class?->value }}{{ $item->product?->class && $item->product?->size ? ' / ' : '' }}{{ $item->product?->size }}
+                                        @else
+                                            -
                                         @endif
-                                    </div>
+                                    </p>
                                     <p class="text-right text-zinc-700">{{ $item->quantity }}</p>
-                                    <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }} </p>
+                                    <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }}</p>
                                     <p class="text-right font-semibold text-zinc-900">
                                         @if(in_array(strtolower($item->product?->category?->category_name ?? ''), ['livestock', 'poultry']))
                                             ₱{{ number_format($item->unit_price, 2) }}
@@ -141,7 +144,7 @@
                         <div class="px-4 py-3">Action</div>
                         <div class="px-4 py-3">Original</div>
                         <div class="px-4 py-3">Modified</div>
-                        <div class="px-4 py-3">Cashier</div>
+                        <div class="px-4 py-3">Associate</div>
                         <div class="px-4 py-3">Authorized By</div>
                         <div class="px-4 py-3">Date</div>
                     </div>
@@ -243,7 +246,7 @@
                         <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium {{ $selectedVoidedSale->action === 'voided' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }}">
                             {{ ucfirst($selectedVoidedSale->action) }}
                         </span>
-                        <span class="text-zinc-500">Cashier: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->originalCashier?->name ?? 'Unknown' }}</span></span>
+                        <span class="text-zinc-500">Associate: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->originalCashier?->name ?? 'Unknown' }}</span></span>
                         <span class="text-zinc-500">Authorized By: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->authorizedBy?->name ?? 'Unknown' }}</span></span>
                         <span class="text-zinc-500">Date: <span class="font-medium text-zinc-900">{{ $selectedVoidedSale->voided_at?->format('d/m/Y g:i A') ?? 'Unknown' }}</span></span>
                     </div>
@@ -258,10 +261,13 @@
                     </div>
                     <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
                         @foreach($selectedVoidedSale->original_items as $item)
-                            <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="original-item-{{ $loop->index }}">
-                                <div>
-                                    <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
-                                    <p class="text-xs text-zinc-500">ID: {{ $item['product_id'] ?? '-' }}</p>
+                            <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm items-center" wire:key="original-item-{{ $loop->index }}">
+                                <div class="flex items-center gap-x-2 flex-wrap">
+                                    <span class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</span>
+                                    <span class="text-xs text-zinc-900">ID: {{ $item['product_id'] ?? '-' }}</span>
+                                    @if(($item['class'] ?? '') || ($item['size'] ?? ''))
+                                        <span class="text-xs text-zinc-900">{{ $item['class'] ?? '' }}{{ ($item['class'] ?? '') && ($item['size'] ?? '') ? ' / ' : '' }}{{ $item['size'] ?? '' }}</span>
+                                    @endif
                                 </div>
                                 <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
                                 <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>
@@ -278,10 +284,13 @@
                         </div>
                         <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
                             @foreach($selectedVoidedSale->modified_items as $item)
-                                <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="modified-item-{{ $loop->index }}">
-                                    <div>
-                                        <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
-                                        <p class="text-xs text-zinc-500">ID: {{ $item['product_id'] ?? '-' }}</p>
+                                <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm items-center" wire:key="modified-item-{{ $loop->index }}">
+                                    <div class="flex items-center gap-x-2 flex-wrap">
+                                        <span class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</span>
+                                        <span class="text-xs text-zinc-900">ID: {{ $item['product_id'] ?? '-' }}</span>
+                                        @if(($item['class'] ?? '') || ($item['size'] ?? ''))
+                                            <span class="text-xs text-zinc-900">{{ $item['class'] ?? '' }}{{ ($item['class'] ?? '') && ($item['size'] ?? '') ? ' / ' : '' }}{{ $item['size'] ?? '' }}</span>
+                                        @endif
                                     </div>
                                     <p class="text-right text-zinc-700">{{ $item['quantity'] }}</p>
                                     <p class="text-right text-zinc-700">₱{{ number_format($item['unit_price'], 2) }}</p>

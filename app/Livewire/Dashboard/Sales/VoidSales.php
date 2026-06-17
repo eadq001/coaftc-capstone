@@ -217,6 +217,8 @@ class VoidSales extends Component
                 ->map(fn ($item) => [
                     'product_id' => $item->product_id,
                     'product_name' => $item->product?->name ?? 'Unknown',
+                    'class' => $item->product?->class?->value ?? '',
+                    'size' => $item->product?->size ?? '',
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
                     'subtotal' => $item->subtotal,
@@ -277,6 +279,8 @@ class VoidSales extends Component
             $newItemsForRecord = collect($this->editItems)->map(fn ($item) => [
                 'product_id' => $item['product_id'],
                 'product_name' => $item['product_name'] ?? Product::find($item['product_id'])?->name ?? 'Unknown',
+                'class' => $item['class'] ?? '',
+                'size' => $item['size'] ?? '',
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],
                 'subtotal' => $item['subtotal'],
@@ -327,6 +331,8 @@ class VoidSales extends Component
                 ->map(fn ($item) => [
                     'product_id' => $item->product_id,
                     'product_name' => $item->product?->name ?? 'Unknown',
+                    'class' => $item->product?->class?->value ?? '',
+                    'size' => $item->product?->size ?? '',
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
                     'subtotal' => $item->subtotal,
