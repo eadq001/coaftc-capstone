@@ -23,19 +23,19 @@ class ArchiveProducts extends Dashboard
     #[Computed]
     public function categories()
     {
-        return Category::onlyTrashed()->paginate(6, pageName: 'archived-categories');
+        return Category::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(6, pageName: 'archived-categories');
     }
 
     #[Computed]
     public function subcategories()
     {
-        return Subcategory::onlyTrashed()->paginate(6, pageName: 'archived-subcategories');
+        return Subcategory::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(6, pageName: 'archived-subcategories');
     }
 
     #[Computed]
     public function units()
     {
-        return Unit::onlyTrashed()->paginate(6, pageName: 'archived-units');
+        return Unit::onlyTrashed()->orderBy('deleted_at', 'desc')->paginate(6, pageName: 'archived-units');
     }
 
     public function render()

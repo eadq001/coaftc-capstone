@@ -123,6 +123,8 @@ class VoidSales extends Component
                 'product_id' => $item->product_id,
                 'product_name' => $item->product?->name,
                 'product_unit' => $item->product?->unit?->unit_name,
+                'class' => $item->product?->class?->value ?? '',
+                'size' => $item->product?->size ?? '',
                 'category' => strtolower($item->product?->category?->category_name ?? ''),
                 'quantity' => $item->quantity,
                 'unit_price' => $item->unit_price,

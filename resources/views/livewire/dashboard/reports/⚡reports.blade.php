@@ -538,7 +538,7 @@ class extends Component {
                                 <tr class="border-t-2 border-orange-400 bg-orange-50">
                                     <td colspan="10"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-orange-700">
-                                        Total Dispersal
+                                        Subtotal LGU Support
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-orange-900">
@@ -550,11 +550,22 @@ class extends Component {
                                 <tr class="border-t-2 border-emerald-600 bg-emerald-50">
                                     <td colspan="10"
                                         class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
-                                        Total
+                                        Subtotal Sales
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
                                         {{ $sales->sum('subtotal') }}
+                                    </td>
+                                </tr>
+
+                                <tr class="border-t-2 border-emerald-600 bg-emerald-50">
+                                    <td colspan="10"
+                                        class="px-4 py-4 text-left text-sm font-semibold uppercase tracking-[0.14em] text-emerald-800">
+                                        Total Sales
+                                    </td>
+                                    <td colspan="3"
+                                        class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
+                                        {{ $sales->sum('subtotal') + $dispersals->sum('subtotal') }}
                                     </td>
                                 </tr>
                             @endif

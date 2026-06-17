@@ -38,10 +38,6 @@
                             <p class="font-semibold text-zinc-900">{{ $sale->user?->name ?? 'Unknown' }}</p>
                         </div>
                         <div>
-                            <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">Date</p>
-                            <p class="font-semibold text-zinc-900">{{ $sale->created_at?->format('d/m/Y g:i A') ?? 'Unknown' }}</p>
-                        </div>
-                        <div>
                             <p class="text-xs uppercase tracking-[0.18em] text-zinc-500">Total</p>
                             <p class="font-semibold text-zinc-900">₱{{ number_format($sale->total_amount, 2) }}</p>
                         </div>
@@ -54,6 +50,9 @@
                                     <div>
                                         <p class="font-medium text-zinc-900">{{ $item['product_name'] ?? 'Unknown' }}</p>
                                         <p class="text-xs text-zinc-500">{{ $item['product_unit'] ?? 'unit' }}</p>
+                                        @if($item['class'] || $item['size'])
+                                            <p class="text-xs text-zinc-400">{{ $item['class'] }}{{ $item['class'] && $item['size'] ? ' / ' : '' }}{{ $item['size'] }}</p>
+                                        @endif
                                     </div>
                                     <div>
                                         <flux:input
@@ -83,6 +82,7 @@
                                             ₱{{ number_format($item['unit_price'], 2) }}
                                         @else
                                             ₱{{ number_format($item['subtotal'], 2) }}
+
                                         @endif
                                     </p>
                                     <div class="text-right">
@@ -95,10 +95,13 @@
                                 <div class="grid grid-cols-[minmax(0,1fr)_90px_110px_110px] gap-3 px-4 py-3 text-sm" wire:key="sale-item-{{ $item->id }}">
                                     <div>
                                         <p class="font-medium text-zinc-900">{{ $item->product?->name ?? 'Unknown' }}</p>
-                                        <p class="text-xs text-zinc-500">{{ $item->product?->unit?->unit_name ?? 'unit' }}</p>
+                                        <p class="text-sm text-zinc-600">{{ $item->product?->unit?->unit_name ?? 'unit' }}</p>
+                                        @if($item->product?->class || $item->product?->size)
+                                            <p class="text-sm text-zinc-600">{{ $item->product?->class?->value }}{{ $item->product?->class && $item->product?->size ? ' / ' : '' }}{{ $item->product?->size }}</p>
+                                        @endif
                                     </div>
                                     <p class="text-right text-zinc-700">{{ $item->quantity }}</p>
-                                    <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }}</p>
+                                    <p class="text-right text-zinc-700">₱{{ number_format($item->unit_price, 2) }} </p>
                                     <p class="text-right font-semibold text-zinc-900">
                                         @if(in_array(strtolower($item->product?->category?->category_name ?? ''), ['livestock', 'poultry']))
                                             ₱{{ number_format($item->unit_price, 2) }}
