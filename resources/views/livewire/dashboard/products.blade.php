@@ -62,7 +62,6 @@
                             wire:click="clearSearchText">
                         Clear
                     </button>
-
                 </div>
 
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">

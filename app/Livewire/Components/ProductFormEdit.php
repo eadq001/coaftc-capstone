@@ -58,7 +58,7 @@ class ProductFormEdit extends Component
     public function update(): void
     {
         $this->validate([
-            'stockLevel' => 'min:1',
+            'stockLevel' => 'numeric|min:0.1',
             'price' => 'min:1',
         ]);
 
@@ -93,13 +93,13 @@ class ProductFormEdit extends Component
 
     public function updatedStockLevel($value)
     {
-        //        $this->stockLevel = (int) $value;
-        if (strlen($this->stockLevel) > 11 || (int) $this->stockLevel < 1) {
+        $this->stockLevel = (float) $value;
+        if ($this->stockLevel === 0.0 || $this->stockLevel < 0.1) {
             $this->reset('stockLevel');
         }
 
         $this->validate([
-            'stockLevel' => 'int|min:1|required',
+            'stockLevel' => 'numeric|min:0.1|required',
         ]);
     }
 
@@ -117,14 +117,14 @@ class ProductFormEdit extends Component
 
     public function updatedStockToAdd($value): void
     {
-        $this->stockToAdd = (int) $value;
+        $this->stockToAdd = (float) $value;
 
-        if (strlen($this->stockToAdd) > 11 || $this->stockToAdd < 1) {
+        if ($this->stockToAdd === 0.0 || $this->stockToAdd < 0.1) {
             $this->reset('stockToAdd');
         }
 
         $this->validate([
-            'stockToAdd' => 'int|min:1|required',
+            'stockToAdd' => 'numeric|min:0.1|required',
         ]);
     }
 
@@ -146,7 +146,7 @@ class ProductFormEdit extends Component
             'stockToAdd' => 'min:1|required',
         ]);
 
-        $this->productForm->addStock((int) $this->stockToAdd);
+        $this->productForm->addStock((float) $this->stockToAdd);
         $this->reset('stockToAdd');
         $this->dispatch('add-product-stock-success');
 

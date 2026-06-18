@@ -33,7 +33,7 @@
             </flux:field>
             <flux:field>
                 <flux:label class="mb-0.5!">Stock Level</flux:label>
-                <flux:input type="number" wire:model.live.debounce.1000ms="stockLevel"
+                <flux:input type="number" step="0.1" wire:model.live.debounce.1000ms="stockLevel"
                             placeholder="Stock Level" x-bind:readonly="!active"/>
                 <flux:error name="stockLevel"/>
             </flux:field>
@@ -175,7 +175,7 @@
                         <div class="space-y-4">
                             <flux:field>
                                 <flux:label class="mb-0.5!">Quantity</flux:label>
-                                <flux:input type="number" min="1" wire:model.live="stockToAdd"
+                                <flux:input type="number" step="0.1" min="0.1" wire:model.live="stockToAdd"
                                             placeholder="Quantity to add"/>
                                 <flux:error name="stockToAdd"/>
                             </flux:field>
