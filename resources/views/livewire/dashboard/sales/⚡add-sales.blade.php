@@ -40,6 +40,10 @@ class extends Component {
 
     public ?int $editingItemIndex = null;
 
+    public string $productSearchText = '';
+
+    public array $productSearchResults = [];
+
     #[Validate("min:0.01|numeric")]
     public $currentItemQuantity = null;
 
@@ -52,34 +56,18 @@ class extends Component {
 
     public function updatedSearchId($value = null): void
     {
-        if (strlen($value) > 11 || ((int)$value) < 1) {
+        if (strlen($value) > 11 || ((int) $value) < 1) {
             $this->reset('searchId');
+
             return;
         }
 
-        $value = (int)$value;
+        $value = (int) $value;
 
         $product = Product::find($value);
 
         if ($product) {
-            $this->currentItem = [
-                'id' => $product->id,
-                'name' => $product->name,
-                'price' => $product->price,
-                'availableStock' => $product->stock_level,
-                'size' => $product->size,
-                'class' => $product->class,
-                'category' => strtolower($product->category->category_name),
-                'quantity' => 0,
-                'class' => $product->class->value ?? null,
-            ];
-
-            $this->price = $product->price;
-
-            if (!empty($product['size'])) {
-                $this->currentItem['size'] = $product->size;
-            }
-
+            $this->loadProductIntoCurrentItem($product);
         } else {
             $this->showProductNotFound = true;
         }
@@ -87,7 +75,65 @@ class extends Component {
         $this->dispatch('show-data');
 
         $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+    }
 
+    public function updatedProductSearchText(string $value): void
+    {
+        $this->productSearchResults = [];
+
+        if (strlen($value) < 2) {
+            return;
+        }
+
+        $this->productSearchResults = Product::query()
+            ->with(['category:id,category_name'])
+            ->where('name', 'like', "%{$value}%")
+            ->limit(10)
+            ->get()
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'category' => $product->category?->category_name ?? 'Uncategorized',
+                'stock_level' => $product->stock_level,
+                'price' => $product->price,
+                'class' => $product->class?->value ?? '',
+            ])
+            ->toArray();
+    }
+
+    public function selectProduct(int $productId): void
+    {
+        $product = Product::find($productId);
+
+        if (! $product) {
+            $this->showProductNotFound = true;
+
+            return;
+        }
+
+        $this->loadProductIntoCurrentItem($product);
+        $this->reset('productSearchText', 'productSearchResults');
+        $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+    }
+
+    private function loadProductIntoCurrentItem(Product $product): void
+    {
+        $this->currentItem = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'price' => $product->price,
+            'availableStock' => $product->stock_level,
+            'size' => $product->size,
+            'category' => strtolower($product->category->category_name),
+            'quantity' => 0,
+            'class' => $product->class?->value ?? null,
+        ];
+
+        $this->price = $product->price;
+
+        if (! empty($product['size'])) {
+            $this->currentItem['size'] = $product->size;
+        }
     }
 
     public function updatedCurrentItemQuantity($value): void
@@ -117,10 +163,9 @@ class extends Component {
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'editingItemIndex', 'showProductNotFound');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'editingItemIndex', 'showProductNotFound', 'productSearchText', 'productSearchResults');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
-
     }
 
     public function addQuantity(): void
@@ -334,12 +379,45 @@ class extends Component {
         <div class="grid gap-0 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)] grid-rows-1">
             <section class="border-b border-emerald-100 xl:border-r xl:border-b-0 h-[90vh]">
                 <div class="border-b border-emerald-100 bg-linear-to-r from-emerald-50 via-white to-emerald-100/70 px-6 py-5 sm:px-8">
-                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
-                        <flux:field class="lg:col-span-2">
+                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1.3fr)]">
+                        <flux:field>
                             <flux:label>QR Code / Product Search</flux:label>
                             <flux:input icon="qr-code" type="number" placeholder="Scan QR or type product id..."
                                         id="product-search"
                                         autocomplete="off" wire:model.live="searchId"/>
+                        </flux:field>
+
+                        <flux:field class="relative">
+                            <flux:label>Product Name Search</flux:label>
+                            <flux:input icon="magnifying-glass" type="text" placeholder="Type product name..."
+                                        autocomplete="off" wire:model.live.debounce.300ms="productSearchText"/>
+
+                            @if(!empty($productSearchResults))
+                                <div class="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg">
+                                    <div class="grid grid-cols-[60px_1fr_100px_80px_80px_60px] border-b border-zinc-100 bg-zinc-50 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                                        <div>ID</div>
+                                        <div>Name</div>
+                                        <div>Category</div>
+                                        <div class="text-right">Qty</div>
+                                        <div class="text-right">Price</div>
+                                        <div class="text-right">Class</div>
+                                    </div>
+                                    <div class="max-h-56 overflow-y-auto">
+                                        @foreach($productSearchResults as $result)
+                                            <div wire:click="selectProduct({{ $result['id'] }})"
+                                                 wire:key="search-result-{{ $result['id'] }}"
+                                                 class="grid cursor-pointer grid-cols-[60px_60px_100px_80px_80px_60px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
+                                                <span class="font-medium text-zinc-900">{{ $result['id'] }}</span>
+                                                 <span class="min-w-0 truncate font-medium text-zinc-900">{{ $result['name'] }}</span>
+                                                 <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['category'] }}</span>
+                                                <span class="text-right tabular-nums">{{ format_qty($result['stock_level']) }}</span>
+                                                <span class="text-right tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
+                                                <span class="text-right text-xs text-zinc-500">{{ $result['class'] }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         </flux:field>
                     </div>
                 </div>
@@ -452,7 +530,6 @@ class extends Component {
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
                             <button type="button" wire:click="pay" @disabled($paid) x-data
-                                    @keydown.window.p="$wire.pay()"
                                     class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
                                 Pay
                             </button>
@@ -460,7 +537,7 @@ class extends Component {
                             <div wire:click="newTransaction"
                                  class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
                                 <button type="button" class="font-semibold" x-data
-                                        @keydown.window.n="$wire.newTransaction()">New
+                                        >New
                                     Transaction
                                 </button>
                             </div>
