@@ -542,7 +542,7 @@ class extends Component {
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-orange-900">
-                                        {{ $dispersals->sum('subtotal') }}
+                                         ₱{{ number_format($dispersals->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
                             @endif
@@ -554,7 +554,7 @@ class extends Component {
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
-                                        {{ $sales->sum('subtotal') }}
+                                         {{ number_format($sales->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
 
@@ -565,7 +565,7 @@ class extends Component {
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-emerald-900">
-                                        {{ $sales->sum('subtotal') + $dispersals->sum('subtotal') }}
+                                         {{ number_format($sales->sum('subtotal') + $dispersals->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
                             @endif
@@ -578,7 +578,7 @@ class extends Component {
                             @foreach($dispersals->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
                             <span class="text-zinc-900 bg-orange-200 rounded-lg p-2">
                                 <span>{{ $category . ':'}}</span>
-                                <span>{{ $item->sum('subtotal') }}</span>
+                                <span>{{ number_format($item->sum('subtotal'), 2) }}</span>
                             </span>
                             @endforeach
                         @endif
@@ -587,7 +587,7 @@ class extends Component {
                             @foreach($sales->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
                             <span class="text-zinc-900 bg-green-200 rounded-lg p-2">
                                 <span>{{ $category . ':'}}</span>
-                                <span>{{ $item->sum('subtotal') }}</span>
+                                <span>{{ number_format($item->sum('subtotal'), 2) }}</span>
                             </span>
                             @endforeach
                         @endif

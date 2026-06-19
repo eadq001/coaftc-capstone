@@ -33,7 +33,7 @@
             </flux:field>
             <flux:field>
                 <flux:label class="mb-0.5!">Stock Level</flux:label>
-                <flux:input type="number" step="0.1" wire:model.live.debounce.1000ms="stockLevel"
+                <flux:input type="number" step="0.01" wire:model.live.debounce.1000ms="stockLevel"
                             placeholder="Stock Level" x-bind:readonly="!active"/>
                 <flux:error name="stockLevel"/>
             </flux:field>
@@ -165,7 +165,7 @@
              x-on:add-product-stock-success.window="setTimeout(()=> {showAddStockForm=false}, 2000)">
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/20 backdrop-blur-xs">
                 <div class="relative bg-white p-4 w-2xl rounded-lg">
-                    <form wire:submit="addStock" class="space-y-3 text-sm ">
+                    <form wire:submit="addStock({{$productForm->id}})" class="space-y-3 text-sm ">
                         <div class="absolute top-0 right-0 p-2" title="exit this form">
                             <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all"
                                               @click="$wire.resetStockToAdd();showAddStockForm=false"/>
@@ -175,7 +175,7 @@
                         <div class="space-y-4">
                             <flux:field>
                                 <flux:label class="mb-0.5!">Quantity</flux:label>
-                                <flux:input type="number" step="0.1" min="0.1" wire:model.live="stockToAdd"
+                                <flux:input type="number" step="0.01" min="0.01" wire:model.live.debounce.1000ms="stockToAdd"
                                             placeholder="Quantity to add"/>
                                 <flux:error name="stockToAdd"/>
                             </flux:field>

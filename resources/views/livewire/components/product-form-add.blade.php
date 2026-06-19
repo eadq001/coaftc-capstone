@@ -11,7 +11,7 @@
         </flux:field>
         <flux:field>
             <flux:label class="mb-0.5!">Stock Level</flux:label>
-            <flux:input type="number" step="0.1" wire:model.live.debounce.1000ms="stockLevel" placeholder="Stock Level"/>
+            <flux:input type="number" step="0.01" wire:model.live.debounce.1000ms="stockLevel" placeholder="Stock Level"/>
             <flux:error name="stockLevel" class="mt-1!"/>
         </flux:field>
 

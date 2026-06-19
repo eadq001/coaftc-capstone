@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Subcategory;
 use App\Models\Unit;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
@@ -30,7 +31,7 @@ class ProductFormEdit extends Component
 
     public bool $isFormValuesChange = false;
 
-    #[Validate('min:1')]
+    #[Validate('numeric|min:0.01')]
     public $stockToAdd = null;
 
     public function mount(): void
@@ -58,7 +59,7 @@ class ProductFormEdit extends Component
     public function update(): void
     {
         $this->validate([
-            'stockLevel' => 'numeric|min:0.1',
+            'stockLevel' => 'numeric|min:0.01',
             'price' => 'min:1',
         ]);
 
@@ -94,12 +95,12 @@ class ProductFormEdit extends Component
     public function updatedStockLevel($value)
     {
         $this->stockLevel = (float) $value;
-        if ($this->stockLevel === 0.0 || $this->stockLevel < 0.1) {
+        if ($this->stockLevel === 0.00 || $this->stockLevel < 0.01) {
             $this->reset('stockLevel');
         }
 
         $this->validate([
-            'stockLevel' => 'numeric|min:0.1|required',
+            'stockLevel' => 'numeric|min:0.01|required',
         ]);
     }
 
@@ -119,12 +120,12 @@ class ProductFormEdit extends Component
     {
         $this->stockToAdd = (float) $value;
 
-        if ($this->stockToAdd === 0.0 || $this->stockToAdd < 0.1) {
+        if ($this->stockToAdd === 0.0 || $this->stockToAdd < 0.01) {
             $this->reset('stockToAdd');
         }
 
         $this->validate([
-            'stockToAdd' => 'numeric|min:0.1|required',
+            'stockToAdd' => 'numeric|min:0.01|required',
         ]);
     }
 
@@ -140,16 +141,24 @@ class ProductFormEdit extends Component
         //        $this->productForm->resetStockToAdd();
     }
 
-    public function addStock(): void
+    public function addStock(int $id): void
     {
         $this->validate([
-            'stockToAdd' => 'min:1|required',
+            'stockToAdd' => 'min:0.01|required',
         ]);
 
         $this->productForm->addStock((float) $this->stockToAdd);
         $this->reset('stockToAdd');
-        $this->dispatch('add-product-stock-success');
+        $this->dispatch('add-product-stock-success', $id);
 
+    }
+
+    #[On('add-product-stock-success')]
+    public function stockLevelUpdate(int $id)
+    {
+        $product = Product::find($id);
+
+        $this->stockLevel = $product->stock_level;
     }
 
     public function render()

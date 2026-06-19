@@ -15,8 +15,13 @@ return new class extends Migration
             $table->decimal('stock_level', 10, 2)->change();
         });
 
+        Schema::table('sales', function (Blueprint $table) {
+            $table->decimal('total_amount', 10, 2)->change();
+        });
+
         Schema::table('sales_items', function (Blueprint $table) {
             $table->decimal('quantity', 10, 2)->change();
+            $table->decimal('subtotal', 10, 2)->change();
             $table->decimal('inventory_start', 10, 2)->change();
             $table->decimal('inventory_end', 10, 2)->change();
         });

@@ -40,7 +40,7 @@ class extends Component {
 
     public ?int $editingItemIndex = null;
 
-    #[Validate("min:0.1|numeric")]
+    #[Validate("min:0.01|numeric")]
     public $currentItemQuantity = null;
 
     public function mount(): void
@@ -94,7 +94,7 @@ class extends Component {
     {
         $this->currentItemQuantity = (float) $value;
 
-        if ($this->currentItemQuantity === 0.0 || $this->currentItemQuantity < 0.1) {
+        if ($this->currentItemQuantity === 0.00 || $this->currentItemQuantity < 0.01) {
             $this->reset('currentItemQuantity');
 
             return;
@@ -130,7 +130,7 @@ class extends Component {
         }
 
         $this->validate([
-            'currentItemQuantity' => 'min:0.1|numeric',
+            'currentItemQuantity' => 'min:0.01|numeric',
             'price' => 'min:1|integer',
         ]);
 
@@ -501,8 +501,15 @@ class extends Component {
                     </flux:field>
 
                     <flux:field>
+                        <flux:label class="mb-0.5!">Category</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['category'] }}" placeholder="category"
+                                    readonly/>
+                    </flux:field>
+
+                    <flux:field>
                         <flux:label class="mb-0.5!">Price</flux:label>
-                        <flux:input type="number" wire:model="price" placeholder="Price" :readonly="!in_array($currentItem['category'], ['livestock', 'poultry'])"/>
+{{--                        <flux:input type="number" wire:model="price" placeholder="Price" :readonly="!in_array($currentItem['category'], ['livestock', 'poultry'])"/>--}}
+                        <flux:input type="number" wire:model="price" step="0.01" placeholder="Price"/>
                         <flux:error name="price"/>
                     </flux:field>
 
@@ -531,7 +538,7 @@ class extends Component {
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
-                        <flux:input type="number" step="0.1" wire:model.live.debounce.1000ms="currentItemQuantity"
+                        <flux:input type="number" step="0.01" wire:model.live.debounce.1200ms="currentItemQuantity"
                                     placeholder="Quantity" autocomplete="off" id="quantity"/>
                         <flux:error name="currentItemQuantity"/>
                     </flux:field>
