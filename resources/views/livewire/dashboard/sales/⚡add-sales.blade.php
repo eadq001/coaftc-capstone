@@ -97,6 +97,7 @@ class extends Component {
                 'stock_level' => $product->stock_level,
                 'price' => $product->price,
                 'class' => $product->class?->value ?? '',
+                'size' => $product->size ?? '',
             ])
             ->toArray();
     }
@@ -393,26 +394,28 @@ class extends Component {
                                         autocomplete="off" wire:model.live.debounce.300ms="productSearchText"/>
 
                             @if(!empty($productSearchResults))
-                                <div class="absolute z-20 mt-1 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg">
-                                    <div class="grid grid-cols-[60px_1fr_100px_80px_80px_60px] border-b border-zinc-100 bg-zinc-50 px-3 py-2 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                                <div class="absolute z-20 mt-1 w-4xl rounded-xl border border-zinc-200 bg-white shadow-lg p-2">
+                                    <div class="grid gap-x-2 grid-cols-[60px_200px_150px_100px_100px_90px_100px] border-b border-zinc-100 bg-zinc-50 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                                         <div>ID</div>
                                         <div>Name</div>
                                         <div>Category</div>
-                                        <div class="text-right">Qty</div>
-                                        <div class="text-right">Price</div>
-                                        <div class="text-right">Class</div>
+                                        <div>Qty</div>
+                                        <div>Price</div>
+                                        <div>Class</div>
+                                        <div>Size</div>
                                     </div>
                                     <div class="max-h-56 overflow-y-auto">
                                         @foreach($productSearchResults as $result)
                                             <div wire:click="selectProduct({{ $result['id'] }})"
                                                  wire:key="search-result-{{ $result['id'] }}"
-                                                 class="grid cursor-pointer grid-cols-[60px_60px_100px_80px_80px_60px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
+                                                 class="grid gap-x-2 cursor-pointer grid-cols-[60px_200px_150px_100px_100px_90px_100px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
                                                 <span class="font-medium text-zinc-900">{{ $result['id'] }}</span>
                                                  <span class="min-w-0 truncate font-medium text-zinc-900">{{ $result['name'] }}</span>
                                                  <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['category'] }}</span>
-                                                <span class="text-right tabular-nums">{{ format_qty($result['stock_level']) }}</span>
-                                                <span class="text-right tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
-                                                <span class="text-right text-xs text-zinc-500">{{ $result['class'] }}</span>
+                                                <span class="tabular-nums">{{ format_qty($result['stock_level']) }}</span>
+                                                <span class="tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
+                                                <span class="text-xs text-zinc-500">{{ $result['class'] }}</span>
+                                                <span class="text-xs text-zinc-500">{{ $result['size'] }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -598,7 +601,7 @@ class extends Component {
 
                     @if($currentItem['size'])
                     <flux:field>
-                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
+                        <flux:label class="mb-0.5!">Size</flux:label>
                         <flux:input type="text" value="{{ $currentItem['size'] }}" placeholder="size"
                                     readonly/>
                     </flux:field>
@@ -606,7 +609,7 @@ class extends Component {
 
                     @if($currentItem['class'])
                     <flux:field>
-                        <flux:label class="mb-0.5!">Stocks Available</flux:label>
+                        <flux:label class="mb-0.5!">Class</flux:label>
                         <flux:input type="text" value="{{ $currentItem['class'] }}" placeholder="class"
                                     readonly/>
                     </flux:field>
