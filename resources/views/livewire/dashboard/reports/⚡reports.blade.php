@@ -147,13 +147,14 @@ class extends Component {
                     ->values()
                 );
 
-            // Volume sold: aggregate quantities from items by date
+            // Volume sold: aggregate quantities and actual sales from items by date
             $this->volumeSold = $this->itemsByCategory
                 ->map(fn (Collection $items) => $items
                     ->groupBy('product_name')
                     ->map(fn (Collection $grouped) => [
                         'product_name' => $grouped->first()['product_name'],
                         'quantity_sold' => $grouped->sum('quantity'),
+                        'total_sales' => $grouped->sum('subtotal'),
                     ])
                     ->values()
                 );
@@ -522,7 +523,7 @@ class extends Component {
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['size'] ?? '' }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_start']) }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_end']) }}</td>
-                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ $item['unit_price'] }}</td>
+                                    <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ number_format($item['unit_price'], 2) }}</td>
                                     <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item['subtotal'] }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['remarks'] }}</td>
                                     <td class="px-4 py-4 text-zinc-600">
@@ -600,6 +601,69 @@ class extends Component {
                     </div>
                 @endforelse
             </section>
+
+            {{-- Volume Report --}}
+            @if($volumeSold && $volumeSold->isNotEmpty())
+                <section class="mt-6 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+                    <div class="border-b border-zinc-200 bg-emerald-700 px-6 py-4">
+                        <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-white">Volume Report</h3>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-[600px] w-full border-collapse text-sm">
+                            <thead>
+                                <tr class="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
+                                    <th class="px-4 py-3 text-left">Date</th>
+                                    <th class="px-4 py-3 text-left">Product</th>
+                                    <th class="px-4 py-3 text-right">Volume Produced</th>
+                                    <th class="px-4 py-3 text-right">Volume Sold</th>
+                                    <th class="px-4 py-3 text-right">Sales</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-100 bg-white">
+                                @php
+                                    $allDates = collect($volumeProduced?->keys() ?? [])
+                                        ->merge($volumeSold->keys())
+                                        ->unique()
+                                        ->sort();
+                                @endphp
+                                @foreach($allDates as $date)
+                                    @php
+                                        $produced = $volumeProduced->get($date, collect());
+                                        $sold = $volumeSold->get($date, collect());
+                                        $producedByName = $produced->keyBy('product_name');
+                                        $soldByName = $sold->keyBy('product_name');
+                                        $productNames = $producedByName->keys()
+                                            ->merge($soldByName->keys())
+                                            ->unique()
+                                            ->sort()
+                                            ->values();
+                                    @endphp
+                                    @foreach($productNames as $productName)
+                                        <tr class="transition hover:bg-emerald-50/60" wire:key="volume-{{ $date }}-{{ $loop->index }}">
+                                            @if($loop->first)
+                                                <td class="px-4 py-4 font-medium text-zinc-900" rowspan="{{ $productNames->count() }}">
+                                                    {{ date_format(date_create($date), 'F j, Y') }}
+                                                </td>
+                                            @endif
+                                            <td class="px-4 py-4 text-zinc-800">{{ $productName }}</td>
+                                            <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
+                                                {{ format_qty($producedByName->get($productName)['quantity_added'] ?? 0) }}
+                                            </td>
+                                            <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
+                                                {{ format_qty($soldByName->get($productName)['quantity_sold'] ?? 0) }}
+                                            </td>
+                                            <td class="px-4 py-4 text-right font-semibold tabular-nums text-zinc-900">
+                                                ₱{{ number_format($soldByName->get($productName)['total_sales'] ?? 0, 2) }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            @endif
         @endif
     </div>
 

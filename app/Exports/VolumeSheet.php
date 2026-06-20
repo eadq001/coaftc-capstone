@@ -64,7 +64,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
         $rows = [];
         $currentRow = self::START_ROW;
 
-        $rows[] = ['Date', 'Product Name', 'Volume Produced', 'Volume Sold'];
+        $rows[] = ['Date', 'Product Name', 'Volume Produced', 'Volume Sold', 'Sales'];
         $currentRow++;
 
         $dates = $this->volumeProduced
@@ -79,11 +79,17 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             $sold = $this->volumeSold->get($date, collect());
 
             $producedByProduct = $produced->isNotEmpty()
-                ? $produced->keyBy('product_name')->map(fn ($item) => $item['quantity_added'])
+                ? $produced->keyBy('product_name')->map(fn ($item) => [
+                    'quantity_added' => $item['quantity_added'],
+                    'total_sales' => 0,
+                ])
                 : collect();
 
             $soldByProduct = $sold->isNotEmpty()
-                ? $sold->keyBy('product_name')->map(fn ($item) => $item['quantity_sold'])
+                ? $sold->keyBy('product_name')->map(fn ($item) => [
+                    'quantity_sold' => $item['quantity_sold'],
+                    'total_sales' => $item['total_sales'] ?? 0,
+                ])
                 : collect();
 
             $productNames = $producedByProduct
@@ -96,15 +102,16 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             if ($productNames->isNotEmpty()) {
                 $this->dateRows[] = $currentRow;
                 $formattedDate = date_format(date_create($date), 'F j, Y');
-                $rows[] = [$formattedDate, '', '', ''];
+                $rows[] = [$formattedDate, '', '', '', ''];
                 $currentRow++;
 
                 foreach ($productNames as $productName) {
                     $rows[] = [
                         '',
                         $productName,
-                        $producedByProduct->get($productName, 0),
-                        $soldByProduct->get($productName, 0),
+                        $producedByProduct->get($productName)['quantity_added'] ?? 0,
+                        $soldByProduct->get($productName)['quantity_sold'] ?? 0,
+                        $soldByProduct->get($productName)['total_sales'] ?? 0,
                     ];
                     $currentRow++;
                 }
@@ -121,6 +128,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             'B' => 28,
             'C' => 18,
             'D' => 14,
+            'E' => 16,
         ];
     }
 
@@ -129,7 +137,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
         return [
             AfterSheet::class => function (AfterSheet $event): void {
                 $sheet = $event->sheet->getDelegate();
-                $this->applyHeader($sheet, 'D');
+                $this->applyHeader($sheet, 'E');
 
                 $highestRow = $sheet->getHighestRow();
                 $start = self::START_ROW;
@@ -145,7 +153,9 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                 $sheet->getPageSetup()->setOrientation('landscape');
                 $sheet->getPageSetup()->setFitToPage(true);
 
-                $sheet->getStyle("A{$start}:D{$highestRow}")->applyFromArray([
+                $sheet->getStyle("E12:E{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
+
+                $sheet->getStyle("A{$start}:E{$highestRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -153,14 +163,14 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                     ],
                 ]);
 
-                $sheet->getStyle("A{$start}:D{$start}")->applyFromArray([
+                $sheet->getStyle("A{$start}:E{$start}")->applyFromArray([
                     'font' => ['bold' => true],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
                 ]);
 
                 foreach ($this->dateRows as $dateRow) {
-                    $sheet->mergeCells("A{$dateRow}:D{$dateRow}");
-                    $sheet->getStyle("A{$dateRow}:D{$dateRow}")->applyFromArray([
+                    $sheet->mergeCells("A{$dateRow}:E{$dateRow}");
+                    $sheet->getStyle("A{$dateRow}:E{$dateRow}")->applyFromArray([
                         'font' => ['bold' => true],
                     ]);
                 }

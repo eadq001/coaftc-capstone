@@ -12,7 +12,7 @@ class PrintReceipt
     {
         $copies = ["Client's copy", "Guard's copy", 'COAFTC copy'];
         //        $copies = ['COAFTC copy'];
-//        $copies = ["Client's copy"];
+        //        $copies = ["Client's copy"];
 
         foreach ($copies as $copy) {
 
@@ -42,37 +42,38 @@ class PrintReceipt
                 $productName = $product->name;
                 $productUnit = $product->unit->unit_name;
 
-                $printer->text($productName . ' ');
-                $printer->text($salesItem['quantity'] . ' ' . $productUnit . " ");
+                $printer->text($productName.' ');
+                $printer->text($salesItem['quantity'].' '.$productUnit.' ');
                 if ($product->size) {
-                $printer->text($product->size . "\n");
+                    $printer->text($product->size."\n");
                 }
 
                 if ($product->class) {
-                    $printer->text($product->class->value . "\n");
+                    $printer->text($product->class->value."\n");
+
+                } else {
+                    $printer->text("\n");
 
                 }
             }
 
             $printer->feed();
-            if ($copy === "Client's copy") {
-                $printer->text("Total Amount: {$transactionInfo['grandTotal']}\n");
-            }
+            //            if ($copy === "Client's copy") {
+            //                $printer->text("Total Amount: {$transactionInfo['grandTotal']}\n");
+            //            }
 
             $printer->feed();
 
-            $printer->text('                  ' . $copy . "\n");
+            $printer->text('                  '.$copy."\n");
             $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
 
             if ($reprint) {
-                $printer->text('         ' . $date);
+                $printer->text('         '.$date);
             }
 
             $printer->feed(2);
 
-
             $printer->text('-------------------------------');
-
 
             $printer->feed(2);
 
@@ -101,7 +102,7 @@ class PrintReceipt
             $printer->text("Date: {$transactionInfo['date']}\n");
             $printer->text("  Time: {$transactionInfo['time']}");
 
-            if (!empty($transactionInfo['remarks'])) {
+            if (! empty($transactionInfo['remarks'])) {
                 $printer->feed();
                 $printer->text("Remarks: {$transactionInfo['remarks']}\n");
             }
@@ -115,9 +116,9 @@ class PrintReceipt
                 $productUnit = $product->unit->unit_name;
                 $class = $dispersalItem['class'] ?? '';
 
-                $printer->text($productName . ' ');
+                $printer->text($productName.' ');
                 if ($class) {
-                $printer->text($dispersalItem['quantity'] . ' ' . $productUnit . ' (Class: ' . $class . ")\n");
+                    $printer->text($dispersalItem['quantity'].' '.$productUnit.' (Class: '.$class.")\n");
                 }
             }
             $printer->feed();
@@ -127,11 +128,11 @@ class PrintReceipt
             }
 
             $printer->feed();
-            $printer->text('                  ' . $copy . "\n");
+            $printer->text('                  '.$copy."\n");
             $date = \Illuminate\Support\now()->format('m/d/Y h:i:s A');
 
             if ($reprint) {
-                $printer->text('         ' . $date);
+                $printer->text('         '.$date);
             }
 
             $printer->feed(2);
