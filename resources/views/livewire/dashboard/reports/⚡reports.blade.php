@@ -137,7 +137,7 @@ class extends Component {
                 ->when($searchText !== '', function ($query) use ($searchText) {
                     $query->whereHas('product', fn ($q) => $q->where('name', 'like', "%{$searchText}%"));
                 })
-                ->with('product:id,name,unit_id', 'product.unit:id,unit_name')
+                ->with('product:id,name,unit_id,class,size', 'product.unit:id,unit_name')
                 ->get()
                 ->groupBy(fn ($item) => $item->created_at->format('Y-m-d'))
                 ->map(fn (Collection $items) => $items
@@ -146,6 +146,8 @@ class extends Component {
                         'product_id' => $grouped->first()->product->id,
                         'product_name' => $grouped->first()->product->name,
                         'unit_name' => $grouped->first()->product->unit?->unit_name ?? '',
+                        'class' => $grouped->first()->product->class?->value ?? '',
+                        'size' => $grouped->first()->product->size ?? '',
                         'quantity_added' => $grouped->sum('quantity_added'),
                     ])
                     ->values()
@@ -159,6 +161,8 @@ class extends Component {
                         'product_id' => $grouped->first()['product_id'],
                         'product_name' => $grouped->first()['product_name'],
                         'unit_name' => $grouped->first()['unit_name'] ?? '',
+                        'class' => $grouped->first()['class'] ?? '',
+                        'size' => $grouped->first()['size'] ?? '',
                         'quantity_sold' => $grouped->sum('quantity'),
                         'total_sales' => $grouped->sum('subtotal'),
                     ])
@@ -621,8 +625,10 @@ class extends Component {
                                 <tr class="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.14em] text-zinc-500">
                                     <th class="px-4 py-3 text-left">Date</th>
                                     <th class="px-4 py-3 text-left">Product</th>
-                                    <th class="px-4 py-3 text-right">Volume Produced</th>
-                                    <th class="px-4 py-3 text-right">Volume Sold</th>
+                                    <th class="px-4 py-3 text-left">Volume Produced</th>
+                                    <th class="px-4 py-3 text-left">Volume Sold</th>
+                                    <th class="px-4 py-3 text-left">Class</th>
+                                    <th class="px-4 py-3 text-left">Size</th>
                                     <th class="px-4 py-3 text-right">Sales</th>
                                 </tr>
                             </thead>
@@ -646,18 +652,24 @@ class extends Component {
                                             ->values();
                                     @endphp
                                     @foreach($productIds as $productId)
-                                        <tr class="transition hover:bg-emerald-50/60 bg-yellow-300" wire:key="volume-{{ $date }}-{{ $productId }}">
+                                        <tr class="transition hover:bg-emerald-50/60 " wire:key="volume-{{ $date }}-{{ $productId }}">
                                             @if($loop->first)
                                                 <td class="px-4 py-4 font-medium text-zinc-900" rowspan="{{ $productIds->count() }}">
                                                     {{ date_format(date_create($date), 'F j, Y') }}
                                                 </td>
                                             @endif
                                             <td class="px-4 py-4 text-zinc-800">{{ $producedById->get($productId)['product_name'] ?? $soldById->get($productId)['product_name'] }}</td>
-                                            <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
+                                            <td class="px-4 py-4 text-left tabular-nums text-zinc-700">
                                                 {{ format_qty($producedById->get($productId)['quantity_added'] ?? 0) }}
                                             </td>
-                                            <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
+                                            <td class="px-4 py-4 text-left tabular-nums text-zinc-700">
                                                 {{ format_qty($soldById->get($productId)['quantity_sold'] ?? 0) }}
+                                            </td>
+                                            <td class="px-4 py-4 text-left text-zinc-600">
+                                                {{ $soldById->get($productId)['class'] ?? $producedById->get($productId)['class'] ?? '' }}
+                                            </td>
+                                            <td class="px-4 py-4 text-left text-zinc-600">
+                                                {{ $soldById->get($productId)['size'] ?? $producedById->get($productId)['size'] ?? '' }}
                                             </td>
                                             <td class="px-4 py-4 text-right font-semibold tabular-nums text-zinc-900">
                                                 {{ number_format($soldById->get($productId)['total_sales'] ?? 0, 2) }}

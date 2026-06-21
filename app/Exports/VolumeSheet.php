@@ -64,7 +64,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
         $rows = [];
         $currentRow = self::START_ROW;
 
-        $rows[] = ['Date', 'Product Name', 'Volume Produced', 'Volume Sold', 'Unit', 'Sales'];
+        $rows[] = ['Date', 'Product Name', 'Volume Produced', 'Volume Sold', 'Class', 'Size', 'Unit', 'Sales'];
         $currentRow++;
 
         $dates = $this->volumeProduced
@@ -83,6 +83,8 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                     'product_name' => $item['product_name'],
                     'quantity_added' => $item['quantity_added'],
                     'unit_name' => $item['unit_name'] ?? '',
+                    'class' => $item['class'] ?? '',
+                    'size' => $item['size'] ?? '',
                     'total_sales' => 0,
                 ])
                 : collect();
@@ -92,6 +94,8 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                     'product_name' => $item['product_name'],
                     'quantity_sold' => $item['quantity_sold'],
                     'unit_name' => $item['unit_name'] ?? '',
+                    'class' => $item['class'] ?? '',
+                    'size' => $item['size'] ?? '',
                     'total_sales' => $item['total_sales'] ?? 0,
                 ])
                 : collect();
@@ -106,7 +110,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             if ($productIds->isNotEmpty()) {
                 $this->dateRows[] = $currentRow;
                 $formattedDate = date_format(date_create($date), 'F j, Y');
-                $rows[] = [$formattedDate, '', '', '', '', ''];
+                $rows[] = [$formattedDate, '', '', '', '', '', '', ''];
                 $currentRow++;
 
                 foreach ($productIds as $productId) {
@@ -118,6 +122,8 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                         $producedEntry['product_name'] ?? $soldEntry['product_name'],
                         $producedEntry['quantity_added'] ?? 0,
                         $soldEntry['quantity_sold'] ?? 0,
+                        $soldEntry['class'] ?? $producedEntry['class'] ?? '',
+                        $soldEntry['size'] ?? $producedEntry['size'] ?? '',
                         $soldEntry['unit_name'] ?? $producedEntry['unit_name'] ?? '',
                         $soldEntry['total_sales'] ?? 0,
                     ];
@@ -136,8 +142,10 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             'B' => 28,
             'C' => 18,
             'D' => 14,
-            'E' => 14,
-            'F' => 16,
+            'E' => 10,
+            'F' => 10,
+            'G' => 14,
+            'H' => 16,
         ];
     }
 
@@ -146,7 +154,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
         return [
             AfterSheet::class => function (AfterSheet $event): void {
                 $sheet = $event->sheet->getDelegate();
-                $this->applyHeader($sheet, 'F');
+                $this->applyHeader($sheet, 'H');
 
                 $highestRow = $sheet->getHighestRow();
                 $start = self::START_ROW;
@@ -162,9 +170,9 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                 $sheet->getPageSetup()->setOrientation('landscape');
                 $sheet->getPageSetup()->setFitToPage(true);
 
-                $sheet->getStyle("F12:F{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
+                $sheet->getStyle("H12:H{$highestRow}")->getNumberFormat()->setFormatCode('#,##0.00');
 
-                $sheet->getStyle("A{$start}:F{$highestRow}")->applyFromArray([
+                $sheet->getStyle("A{$start}:H{$highestRow}")->applyFromArray([
                     'borders' => [
                         'allBorders' => [
                             'borderStyle' => Border::BORDER_THIN,
@@ -172,14 +180,14 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                     ],
                 ]);
 
-                $sheet->getStyle("A{$start}:F{$start}")->applyFromArray([
+                $sheet->getStyle("A{$start}:H{$start}")->applyFromArray([
                     'font' => ['bold' => true],
                     'alignment' => ['horizontal' => Alignment::HORIZONTAL_LEFT],
                 ]);
 
                 foreach ($this->dateRows as $dateRow) {
-                    $sheet->mergeCells("A{$dateRow}:F{$dateRow}");
-                    $sheet->getStyle("A{$dateRow}:F{$dateRow}")->applyFromArray([
+                    $sheet->mergeCells("A{$dateRow}:H{$dateRow}");
+                    $sheet->getStyle("A{$dateRow}:H{$dateRow}")->applyFromArray([
                         'font' => ['bold' => true],
                     ]);
                 }
