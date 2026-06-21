@@ -524,7 +524,7 @@ class extends Component {
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_start']) }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ format_qty($item['inventory_end']) }}</td>
                                     <td class="px-4 py-4 text-left tabular-nums text-zinc-700">{{ number_format($item['unit_price'], 2) }}</td>
-                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ $item['subtotal'] }}</td>
+                                    <td class="px-4 py-4 text-left font-semibold tabular-nums text-zinc-950">{{ number_format($item['subtotal'], 2) }}</td>
                                     <td class="px-4 py-4 text-left text-zinc-600">{{ $item['remarks'] }}</td>
                                     <td class="px-4 py-4 text-zinc-600">
                                         <span>{{ $item['user_name'] ?? 'N/A' }}</span>
@@ -543,7 +543,7 @@ class extends Component {
                                     </td>
                                     <td colspan="3"
                                         class="px-4 py-4 text-left text-base font-bold tabular-nums text-orange-900">
-                                         ₱{{ number_format($dispersals->sum('subtotal'), 2) }}
+                                         {{ number_format($dispersals->sum('subtotal'), 2) }}
                                     </td>
                                 </tr>
                             @endif
@@ -654,7 +654,7 @@ class extends Component {
                                                 {{ format_qty($soldByName->get($productName)['quantity_sold'] ?? 0) }}
                                             </td>
                                             <td class="px-4 py-4 text-right font-semibold tabular-nums text-zinc-900">
-                                                ₱{{ number_format($soldByName->get($productName)['total_sales'] ?? 0, 2) }}
+                                                {{ number_format($soldByName->get($productName)['total_sales'] ?? 0, 2) }}
                                             </td>
                                         </tr>
                                     @endforeach
