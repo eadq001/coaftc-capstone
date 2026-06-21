@@ -34,6 +34,24 @@ class extends Component {
             ->orderBy('products.id')
             ->paginate(12, pageName: 'products-qr-page');
     }
+
+    public function downloadQrSheet()
+    {
+        $products = $this->products->items();
+        $page = (int) ($this->getPage('products-qr-page') ?: 1);
+
+        $html = view('livewire.dashboard.products.qr-print-sheet', [
+            'products' => $products,
+            'page' => $page,
+            'generatedAt' => now()->format('M d, Y H:i'),
+        ])->render();
+
+        return response()->streamDownload(function () use ($html) {
+            echo $html;
+        }, "product-qr-codes-page-{$page}.html", [
+            'Content-Type' => 'text/html; charset=UTF-8',
+        ]);
+    }
 };
 ?>
 
@@ -46,20 +64,32 @@ class extends Component {
     <flux:card class="overflow-hidden rounded-lg border border-zinc-300 bg-white shadow-sm">
         <div class="border-b border-zinc-200 p-6">
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div class="flex-1 max-w-md">
+                <div class="flex gap-2 max-w-md">
                     <flux:input
                             icon="magnifying-glass"
                             placeholder="Search by product name..."
                             wire:model.live.debounce.300ms="searchText"
                     />
-                </div>
-
                 <flux:button type="button"
                              class="hover:bg-green-300! disabled:hover:bg-0  border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5 py-2"
                              wire:click="clearSearchText"
                              :disabled="$searchText === ''"
                 >
                     Clear
+                </flux:button>
+                </div>
+
+
+                <flux:button type="button"
+                             icon="arrow-down-tray"
+                             class="hover:bg-green-300! disabled:hover:bg-0 border border-gray-200 rounded-lg transition-all cursor-pointer text-zinc-600 px-5 py-2"
+                             wire:click="downloadQrSheet"
+                             wire:loading.attr="disabled"
+                             wire:target="downloadQrSheet"
+                             :disabled="$this->products->isEmpty()"
+                >
+                    <span wire:loading.remove wire:target="downloadQrSheet">Download Qr</span>
+                    <span wire:loading wire:target="downloadQrSheet">Preparing...</span>
                 </flux:button>
 
             </div>
@@ -75,7 +105,7 @@ class extends Component {
                         <img
                                 alt="QR code for {{ $product->name }}"
 
-                                src="data:image/png;base64,{{ QrGenerator::generate((string) $product->id, 150) }}"
+                                src="data:image/png;base64,{{ QrGenerator::generate((string) $product->id, 100) }}"
                         >
                     </div>
 
