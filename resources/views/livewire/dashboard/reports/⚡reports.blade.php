@@ -135,13 +135,14 @@ class extends Component {
                 ->when($searchText !== '', function ($query) use ($searchText) {
                     $query->whereHas('product', fn ($q) => $q->where('name', 'like', "%{$searchText}%"));
                 })
-                ->with('product:id,name')
+                ->with('product:id,name,unit_id', 'product.unit:id,unit_name')
                 ->get()
                 ->groupBy(fn ($item) => $item->created_at->format('Y-m-d'))
                 ->map(fn (Collection $items) => $items
                     ->groupBy(fn ($item) => $item->product->name)
                     ->map(fn (Collection $grouped) => [
                         'product_name' => $grouped->first()->product->name,
+                        'unit_name' => $grouped->first()->product->unit?->unit_name ?? '',
                         'quantity_added' => $grouped->sum('quantity_added'),
                     ])
                     ->values()
@@ -153,6 +154,7 @@ class extends Component {
                     ->groupBy('product_name')
                     ->map(fn (Collection $grouped) => [
                         'product_name' => $grouped->first()['product_name'],
+                        'unit_name' => $grouped->first()['unit_name'] ?? '',
                         'quantity_sold' => $grouped->sum('quantity'),
                         'total_sales' => $grouped->sum('subtotal'),
                     ])
