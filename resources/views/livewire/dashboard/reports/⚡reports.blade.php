@@ -86,6 +86,7 @@ class extends Component {
             $salesItems = $this->result->flatMap->salesItem->map(function ($item) {
                 return [
                     'transaction_number' => $item->sale->prf_number,
+                    'product_id' => $item->product->id,
                     'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
@@ -107,6 +108,7 @@ class extends Component {
             $dispersalItems = $dispersals->flatMap->dispersalItems->map(function ($item) {
                 return [
                     'transaction_number' => $item->dispersal->dispersal_number,
+                    'product_id' => $item->product->id,
                     'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
@@ -139,8 +141,9 @@ class extends Component {
                 ->get()
                 ->groupBy(fn ($item) => $item->created_at->format('Y-m-d'))
                 ->map(fn (Collection $items) => $items
-                    ->groupBy(fn ($item) => $item->product->name)
+                    ->groupBy(fn ($item) => $item->product->id)
                     ->map(fn (Collection $grouped) => [
+                        'product_id' => $grouped->first()->product->id,
                         'product_name' => $grouped->first()->product->name,
                         'unit_name' => $grouped->first()->product->unit?->unit_name ?? '',
                         'quantity_added' => $grouped->sum('quantity_added'),
@@ -151,8 +154,9 @@ class extends Component {
             // Volume sold: aggregate quantities and actual sales from items by date
             $this->volumeSold = $this->itemsByCategory
                 ->map(fn (Collection $items) => $items
-                    ->groupBy('product_name')
+                    ->groupBy('product_id')
                     ->map(fn (Collection $grouped) => [
+                        'product_id' => $grouped->first()['product_id'],
                         'product_name' => $grouped->first()['product_name'],
                         'unit_name' => $grouped->first()['unit_name'] ?? '',
                         'quantity_sold' => $grouped->sum('quantity'),
@@ -633,30 +637,30 @@ class extends Component {
                                     @php
                                         $produced = $volumeProduced->get($date, collect());
                                         $sold = $volumeSold->get($date, collect());
-                                        $producedByName = $produced->keyBy('product_name');
-                                        $soldByName = $sold->keyBy('product_name');
-                                        $productNames = $producedByName->keys()
-                                            ->merge($soldByName->keys())
+                                        $producedById = $produced->keyBy('product_id');
+                                        $soldById = $sold->keyBy('product_id');
+                                        $productIds = $producedById->keys()
+                                            ->merge($soldById->keys())
                                             ->unique()
                                             ->sort()
                                             ->values();
                                     @endphp
-                                    @foreach($productNames as $productName)
-                                        <tr class="transition hover:bg-emerald-50/60" wire:key="volume-{{ $date }}-{{ $loop->index }}">
+                                    @foreach($productIds as $productId)
+                                        <tr class="transition hover:bg-emerald-50/60 bg-yellow-300" wire:key="volume-{{ $date }}-{{ $productId }}">
                                             @if($loop->first)
-                                                <td class="px-4 py-4 font-medium text-zinc-900" rowspan="{{ $productNames->count() }}">
+                                                <td class="px-4 py-4 font-medium text-zinc-900" rowspan="{{ $productIds->count() }}">
                                                     {{ date_format(date_create($date), 'F j, Y') }}
                                                 </td>
                                             @endif
-                                            <td class="px-4 py-4 text-zinc-800">{{ $productName }}</td>
+                                            <td class="px-4 py-4 text-zinc-800">{{ $producedById->get($productId)['product_name'] ?? $soldById->get($productId)['product_name'] }}</td>
                                             <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
-                                                {{ format_qty($producedByName->get($productName)['quantity_added'] ?? 0) }}
+                                                {{ format_qty($producedById->get($productId)['quantity_added'] ?? 0) }}
                                             </td>
                                             <td class="px-4 py-4 text-right tabular-nums text-zinc-700">
-                                                {{ format_qty($soldByName->get($productName)['quantity_sold'] ?? 0) }}
+                                                {{ format_qty($soldById->get($productId)['quantity_sold'] ?? 0) }}
                                             </td>
                                             <td class="px-4 py-4 text-right font-semibold tabular-nums text-zinc-900">
-                                                {{ number_format($soldByName->get($productName)['total_sales'] ?? 0, 2) }}
+                                                {{ number_format($soldById->get($productId)['total_sales'] ?? 0, 2) }}
                                             </td>
                                         </tr>
                                     @endforeach

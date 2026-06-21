@@ -79,7 +79,8 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
             $sold = $this->volumeSold->get($date, collect());
 
             $producedByProduct = $produced->isNotEmpty()
-                ? $produced->keyBy('product_name')->map(fn ($item) => [
+                ? $produced->keyBy('product_id')->map(fn ($item) => [
+                    'product_name' => $item['product_name'],
                     'quantity_added' => $item['quantity_added'],
                     'unit_name' => $item['unit_name'] ?? '',
                     'total_sales' => 0,
@@ -87,36 +88,38 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                 : collect();
 
             $soldByProduct = $sold->isNotEmpty()
-                ? $sold->keyBy('product_name')->map(fn ($item) => [
+                ? $sold->keyBy('product_id')->map(fn ($item) => [
+                    'product_name' => $item['product_name'],
                     'quantity_sold' => $item['quantity_sold'],
                     'unit_name' => $item['unit_name'] ?? '',
                     'total_sales' => $item['total_sales'] ?? 0,
                 ])
                 : collect();
 
-            $productNames = $producedByProduct
+            $productIds = $producedByProduct
                 ->keys()
                 ->merge($soldByProduct->keys())
                 ->unique()
                 ->sort()
                 ->values();
 
-            if ($productNames->isNotEmpty()) {
+            if ($productIds->isNotEmpty()) {
                 $this->dateRows[] = $currentRow;
                 $formattedDate = date_format(date_create($date), 'F j, Y');
                 $rows[] = [$formattedDate, '', '', '', '', ''];
                 $currentRow++;
 
-                foreach ($productNames as $productName) {
+                foreach ($productIds as $productId) {
+                    $producedEntry = $producedByProduct->get($productId);
+                    $soldEntry = $soldByProduct->get($productId);
+
                     $rows[] = [
                         '',
-                        $productName,
-                        $producedByProduct->get($productName)['quantity_added'] ?? 0,
-                        $soldByProduct->get($productName)['quantity_sold'] ?? 0,
-                        $soldByProduct->get($productName)['unit_name']
-                            ?? $producedByProduct->get($productName)['unit_name']
-                            ?? '',
-                        $soldByProduct->get($productName)['total_sales'] ?? 0,
+                        $producedEntry['product_name'] ?? $soldEntry['product_name'],
+                        $producedEntry['quantity_added'] ?? 0,
+                        $soldEntry['quantity_sold'] ?? 0,
+                        $soldEntry['unit_name'] ?? $producedEntry['unit_name'] ?? '',
+                        $soldEntry['total_sales'] ?? 0,
                     ];
                     $currentRow++;
                 }

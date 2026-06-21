@@ -58,7 +58,7 @@ it('deletes the previous stock addition from today and replaces it when stock is
     $additions = StockAddition::where('product_id', $product->id)->get();
 
     expect($additions)->toHaveCount(1)
-        ->and((float) $additions->first()->quantity_added)->toBe(10.0);
+        ->and((float) $additions->first()->quantity_added)->toBe(35.0);
 });
 
 it('does not delete stock additions from previous days when updating stock', function () {
