@@ -129,8 +129,12 @@ class ProductForm extends Form
                 );
 
                 if (isset($changes['stock_level'])) {
-                    $added = $changes['stock_level'] - $this->product->getOriginal('stock_level');
+                    $added = $changes['stock_level'];
+//                    $added = $changes['stock_level'] - $oldValues['stock_level'];
                     if ($added > 0) {
+                        StockAddition::where('product_id', $this->product->id)
+                            ->whereDate('created_at', today())
+                            ->delete();
                         StockAddition::create([
                             'product_id' => $this->product->id,
                             'quantity_added' => $added,
