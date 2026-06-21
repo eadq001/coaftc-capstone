@@ -59,7 +59,7 @@ class ProductForm extends Form
             $validated['class'] = null;
         }
 
-        DB::transaction(function () use ($validated): void {
+        DB::transaction(function () use ($validated, $stockLevel): void {
 
             $product = Product::create($validated);
             ActivityLog::record(
@@ -67,6 +67,13 @@ class ProductForm extends Form
                 model: 'Product',
                 newValues: ActivityLog::valuesFor($product),
             );
+
+            if ($stockLevel > 0) {
+                StockAddition::create([
+                    'product_id' => $product->id,
+                    'quantity_added' => $stockLevel,
+                ]);
+            }
         });
 
         $this->reset();
