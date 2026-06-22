@@ -12,6 +12,7 @@ class DailySalesReportExport implements WithMultipleSheets
         private readonly Collection $volumeProduced,
         private readonly Collection $volumeSold,
         private readonly ?string $reportDate = null,
+        private readonly ?string $password = null,
     ) {}
 
     /**
@@ -20,8 +21,8 @@ class DailySalesReportExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            new DailySalesSheet($this->itemsByDate, $this->reportDate),
-            new VolumeSheet($this->volumeProduced, $this->volumeSold, $this->itemsByDate, $this->reportDate),
+            new DailySalesSheet($this->itemsByDate, $this->reportDate, $this->password),
+            new VolumeSheet($this->volumeProduced, $this->volumeSold, $this->itemsByDate, $this->reportDate, $this->password),
         ];
     }
 }

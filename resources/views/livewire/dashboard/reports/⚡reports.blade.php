@@ -86,7 +86,7 @@ class extends Component {
             $salesItems = $this->result->flatMap->salesItem->map(function ($item) {
                 return [
                     'transaction_number' => $item->sale->prf_number,
-                    'product_id' => $item->product->id,
+                    'product_id' => $item->product->id ?? '',
                     'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
@@ -108,7 +108,7 @@ class extends Component {
             $dispersalItems = $dispersals->flatMap->dispersalItems->map(function ($item) {
                 return [
                     'transaction_number' => $item->dispersal->dispersal_number,
-                    'product_id' => $item->product->id,
+                    'product_id' => $item->product->id ?? '',
                     'product_name' => $item->product->name ?? '',
                     'category_name' => $item->product->category?->category_name ?? 'Uncategorized',
                     'quantity' => $item->quantity,
@@ -182,6 +182,7 @@ class extends Component {
                 $this->volumeProduced ?? collect(),
                 $this->volumeSold ?? collect(),
                 $this->startDate ?: now()->format('Y-m-d'),
+                config('app.excel_protection_password'),
             ),
             "daily-sales-report-$date.xlsx"
         );

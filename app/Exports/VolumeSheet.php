@@ -30,6 +30,7 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
         private readonly Collection $volumeSold,
         private readonly Collection $itemsByDate,
         ?string $reportDate = null,
+        private readonly ?string $password = null,
     ) {
         $this->reportDate = $reportDate ?? now()->format('F j, Y');
     }
@@ -190,6 +191,18 @@ class VolumeSheet implements FromArray, ShouldAutoSize, WithColumnWidths, WithCu
                     $sheet->getStyle("A{$dateRow}:H{$dateRow}")->applyFromArray([
                         'font' => ['bold' => true],
                     ]);
+                }
+
+                if ($this->password !== null && $this->password !== '') {
+                    $protection = $sheet->getProtection();
+                    $protection->setPassword($this->password);
+                    $protection->setSheet(true);
+                    $protection->setSort(true);
+                    $protection->setInsertRows(true);
+                    $protection->setInsertColumns(true);
+                    $protection->setDeleteRows(true);
+                    $protection->setDeleteColumns(true);
+                    $protection->setFormatCells(true);
                 }
             },
         ];

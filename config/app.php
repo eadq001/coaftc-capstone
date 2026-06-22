@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'excel_protection_password' => env('EXCEL_PROTECTION_PASSWORD', 'coaftc-admin'),
+
 ];

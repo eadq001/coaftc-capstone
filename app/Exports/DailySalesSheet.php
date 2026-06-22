@@ -32,6 +32,7 @@ class DailySalesSheet implements FromArray, ShouldAutoSize, WithColumnWidths, Wi
     public function __construct(
         private readonly Collection $itemsByDate,
         ?string $reportDate = null,
+        private readonly ?string $password = null,
     ) {
         $this->reportDate = $reportDate ?? now()->format('F j, Y');
     }
@@ -241,6 +242,18 @@ class DailySalesSheet implements FromArray, ShouldAutoSize, WithColumnWidths, Wi
                             'bold' => true,
                         ],
                     ]);
+                }
+
+                if ($this->password !== null && $this->password !== '') {
+                    $protection = $sheet->getProtection();
+                    $protection->setPassword($this->password);
+                    $protection->setSheet(true);
+                    $protection->setSort(true);
+                    $protection->setInsertRows(true);
+                    $protection->setInsertColumns(true);
+                    $protection->setDeleteRows(true);
+                    $protection->setDeleteColumns(true);
+                    $protection->setFormatCells(true);
                 }
             },
         ];
