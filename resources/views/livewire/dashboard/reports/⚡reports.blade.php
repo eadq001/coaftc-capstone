@@ -238,6 +238,7 @@ class extends Component {
                 collect([$month => $items]),
                 false,
                 collect([$month => $dispersalItems]),
+                config('app.excel_protection_password'),
             ),
             "monthly-sales-report-{$year}-" . str_pad((string) $monthNumber, 2, '0', STR_PAD_LEFT) . '.xlsx'
         );
@@ -269,6 +270,7 @@ class extends Component {
                 $dispersalItems
                     ->groupBy(fn ($item) => $item->dispersal->created_at->format('Y-m'))
                     ->sortKeys(),
+                config('app.excel_protection_password'),
             ),
             "yearly-sales-report-{$reportYear}.xlsx"
         );

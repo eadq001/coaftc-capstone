@@ -73,6 +73,7 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
         private readonly Collection $itemsByMonth,
         private readonly bool $includeGrandTotal = false,
         private readonly Collection $dispersalsByMonth = new Collection,
+        private readonly ?string $password = null,
     ) {
         $months = $this->itemsByMonth->keys();
         $this->periodType = $this->includeGrandTotal ? 'yearly' : 'monthly';
@@ -342,6 +343,18 @@ class SalesSummaryReportExport implements FromArray, WithColumnWidths, WithCusto
                             ],
                         ],
                     ]);
+                }
+
+                if ($this->password !== null && $this->password !== '') {
+                    $protection = $sheet->getProtection();
+                    $protection->setPassword($this->password);
+                    $protection->setSheet(true);
+                    $protection->setSort(true);
+                    $protection->setInsertRows(true);
+                    $protection->setInsertColumns(true);
+                    $protection->setDeleteRows(true);
+                    $protection->setDeleteColumns(true);
+                    $protection->setFormatCells(true);
                 }
             },
         ];
