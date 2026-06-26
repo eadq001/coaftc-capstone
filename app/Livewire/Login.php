@@ -21,7 +21,15 @@ class Login extends Component
         $user = $this->validate();
 
         if (auth()->attempt($user, $this->remember)) {
-            request()->session()->regenerate();
+            $userId = auth()->id();
+            $currentSessionId = session()->getId();
+
+            session()->regenerate();
+
+            DB::table('sessions')
+                ->where('user_id', $userId)
+                ->where('id', '!=', $currentSessionId)
+                ->delete();
 
             return redirect()->intended('/dashboard');
         }
@@ -29,13 +37,6 @@ class Login extends Component
         $this->addError('loginFailed', 'Invalid email and password.');
     }
 
-    //    public function mount(): void
-    //    {
-    //        dd([
-    //            'default_connection' => DB::getDefaultConnection(),
-    //            'database_file'      => DB::connection()->getDatabaseName(),
-    //        ]);
-    //    }
     public function render()
     {
         return view('livewire.auth.login');
