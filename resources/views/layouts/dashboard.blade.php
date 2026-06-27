@@ -132,5 +132,17 @@
     @livewireScripts
     @fluxScripts
 
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.hook('request', ({ respond }) => {
+                respond(({ status, content }) => {
+                    if (status === 419) {
+                        window.location.href = '/session-expired';
+                    }
+                });
+            });
+        });
+    </script>
+
     </body>
 </html>

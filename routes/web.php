@@ -16,6 +16,9 @@ Route::middleware('guest')->group(function () {
     Route::livewire('/register', Register::class)->name('register');
     Route::livewire('/verification', 'auth.register-confirm-email')->name('verification.verify');
     Route::livewire('/password-reset', 'auth.password-reset')->name('password.reset');
+    Route::get('/session-expired', function () {
+        return view('auth.session-expired');
+    })->name('session.expired');
 });
 
 Route::middleware(['auth', 'role:admin,cashier,inventory_clerk'])->prefix('/dashboard')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
@@ -26,10 +27,14 @@ class Login extends Component
 
             session()->regenerate();
 
-            DB::table('sessions')
+            $oldSessions = DB::table('sessions')
                 ->where('user_id', $userId)
                 ->where('id', '!=', $currentSessionId)
-                ->delete();
+                ->pluck('id');
+
+            foreach ($oldSessions as $oldSessionId) {
+                Cache::put('kicked:'.$oldSessionId, true, now()->addMinutes(30));
+            }
 
             return redirect()->intended('/dashboard');
         }

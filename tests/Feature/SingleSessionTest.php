@@ -3,18 +3,10 @@
 use App\Enums\UserRoles;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
-
-beforeEach(function () {
-    // Tests that modify session.driver must restore it for subsequent tests
-    $this->originalDriver = config('session.driver');
-});
-
-afterEach(function () {
-    config()->set('session.driver', $this->originalDriver ?? 'array');
-});
 
 function createUserForSessionTest(): User
 {
@@ -25,31 +17,53 @@ function createUserForSessionTest(): User
     ]);
 }
 
-function createSessionRecord(string $sessionId, int $userId): void
-{
-    DB::table('sessions')->insert([
-        'id' => $sessionId,
-        'user_id' => $userId,
-        'ip_address' => '127.0.0.1',
-        'payload' => 'test-payload',
-        'last_activity' => time(),
-    ]);
-}
-
-it('deletes other sessions for the same user when they log in again', function () {
+it('marks old sessions as kicked in cache when a user logs in again', function () {
     $user = createUserForSessionTest();
 
-    createSessionRecord('old-session-aaa', $user->id);
+    DB::table('sessions')->insert([
+        'id' => 'old-session-aaa',
+        'user_id' => $user->id,
+        'ip_address' => '127.0.0.1',
+        'payload' => 'test',
+        'last_activity' => time(),
+    ]);
 
     Livewire::test('login')
         ->set('email', 'admin@coaftc.test')
         ->set('password', 'password123')
         ->call('login');
 
-    expect(DB::table('sessions')->where('id', 'old-session-aaa')->exists())->toBeFalse();
+    expect(Cache::has('kicked:old-session-aaa'))->toBeTrue();
 });
 
-it('only deletes sessions belonging to the logging in user', function () {
+it('does not delete old sessions from database when logging in again', function () {
+    $user = createUserForSessionTest();
+
+    DB::table('sessions')->insert([
+        'id' => 'old-session-bbb',
+        'user_id' => $user->id,
+        'ip_address' => '127.0.0.1',
+        'payload' => 'test',
+        'last_activity' => time(),
+    ]);
+
+    Livewire::test('login')
+        ->set('email', 'admin@coaftc.test')
+        ->set('password', 'password123')
+        ->call('login');
+
+    expect(DB::table('sessions')->where('id', 'old-session-bbb')->exists())->toBeTrue();
+});
+
+it('does not log out a user without a kicked cache key', function () {
+    $user = createUserForSessionTest();
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard/products/qr')->assertOk();
+});
+
+it('does not mark other users sessions as kicked', function () {
     $user1 = createUserForSessionTest();
 
     $user2 = User::factory()->create([
@@ -58,37 +72,18 @@ it('only deletes sessions belonging to the logging in user', function () {
         'user_role' => UserRoles::CASHIER,
     ]);
 
-    createSessionRecord('user2-session-ccc', $user2->id);
+    DB::table('sessions')->insert([
+        'id' => 'user2-session-ccc',
+        'user_id' => $user2->id,
+        'ip_address' => '127.0.0.1',
+        'payload' => 'test',
+        'last_activity' => time(),
+    ]);
 
     Livewire::test('login')
         ->set('email', 'admin@coaftc.test')
         ->set('password', 'password123')
         ->call('login');
 
-    expect(DB::table('sessions')->where('id', 'user2-session-ccc')->exists())->toBeTrue();
-});
-
-it('logs out a user whose session was deleted by a newer login', function () {
-    config()->set('session.driver', 'database');
-
-    $user = createUserForSessionTest();
-
-    $this->actingAs($user);
-
-    $sessionId = session()->getId();
-
-    // Simulate a newer login from another device that deletes this session
-    DB::table('sessions')->where('id', $sessionId)->delete();
-
-    $this->get('/dashboard')->assertRedirect('/login');
-});
-
-it('skips the session check when the session driver is not database', function () {
-    // Default test env uses 'array' driver — middleware should be a no-op
-    $user = createUserForSessionTest();
-
-    $this->actingAs($user);
-
-    // Should NOT redirect to /login (the middleware skips the check)
-    $this->get('/dashboard/products/qr')->assertOk();
+    expect(Cache::has('kicked:user2-session-ccc'))->toBeFalse();
 });

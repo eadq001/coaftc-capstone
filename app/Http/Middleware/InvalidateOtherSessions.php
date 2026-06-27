@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class InvalidateOtherSessions
@@ -17,21 +17,17 @@ class InvalidateOtherSessions
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check() && config('session.driver') === 'database') {
+        if (Auth::check()) {
             $sessionId = $request->session()->getId();
-            $userId = Auth::id();
 
-            $valid = DB::table('sessions')
-                ->where('id', $sessionId)
-                ->where('user_id', $userId)
-                ->exists();
+            if (Cache::has('kicked:'.$sessionId)) {
+                Cache::forget('kicked:'.$sessionId);
 
-            if (! $valid) {
                 Auth::logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
-                return redirect('/login')->with('status', 'Your session was ended because your account was logged in elsewhere.');
+                return redirect()->route('session.expired');
             }
         }
 
