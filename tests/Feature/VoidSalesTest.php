@@ -137,9 +137,9 @@ it('allows editing a sale after admin authentication', function () {
         ->assertSet('isEditing', false);
 
     $sale->refresh();
-    expect($sale->total_amount)->toBe(700)
+    expect((float) $sale->total_amount)->toEqual(700.0)
         ->and($sale->salesItem->count())->toBe(2)
-        ->and($product->fresh()->stock_level)->toBe($originalStock + 3);
+        ->and((float) $product->fresh()->stock_level)->toEqual((float) ($originalStock + 3));
 
     expect(VoidedSale::where('action', 'modified')->exists())->toBeTrue();
 });
@@ -167,7 +167,7 @@ it('allows removing a product from a sale and restores inventory', function () {
 
     $sale->refresh();
     expect($sale->salesItem->count())->toBe(1)
-        ->and($product->fresh()->stock_level)->toBe($originalStock + $originalQuantity);
+        ->and((float) $product->fresh()->stock_level)->toEqual((float) ($originalStock + $originalQuantity));
 });
 
 it('allows voiding a sale after admin authentication', function () {
@@ -194,7 +194,7 @@ it('allows voiding a sale after admin authentication', function () {
 
     expect(Sale::where('id', $sale->id)->exists())->toBeFalse()
         ->and(VoidedSale::where('action', 'voided')->exists())->toBeTrue()
-        ->and($product->fresh()->stock_level)->toBe($originalStock + $originalQuantity);
+        ->and((float) $product->fresh()->stock_level)->toEqual((float) ($originalStock + $originalQuantity));
 });
 
 it('requires re-authentication after an action', function () {
@@ -283,5 +283,5 @@ it('voids a sale when all items are removed during edit', function () {
 
     expect(Sale::where('id', $sale->id)->exists())->toBeFalse()
         ->and(VoidedSale::where('action', 'voided')->exists())->toBeTrue()
-        ->and($product->fresh()->stock_level)->toBe($originalStock + $originalQuantity);
+        ->and((float) $product->fresh()->stock_level)->toEqual((float) ($originalStock + $originalQuantity));
 });

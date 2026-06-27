@@ -7,6 +7,15 @@ use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
+beforeEach(function () {
+    // Tests that modify session.driver must restore it for subsequent tests
+    $this->originalDriver = config('session.driver');
+});
+
+afterEach(function () {
+    config()->set('session.driver', $this->originalDriver ?? 'array');
+});
+
 function createUserForSessionTest(): User
 {
     return User::factory()->create([
