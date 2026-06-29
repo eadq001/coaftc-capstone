@@ -1,44 +1,44 @@
 <div x-data="{ show: false, showCategoryForm:false, showSubcategoryForm:false, showUnitForm:false }">
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
         <flux:heading size="xl" level="1">Products</flux:heading>
         <flux:text class="mt-1 text-zinc-600">Manage your inventory and product catalog</flux:text>
         </div>
 
         <div class="flex flex-wrap items-center gap-2" >
-            <flux:button icon="plus" variant="primary" @click="show=true">
+            <flux:button icon="plus" variant="primary" @click="show=true" class="text-sm sm:text-base">
                 Add Product
             </flux:button>
 
-            <flux:button icon="plus" variant="primary" @click="showCategoryForm=true">
+            <flux:button icon="plus" variant="primary" @click="showCategoryForm=true" class="text-sm sm:text-base">
                 Add Product Category
             </flux:button>
 
-            <flux:button icon="plus" variant="primary" @click="showSubcategoryForm=true">
+            <flux:button icon="plus" variant="primary" @click="showSubcategoryForm=true" class="text-sm sm:text-base">
                 Add Product Subcategory
             </flux:button>
 
-            <flux:button icon="plus" variant="primary" @click="showUnitForm=true">
+            <flux:button icon="plus" variant="primary" @click="showUnitForm=true" class="text-sm sm:text-base">
                 Add Product Unit
             </flux:button>
 
             <div x-show="show" x-transition
-                 class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
+                 class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4"
                  wire:cloak>
-                <div class="bg-white p-4 w-2xl rounded-lg">
+                <div class="bg-white p-4 w-full max-w-2xl rounded-lg max-h-[90vh] overflow-y-auto">
                     <livewire:components.product-form-add @add-edit-product-success="refreshData('add')"/>
                 </div>
             </div>
 
-            <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+            <div x-show="showCategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4">
                 <livewire:dashboard.forms.product-category-form-add/>
             </div>
 
-            <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+            <div x-show="showSubcategoryForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4">
                 <livewire:dashboard.forms.product-subcategory-form-add/>
             </div>
 
-            <div x-show="showUnitForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
+            <div x-show="showUnitForm" x-transition wire:cloak class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4">
                 <livewire:dashboard.forms.product-unit-form-add/>
             </div>
 
@@ -64,8 +64,8 @@
                     </button>
                 </div>
 
-                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
-                    <flux:select wire:model.live="filterField" placeholder="Filter by..." class="min-w-40">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
+                    <flux:select wire:model.live="filterField" placeholder="Filter by..." class="w-full sm:min-w-40">
                         <flux:select.option value="price">Price</flux:select.option>
                         <flux:select.option value="stock_level">Stock Level</flux:select.option>
                         <flux:select.option value="unit_id">Unit</flux:select.option>
@@ -79,7 +79,7 @@
                         <flux:select
                                 wire:model.live="filterValue"
                                 placeholder="Choose value..."
-                                class="min-w-44"
+                                class="w-full sm:min-w-44"
                                 wire:key="product-filter-value-{{ $filterField }}"
                         >
                             @foreach($this->filterOptions as $value => $label)
@@ -90,24 +90,29 @@
                         </flux:select>
                     @endif
 
-                    @if($filterField || $filterValue)
-                        <flux:button variant="subtle" size="sm" wire:click="clearFilters">
-                            Clear Filter
-                        </flux:button>
-                    @endif
+                    <div class="flex gap-2 w-full sm:w-auto">
+                        @if($filterField || $filterValue)
+                            <flux:button variant="subtle" size="sm" wire:click="clearFilters" class="flex-1 sm:flex-none">
+                                Clear Filter
+                            </flux:button>
+                        @endif
 
-                    <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
-                            @class([
-                            '!bg-green-400 !text-white' => $lowStockOnly,
-                        ])>
-                        View Low Stock Products
-                    </flux:button>
+                        <flux:button variant="subtle" icon="funnel" size="sm" wire:click="toggleLowStockOnly"
+                                @class([
+                                '!bg-green-400 !text-white' => $lowStockOnly,
+                                'flex-1 sm:flex-none' => true,
+                            ])>
+                            <span class="hidden sm:inline">View Low Stock Products</span>
+                            <span class="sm:hidden">Low Stock</span>
+                        </flux:button>
+                    </div>
                 </div>
 
             </div>
 
         </div>
 
+        <div class="overflow-x-auto">
         <flux:table class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
             <flux:table.columns>
                 <flux:table.column sortable>Product Name</flux:table.column>
@@ -188,16 +193,17 @@
                 </flux:table.row>
             @endforelse
         </flux:table>
+        </div>
         <div class="p-6 border-t border-zinc-200">
             {{ $this->products->links(data: ['scrollTo' => false ]) }}
         </div>
     </flux:card>
 
     {{--    Product Categories and Subcategories grid display --}}
-    <div class="mt-5 text-sm grid grid-cols-2 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6" >
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.11s>
+    <div class="mt-5 text-sm grid grid-cols-1 lg:grid-cols-2 gap-3 rounded-lg text-zinc-900" >
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.11s>
             <div class="mb-4 text-lg">Categories</div>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                 @forelse($this->categories as $category)
                     <p class="bg-green-200  px-2 py-1.5 rounded-lg text-center cursor-pointer"
                        wire:click="$set('categoryToEdit', {{ $category->id }})"
@@ -213,9 +219,9 @@
         </div>
 
 
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.12s>
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.12s>
             <div class="mb-4 text-lg">Subcategories</div>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                 @forelse($this->subcategories as $subcategory)
                     <p class="bg-gray-200 px-1 py-1.5 rounded-lg text-center cursor-pointer"
                        wire:click="$set('subcategoryToEdit', {{ $subcategory->id }})"
@@ -230,9 +236,9 @@
             </div>
         </div>
 
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.13s>
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.13s>
             <div class="mb-4 text-lg">Units</div>
-            <div class="grid grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-4">
                 @forelse($this->units as $unit)
                     <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer"
                        wire:click="$set('unitToEdit', {{ $unit->id }})" title="click to edit">{{ $unit->unit_name }}</p>

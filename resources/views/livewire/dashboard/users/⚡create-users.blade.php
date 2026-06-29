@@ -86,22 +86,19 @@ class extends Component {
 ?>
 
 <div class="relative" x-data="{showUserForm:false}">
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <flux:heading size="xl" level="1">Users</flux:heading>
             <flux:text class="mt-1 text-zinc-600">Add new users to the system</flux:text>
         </div>
-        <div class="p-6">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
 
-                <flux:button icon="plus" variant="primary" @click="showUserForm=true">
-                    Add User
-                </flux:button>
-            </div>
-        </div>
+        <flux:button icon="plus" variant="primary" @click="showUserForm=true">
+            Add User
+        </flux:button>
     </div>
 
     <flux:card class="border border-zinc-300 rounded-lg shadow-sm bg-white overflow-hidden">
+        <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-zinc-200">
             <thead class="">
             <tr>
@@ -134,12 +131,13 @@ class extends Component {
             @endforelse
             </tbody>
         </table>
+        </div>
     </flux:card>
 
-    <div class="w-full fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs"
+    <div class="w-full fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4"
          x-show="showUserForm" x-transition x-cloak>
-        <form wire:submit="register">
-            <div class="space-y-3 text-sm relative bg-white p-4 w-2xl rounded-lg">
+        <form wire:submit="register" class="w-full max-w-lg">
+            <div class="space-y-3 text-sm relative bg-white p-4 sm:p-6 rounded-lg w-full max-h-[90vh] overflow-y-auto">
                 <div class="absolute top-2 right-2 " title="exit this form">
                     <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="cancel"
                                       @click="showUserForm=false"/>

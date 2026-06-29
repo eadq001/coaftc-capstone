@@ -46,11 +46,12 @@
                 opacity: 0;
                 pointer-events: none;
             }
+
         </style>
 
         <flux:sidebar sticky collapsible wire:cloak class="bg-white dark:bg-zinc-900 border-r border-zinc-300 dark:border-zinc-700 text-zinc-800 dark:text-zinc-200">
 
-            <flux:sidebar.header class="border-b border-zinc-300 dark:border-zinc-700">
+            <flux:sidebar.header class="shrink-0 bg-white dark:bg-zinc-900 border-b border-zinc-300 dark:border-zinc-700">
                 <flux:sidebar.brand
                     href="#"
                     disabled
@@ -70,6 +71,7 @@
                 <flux:sidebar.collapse class="hidden lg:flex" />
             </flux:sidebar.header>
 
+            <div class="flex-1 overflow-y-auto min-h-0">
             <flux:sidebar.nav class="text-zinc-800 dark:text-zinc-200">
                 <flux:sidebar.item icon="chart-bar-square" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
 
@@ -83,7 +85,7 @@
 
                 @if(auth()->user()->user_role->value === App\Enums\UserRoles::ADMIN->value || auth()->user()->user_role->value === App\Enums\UserRoles::CASHIER->value)
                     <flux:sidebar.item icon="currency-dollar" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Sales</flux:sidebar.item>
-{{--                    <flux:sidebar.item icon="document-minus" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.void-sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Void Sales</flux:sidebar.item>--}}
+                    <flux:sidebar.item icon="document-minus" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.void-sales') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Void Sales</flux:sidebar.item>
                     <flux:sidebar.item icon="document-text" wire:current.exact="bg-green-300!" wire:navigate  href="{{ route('dashboard.reports') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Reports</flux:sidebar.item>
                 @endif
 
@@ -94,15 +96,16 @@
                 <flux:sidebar.item icon="archive-box" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.archived-products') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Archived Products</flux:sidebar.item>
                 <flux:sidebar.item icon="circle-stack" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.backup-and-restore') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Backup and Restore</flux:sidebar.item>
                 <flux:sidebar.item icon="clipboard-document-list" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.logs') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Logs</flux:sidebar.item>
-{{--                    <flux:sidebar.item icon="cube" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.lgu-support') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">LGU Support</flux:sidebar.item>--}}
+                    <flux:sidebar.item icon="cube" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.lgu-support') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">LGU Support</flux:sidebar.item>
 
                 @endif
 
             </flux:sidebar.nav>
+            </div>
 
             <flux:sidebar.spacer />
 
-            <flux:dropdown position="top" align="start" class="max-lg:hidden">
+            <flux:dropdown position="top" align="start" class="max-lg:hidden shrink-0">
                 <flux:sidebar.profile name="{{ auth()->user()->name }}" />
 
                 <flux:menu>
@@ -122,6 +125,29 @@
                 </flux:menu>
             </flux:dropdown>
         </flux:sidebar>
+
+        <flux:header class="lg:hidden border-b border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900">
+            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+            <flux:spacer />
+            <flux:dropdown position="top" align="start">
+                <flux:profile name="{{ auth()->user()->name }}" />
+
+                <flux:menu>
+                    <flux:menu.radio.group>
+                        <flux:menu.radio checked>{{ auth()->user()->name }}</flux:menu.radio>
+                    </flux:menu.radio.group>
+                    <flux:menu.separator />
+                    <flux:menu.item icon="cog-6-tooth" href="{{ route('profile.edit') }}" wire:navigate>Edit Profile</flux:menu.item>
+                    <flux:menu.separator />
+                    <form action="/logout" method="POST" class="w-full">
+                        @csrf
+                        @method('DELETE')
+                        <flux:button class="border-none! cursor-pointer hover:text-white-200 text-sm" icon="arrow-right-start-on-rectangle" type="submit">Logout</flux:button>
+                    </form>
+                    <flux:menu.separator />
+                </flux:menu>
+            </flux:dropdown>
+        </flux:header>
 
         <flux:main class="bg-green-300">
 

@@ -2,7 +2,6 @@
 
 namespace App\Exports;
 
-use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -11,7 +10,7 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class TestResultSheet implements FromArray, WithHeadings, WithTitle, ShouldAutoSize, WithEvents
+class TestResultSheet implements FromArray, ShouldAutoSize, WithEvents, WithHeadings, WithTitle
 {
     public function __construct(
         private readonly array $rows,

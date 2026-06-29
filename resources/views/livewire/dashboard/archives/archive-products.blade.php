@@ -9,6 +9,7 @@
     <flux:card class="border border-zinc-300 rounded-lg shadow-sm bg-white overflow-hidden">
         <div class="p-6 border-zinc-200">
 
+            <div class="overflow-x-auto">
             <flux:table class="border! border-gray-200! px-2 transition-opacity" wire:poll.10s>
                 <flux:table.columns>
                     <flux:table.column sortable>Product Name</flux:table.column>
@@ -102,6 +103,7 @@
                     </flux:table.row>
                 @endforelse
             </flux:table>
+            </div>
             <div class="p-6 border-t border-zinc-200">
                 {{ $this->products->links(data: ['scrollTo' => false ]) }}
             </div>
@@ -109,20 +111,20 @@
     </flux:card>
 
     {{--    Product Categories and Subcategories grid display --}}
-    <div class="mt-5 text-sm grid grid-cols-3 gap-3 rounded-lg text-zinc-900 max-md:flex-col max-md:gap-6">
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.11s>
+    <div class="mt-5 text-sm grid grid-cols-1 lg:grid-cols-3 gap-3 rounded-lg text-zinc-900">
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.11s>
             <div class="mb-4 text-lg">Categories</div>
             <div class="grid grid-cols-1 gap-4">
                 @forelse($this->categories as $category)
-                    <div class="flex gap-4">
-                        <p class="bg-gray-200  px-2 py-1.5 rounded-lg text-center  w-full flex-2/3"
+                    <div class="flex items-center gap-4">
+                        <p class="bg-gray-200  px-2 py-1.5 rounded-lg text-center flex-1"
                         >{{ $category->category_name }}</p>
 
-                        <div>
+                        <div class="shrink-0">
 
                             <flux:modal.trigger name="category-{{ $category->id }}">
                                 <flux:button size="sm"
-                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all">
+                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all w-full sm:w-auto">
                                     Restore
                                 </flux:button>
                             </flux:modal.trigger>
@@ -145,18 +147,18 @@
         </div>
 
 
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.12s>
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.12s>
             <div class="mb-4 text-lg">Subcategories</div>
             <div class="grid grid-cols-1 gap-4">
                 @forelse($this->subcategories as $subcategory)
-                    <div class="flex gap-4">
-                        <p class="bg-gray-200 px-1 py-1.5 rounded-lg text-center cursor-pointer w-full flex-2/3"
+                    <div class="flex items-center gap-4">
+                        <p class="bg-gray-200 px-1 py-1.5 rounded-lg text-center cursor-pointer flex-1"
                         >{{ $subcategory->subcategory_name }}</p>
 
-                        <div>
+                        <div class="shrink-0">
                             <flux:modal.trigger name="subcategory-{{ $subcategory->id }}">
                                 <flux:button size="sm"
-                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all">
+                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all w-full sm:w-auto">
                                     Restore
                                 </flux:button>
                             </flux:modal.trigger>
@@ -177,18 +179,18 @@
             </div>
         </div>
 
-        <div class="p-8 bg-white rounded-lg w-full" wire:poll.13s>
+        <div class="p-4 sm:p-8 bg-white rounded-lg w-full" wire:poll.13s>
             <div class="mb-4 text-lg">Units</div>
             <div class="grid grid-cols-1 gap-4">
                 @forelse($this->units as $unit)
-                    <div class="flex gap-4">
-                        <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer w-full flex-2/3"
+                    <div class="flex items-center gap-4">
+                        <p class="bg-gray-200 px-2 py-1.5 rounded-lg text-center cursor-pointer flex-1"
                         >{{ $unit->unit_name }}</p>
 
-                        <div>
+                        <div class="shrink-0">
                             <flux:modal.trigger name="unit-{{ $unit->id }}">
                                 <flux:button size="sm"
-                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all">
+                                             class="bg-green-200! hover:bg-green-400! cursor-pointer transition-all w-full sm:w-auto">
                                     Restore
                                 </flux:button>
                             </flux:modal.trigger>

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Exports\TestResultsExport;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Maatwebsite\Excel\Facades\Excel;
@@ -33,6 +34,7 @@ class GenerateTestReport extends Command
 
         if ($xml === false) {
             $this->error('Failed to parse XML.');
+
             return self::FAILURE;
         }
 
@@ -49,7 +51,7 @@ class GenerateTestReport extends Command
         }
 
         Excel::store(
-            new \App\Exports\TestResultsExport($featureTests, $unitTests),
+            new TestResultsExport($featureTests, $unitTests),
             'test-report.xlsx'
         );
 
@@ -58,10 +60,10 @@ class GenerateTestReport extends Command
                 + collect($unitTests)->where('0', 'PASS')->count();
         $failed = $total - $passed;
 
-        $this->info("Report generated: storage/app/private/test-report.xlsx");
+        $this->info('Report generated: storage/app/private/test-report.xlsx');
         $this->info("Total: {$total} tests, {$passed} passed, {$failed} failed, 2 sheets");
-        $this->info("  - Feature Tests: ".count($featureTests));
-        $this->info("  - Unit Tests:    ".count($unitTests));
+        $this->info('  - Feature Tests: '.count($featureTests));
+        $this->info('  - Unit Tests:    '.count($unitTests));
 
         return self::SUCCESS;
     }

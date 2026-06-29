@@ -3,9 +3,11 @@
 require __DIR__.'/../vendor/autoload.php';
 
 $app = require __DIR__.'/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
+use App\Exports\TestResultsExport;
+use Illuminate\Contracts\Console\Kernel;
 use Maatwebsite\Excel\Facades\Excel;
 
 $xmlPath = __DIR__.'/../storage/app/private/test-results.xml';
@@ -55,7 +57,7 @@ if (empty($featureTests) && empty($unitTests)) {
 }
 
 Excel::store(
-    new App\Exports\TestResultsExport($featureTests, $unitTests),
+    new TestResultsExport($featureTests, $unitTests),
     'test-report.xlsx'
 );
 
@@ -65,4 +67,4 @@ $failed = $total - $passed;
 
 echo "Report generated: storage/app/private/test-report.xlsx\n";
 echo "Total: {$total} | Passed: {$passed} | Failed: {$failed}\n";
-echo "Feature tests: " . count($featureTests) . " | Unit tests: " . count($unitTests) . "\n";
+echo 'Feature tests: '.count($featureTests).' | Unit tests: '.count($unitTests)."\n";
