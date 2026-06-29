@@ -1,14 +1,51 @@
 <div class="">
     <div class="overflow-hidden rounded-[2rem] border border-emerald-200 bg-white shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
-        <div class="grid gap-0 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)] grid-rows-1">
-            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0 h-[90vh]">
+        <div class="grid gap-0 grid-cols-1 xl:grid-cols-[minmax(0,1.6fr)_minmax(320px,1fr)]">
+            <section class="border-b border-emerald-100 xl:border-r xl:border-b-0 xl:h-[90vh]">
                 <div class="border-b border-emerald-100 bg-linear-to-r from-emerald-50 via-white to-emerald-100/70 px-6 py-5 sm:px-8">
-                    <div class="grid gap-4 lg:grid-cols-[minmax(0,1.3fr)_repeat(4,minmax(0,0.7fr))]">
-                        <flux:field class="lg:col-span-2">
+                    <div class="grid gap-4 lg:grid-cols-2">
+                        <flux:field>
                             <flux:label>QR Code / Product Search</flux:label>
                             <flux:input icon="qr-code" type="number" placeholder="Scan QR or type product id..."
                                         id="product-search"
                                         autocomplete="off" wire:model.live="searchId"/>
+                        </flux:field>
+
+                        <flux:field class="relative">
+                            <flux:label>Product Name Search</flux:label>
+                            <flux:input icon="magnifying-glass" type="text" placeholder="Type product name..."
+                                        autocomplete="off" wire:model.live.debounce.300ms="productSearchText"/>
+
+                            @if(!empty($productSearchResults))
+                                <div class="absolute z-20 mt-1 left-0 right-0 sm:right-auto sm:w-4xl rounded-xl border border-zinc-200 bg-white shadow-lg p-2">
+                                    <div class="overflow-x-auto">
+                                        <div class="grid gap-x-2 grid-cols-[60px_200px_150px_100px_100px_90px_100px] min-w-[800px] border-b border-zinc-100 bg-zinc-50 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                                            <div>ID</div>
+                                            <div>Name</div>
+                                            <div>Category</div>
+                                            <div>Qty</div>
+                                            <div>Price</div>
+                                            <div>Class</div>
+                                            <div>Size</div>
+                                        </div>
+                                        <div class="max-h-56 overflow-y-auto">
+                                            @foreach($productSearchResults as $result)
+                                                <div wire:click="selectProduct({{ $result['id'] }})"
+                                                     wire:key="search-result-{{ $result['id'] }}"
+                                                     class="grid gap-x-2 cursor-pointer grid-cols-[60px_200px_150px_100px_100px_90px_100px] min-w-[800px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
+                                                    <span class="font-medium text-zinc-900">{{ $result['id'] }}</span>
+                                                     <span class="min-w-0 truncate font-medium text-zinc-900">{{ $result['name'] }}</span>
+                                                     <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['category'] }}</span>
+                                                    <span class="tabular-nums">{{ format_qty($result['stock_level']) }}</span>
+                                                    <span class="tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
+                                                    <span class="text-xs text-zinc-500">{{ $result['class'] }}</span>
+                                                    <span class="text-xs text-zinc-500">{{ $result['size'] }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                         </flux:field>
                     </div>
                 </div>
@@ -16,7 +53,8 @@
                 <div class="px-6 py-5 sm:px-8">
 
                     <div class="overflow-hidden rounded-2xl border border-zinc-200">
-                        <div class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+                        <div class="overflow-x-auto">
+                        <div class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px] min-w-[600px] border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
                             <div class="px-4 py-3">Product</div>
                             <div class="px-4 py-3 text-right">Size</div>
                             <div class="px-4 py-3 text-right">Qty</div>
@@ -29,7 +67,7 @@
                             @forelse($items as $item)
                                 <div wire:key="{{ $item['id'] }}"
                                      wire:click="editItem({{ $loop->index }})"
-                                     class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px]  bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
+                                     class="grid grid-cols-[minmax(0,1.6fr)_90px_90px_110px_110px_100px] min-w-[600px] bg-white text-sm text-zinc-700 transition hover:bg-emerald-50/60 cursor-pointer">
                                     <div class="px-4 py-4">
                                         <p class="font-semibold text-zinc-900">{{ $item['name'] }}</p>
                                     </div>
@@ -86,6 +124,7 @@
                                 </div>
                             @endforelse
                         </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -119,14 +158,14 @@
                     </div>
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
-                        <div class="grid grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <button type="button" wire:click="submit" @disabled($submitted) x-data
-                                    class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
+                                    class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-3 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
                                 Submit
                             </button>
 
                             <div wire:click="newTransaction"
-                                 class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center">
+                                 class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-3 flex items-center justify-center">
                                 <button type="button" class="font-semibold" x-data
                                         >New
                                     Transaction
@@ -134,7 +173,7 @@
                             </div>
                             <flux:modal.trigger name="print-dispersal-receipt">
                                 <button type="button"
-                                        class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-1 flex items-center justify-center font-semibold">
+                                        class="hover:bg-zinc-800 cursor-pointer rounded-2xl border border-white/10 bg-white/5 px-6 py-3 flex items-center justify-center font-semibold">
                                     Print LGU Support
                                 </button>
                             </flux:modal.trigger>
@@ -155,8 +194,8 @@
 
     {{--  DISPERSAL FORM  --}}
     @if($currentItem)
-        <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs">
-            <div class="relative bg-white p-4 w-96 rounded-lg">
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-green-300/50 backdrop-blur-xs p-4">
+            <div class="relative bg-white p-4 w-full max-w-sm rounded-lg max-h-[90vh] overflow-y-auto">
                 <form class="space-y-3 text-sm" wire:submit="addQuantity">
                     <div class="absolute top-0 right-0 p-2" title="exit this form">
                         <flux:icon.x-mark class="w-5 h-5 hover:rotate-180 transition-all" wire:click="resetCurrentItems"
@@ -234,7 +273,7 @@
         </div>
     @endif
 
-    <flux:modal name="print-dispersal-receipt" class="min-w-[32rem]" @close="$wire.resetDispersalSearch()">
+    <flux:modal name="print-dispersal-receipt" class="max-w-[32rem] w-full" @close="$wire.resetDispersalSearch()">
         <div class="space-y-6">
             <div>
                 <flux:heading size="lg">Print LGU Support</flux:heading>
@@ -278,7 +317,7 @@
 
                     <div class="max-h-64 divide-y divide-zinc-200 overflow-y-auto">
                         @foreach($dispersalReceipt['dispersalItems'] as $dispersalItem)
-                            <div class="grid grid-cols-[minmax(0,1fr)_90px_90px_110px] gap-3 px-4 py-3 text-sm"
+                            <div class="grid grid-cols-[minmax(0,1fr)_80px_80px_100px] sm:grid-cols-[minmax(0,1fr)_90px_90px_110px] gap-3 px-4 py-3 text-sm"
                                  wire:key="dispersal-item-{{ $dispersalItem['product_id'] }}-{{ $loop->index }}">
                                 <div>
                                     <p class="font-medium text-zinc-900">{{ $dispersalItem['product_name'] ?? 'Unknown product' }}</p>

@@ -71,7 +71,7 @@
                 <flux:sidebar.collapse class="hidden lg:flex" />
             </flux:sidebar.header>
 
-            <div class="flex-1 overflow-y-auto min-h-0">
+            <div class="flex-1 min-h-0 max-lg:overflow-y-auto">
             <flux:sidebar.nav class="text-zinc-800 dark:text-zinc-200">
                 <flux:sidebar.item icon="chart-bar-square" wire:current.exact="bg-green-300!" wire:navigate href="{{ route('dashboard.home') }}" class="text-zinc-800 dark:text-zinc-200 hover:bg-green-300! dark:hover:bg-primary hover:text-white">Analytics</flux:sidebar.item>
 

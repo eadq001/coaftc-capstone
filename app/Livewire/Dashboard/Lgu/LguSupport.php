@@ -30,6 +30,10 @@ class LguSupport extends Dashboard
 
     public ?int $editingItemIndex = null;
 
+    public string $productSearchText = '';
+
+    public array $productSearchResults = [];
+
     #[Validate('min:0.1|numeric')]
     public $currentItemQuantity = null;
 
@@ -59,25 +63,70 @@ class LguSupport extends Dashboard
         $product = Product::find($value);
 
         if ($product) {
-            $this->currentItem = [
-                'id' => $product->id,
-                'name' => $product->name,
-                'availableStock' => $product->stock_level,
-                'category' => strtolower($product->category->category_name),
-                'quantity' => 0,
-                'class' => $product->class?->value ?? '',
-                'size' => $product->size ?? '',
-                'price' => $product->price,
-            ];
-
-            $this->currentItemClass = $product->class?->value ?? '';
-            $this->price = $product->price;
+            $this->loadProductIntoCurrentItem($product);
         } else {
             $this->showProductNotFound = true;
         }
 
         $this->dispatch('show-data');
         $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+    }
+
+    public function updatedProductSearchText(string $value): void
+    {
+        $this->productSearchResults = [];
+
+        if (strlen($value) < 2) {
+            return;
+        }
+
+        $this->productSearchResults = Product::query()
+            ->with(['category:id,category_name'])
+            ->where('name', 'like', "%{$value}%")
+            ->limit(10)
+            ->get()
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'category' => $product->category?->category_name ?? 'Uncategorized',
+                'stock_level' => $product->stock_level,
+                'price' => $product->price,
+                'class' => $product->class?->value ?? '',
+                'size' => $product->size ?? '',
+            ])
+            ->toArray();
+    }
+
+    public function selectProduct(int $productId): void
+    {
+        $product = Product::find($productId);
+
+        if (! $product) {
+            $this->showProductNotFound = true;
+
+            return;
+        }
+
+        $this->loadProductIntoCurrentItem($product);
+        $this->reset('productSearchText', 'productSearchResults');
+        $this->js("requestAnimationFrame(() => document.getElementById('quantity')?.focus())");
+    }
+
+    private function loadProductIntoCurrentItem(Product $product): void
+    {
+        $this->currentItem = [
+            'id' => $product->id,
+            'name' => $product->name,
+            'availableStock' => $product->stock_level,
+            'category' => strtolower($product->category->category_name),
+            'quantity' => 0,
+            'class' => $product->class?->value ?? '',
+            'size' => $product->size ?? '',
+            'price' => $product->price,
+        ];
+
+        $this->currentItemClass = $product->class?->value ?? '';
+        $this->price = $product->price;
     }
 
     public function updatedCurrentItemQuantity($value): void
@@ -107,7 +156,7 @@ class LguSupport extends Dashboard
 
     public function resetCurrentItems(): void
     {
-        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound');
+        $this->reset('searchId', 'currentItem', 'currentItemQuantity', 'currentItemClass', 'price', 'editingItemIndex', 'showProductNotFound', 'productSearchText', 'productSearchResults');
         $this->clearValidation();
         $this->js("document.getElementById('product-search').focus()");
     }
