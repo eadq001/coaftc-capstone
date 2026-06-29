@@ -369,7 +369,7 @@ class extends Component {
                             ready.
                         </flux:text>
 
-                        <div class="mt-8 flex gap-4 lg:items-end">
+                        <div class="mt-8 flex flex-col sm:flex-row sm:flex-wrap gap-4 sm:items-end">
                             <flux:field>
                                 <flux:label>Starting Date</flux:label>
                                 <flux:input type="date" icon="calendar-days" wire:model.live="startDate"/>
@@ -470,14 +470,14 @@ class extends Component {
 
 
         @if($result)
-            <div class="flex gap-2" >
+            <div class="flex flex-col sm:flex-row gap-2" >
                 <flux:input
                         icon="magnifying-glass"
                         placeholder="Search by product name..."
                         autocomplete="off"
                         wire:model.live.debounce.500ms="searchText"
                 />
-                <button type="button" variant="primary" class="h-10 bg-white p-3 flex items-center rounded-lg disabled:bg-gray-200 transition cursor-pointer" {{ $searchText ? '' : 'disabled' }}
+                <button type="button" variant="primary" class="h-10 bg-white p-3 flex items-center justify-center rounded-lg disabled:bg-gray-200 transition cursor-pointer" {{ $searchText ? '' : 'disabled' }}
                              wire:click="$set('searchText', '')">
                     Clear
                 </button>
@@ -496,7 +496,7 @@ class extends Component {
                         $hasDispersals = $dispersals->isNotEmpty();
                     @endphp
 
-                    <div class="overflow-x-hidden">
+                    <div class="overflow-x-auto">
                         <table class="min-w-[1180px] w-full border-collapse text-sm" wire:target="getSalesReportToday" wire:loading.delay.longest.class="opacity-40">
                             <thead>
                             <tr class="bg-emerald-700 text-white">
@@ -586,7 +586,7 @@ class extends Component {
                             </tfoot>
                         </table>
 
-                        <div class="p-4 flex gap-4 text-sm ">
+                        <div class="p-4 flex flex-wrap gap-2 sm:gap-4 text-sm ">
                         @if($hasDispersals)
                             <span class="text-zinc-900 bg-orange-200 rounded-lg p-2 font-semibold">LGU Support</span>
                             @foreach($dispersals->groupBy(fn($item) => $item['category_name'] ?? 'Uncategorized') as $category => $item)
