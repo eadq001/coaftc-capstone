@@ -19,6 +19,7 @@
         "maatwebsite/excel": "^3.1",
         "mike42/escpos-php": "^4.0",
         "nativephp/php-bin": "^1.2",
+        "spatie/flysystem-dropbox": "*",
         "spatie/laravel-backup": "^10.2",
         "wnx/laravel-backup-restore": "^1.9"
     },

@@ -140,6 +140,7 @@
             </div>
         </div>
 
+        <div wire:poll.10s>
         <flux:table class="border! border-gray-200! px-2 transition-opacity dark:border-zinc-700!">
             <flux:table.columns>
                 <flux:table.column>Action</flux:table.column>
@@ -217,6 +218,7 @@
         </flux:table>
         <div class="mt-2">
             {{ $this->histories->links(data: ['scrollTo' => false]) }}
+        </div>
         </div>
     </flux:card>
 </div>

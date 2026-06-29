@@ -310,51 +310,55 @@ class extends Component {
 
     public function pay(): void
     {
-        if ($this->items) {
-
-            DB::transaction(function () {
-
-                $sales = Sale::create([
-                    'user_id' => auth()->id(),
-                    'total_amount' => $this->grandTotal
-                ]);
-
-                $salesItems = collect($this->items)->map(fn($item) => [
-                    'sale_id' => $sales->id,
-                    'product_id' => $item['id'],
-                    'quantity' => $item['quantity'],
-                    'inventory_start' => $item['availableStock'],
-                    'inventory_end' => $item['availableStock'] - $item['quantity'],
-                    'unit_price' => $item['price'],
-                    'subtotal' => $item['quantity'] * $item['price'],
-                ])->toArray();
-
-                $stocksToSubtract = collect($this->items)->map(fn($item) => [
-                    'id' => $item['id'],
-                    'quantity' => $item['quantity']
-                ]);
-
-                foreach ($stocksToSubtract as $stock) {
-                    $product = Product::find($stock['id']);
-                    $product->decrement('stock_level', $stock['quantity']);
-                }
-
-                $sales->salesItem()->createMany($salesItems);
-
-                $transactionInfo = [
-                    'salesItems' => $salesItems,
-                    'prfNumber' => $sales->prf_number,
-                    'cashier' => auth()->user()->name,
-                    'date' => now()->format('d/m/Y'),
-                    'time' => now()->format('g:i:s A'),
-                    'grandTotal' => $this->grandTotal
-
-                ];
-
-                PrintReceipt::print($transactionInfo);
-                $this->paid = true;
-            });
+        if ($this->paid || ! $this->items) {
+            return;
         }
+
+        $this->paid = true;
+
+        DB::transaction(function () {
+
+            $sales = Sale::create([
+                'user_id' => auth()->id(),
+                'total_amount' => $this->grandTotal
+            ]);
+
+            $salesItems = collect($this->items)->map(fn($item) => [
+                'sale_id' => $sales->id,
+                'product_id' => $item['id'],
+                'quantity' => $item['quantity'],
+                'inventory_start' => $item['availableStock'],
+                'inventory_end' => $item['availableStock'] - $item['quantity'],
+                'unit_price' => $item['price'],
+                'subtotal' => $item['quantity'] * $item['price'],
+            ])->toArray();
+
+            $stocksToSubtract = collect($this->items)->map(fn($item) => [
+                'id' => $item['id'],
+                'quantity' => $item['quantity']
+            ]);
+
+            foreach ($stocksToSubtract as $stock) {
+                $product = Product::find($stock['id']);
+                $product->decrement('stock_level', $stock['quantity']);
+            }
+
+            $sales->salesItem()->createMany($salesItems);
+
+            $transactionInfo = [
+                'salesItems' => $salesItems,
+                'prfNumber' => $sales->prf_number,
+                'cashier' => auth()->user()->name,
+                'date' => now()->format('d/m/Y'),
+                'time' => now()->format('g:i:s A'),
+                'grandTotal' => $this->grandTotal
+
+            ];
+
+            PrintReceipt::print($transactionInfo);
+        });
+
+        $this->items = [];
     }
 
     public function removeItem(int $itemIndex)
@@ -532,9 +536,11 @@ class extends Component {
 
                     <div class="border-b border-white/10 px-6 py-5 sm:px-8">
                         <div class="grid grid-cols-3 gap-3">
-                            <button type="button" wire:click="pay" @disabled($paid) x-data
+                            <button type="button" wire:click="pay" wire:loading.attr="disabled" wire:target="pay"
+                                    :disabled="$paid"
                                     class="w-full rounded-2xl hover:bg-zinc-800 border border-white/10 bg-white/5 px-6 py-1 disabled:bg-gray-500 disabled:cursor-cell font-semibold cursor-pointer">
-                                Pay
+                                <span wire:loading.remove wire:target="pay">Pay</span>
+                                <span wire:loading wire:target="pay">Processing...</span>
                             </button>
 
                             <div wire:click="newTransaction"
