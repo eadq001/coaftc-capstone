@@ -58,10 +58,10 @@ class RemoveModal extends Component
         switch ($this->modelName) {
             case 'Product':
                 $this->model = Product::find($this->id);
-                //                if ($this->model->salesItem->count() !== 0) {
-                //                    $this->dispatch('product-delete-error');
-                //                    return;
-                //                }
+                                if ($this->model->salesItem->count() !== 0) {
+                                    $this->dispatch('product-delete-error');
+                                    return;
+                                }
                 $this->deleteWithEvent($this->model);
                 break;
 
