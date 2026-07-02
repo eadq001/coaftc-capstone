@@ -38,6 +38,7 @@
                                                      <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['category'] }}</span>
                                                     <span class="tabular-nums">{{ format_qty($result['stock_level']) }}</span>
                                                     <span class="tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
+
                                                     <span class="text-xs text-zinc-500">{{ $result['class'] }}</span>
                                                     <span class="text-xs text-zinc-500">{{ $result['size'] }}</span>
                                                 </div>
@@ -209,10 +210,12 @@
                     </flux:field>
 
                     <flux:field>
-                        <flux:label class="mb-0.5!">Size</flux:label>
-                        <flux:input type="text" value="{{ $currentItem['size'] ?? '' }}" placeholder="Size"
+                        <flux:label class="mb-0.5!">Category</flux:label>
+                        <flux:input type="text" value="{{ $currentItem['category'] }}" placeholder="Category"
                                     readonly/>
                     </flux:field>
+
+
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Price</flux:label>
@@ -220,12 +223,21 @@
                         <flux:error name="price"/>
                     </flux:field>
 
+                    @if($currentItem['class'])
                     <flux:field>
                         <flux:label class="mb-0.5!">Class</flux:label>
-                        <flux:input type="text" value="{{ $currentItem['class'] }}" wire:model="currentItemClass"/>
-
+                        <flux:input type="text" value="{{ $currentItem['class'] }}" wire:model="currentItemClass" readonly/>
                         <flux:error name="currentItemClass"/>
                     </flux:field>
+                    @endif
+
+                    @if($currentItem['size'])
+                        <flux:field>
+                            <flux:label class="mb-0.5!">Size</flux:label>
+                            <flux:input type="text" value="{{ $currentItem['size'] }}" placeholder="Size"
+                                        readonly/>
+                        </flux:field>
+                    @endif
 
                     <flux:field>
                         <flux:label class="mb-0.5!">Quantity</flux:label>
