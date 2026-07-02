@@ -398,9 +398,9 @@ class extends Component {
                                         autocomplete="off" wire:model.live.debounce.300ms="productSearchText"/>
 
                             @if(!empty($productSearchResults))
-                                <div class="absolute z-20 mt-1 left-0 right-0 sm:right-auto sm:w-4xl rounded-xl border border-zinc-200 bg-white shadow-lg p-2">
+                                <div class="absolute z-20 mt-1 left-0 w-4xl max-w-[calc(100vw-2rem)] rounded-xl border border-zinc-200 bg-white shadow-lg p-2">
                                     <div class="overflow-x-auto">
-                                        <div class="grid gap-x-2 grid-cols-[60px_200px_150px_100px_100px_90px_100px] min-w-[800px] border-b border-zinc-100 bg-zinc-50 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+                                        <div class="grid gap-x-2 grid-cols-[60px_200px_150px_70px_80px_65px_70px] min-w-[700px] border-b border-zinc-100 bg-zinc-50 px-3 py-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
                                             <div>ID</div>
                                             <div>Name</div>
                                             <div>Category</div>
@@ -413,14 +413,14 @@ class extends Component {
                                             @foreach($productSearchResults as $result)
                                                 <div wire:click="selectProduct({{ $result['id'] }})"
                                                      wire:key="search-result-{{ $result['id'] }}"
-                                                     class="grid gap-x-2 cursor-pointer grid-cols-[60px_200px_150px_100px_100px_90px_100px] min-w-[800px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
+                                                      class="grid gap-x-2 cursor-pointer grid-cols-[60px_200px_150px_70px_80px_65px_70px] min-w-[700px] items-center border-b border-zinc-100 px-3 py-2.5 text-sm text-zinc-700 transition hover:bg-emerald-50">
                                                 <span class="font-medium text-zinc-900">{{ $result['id'] }}</span>
                                                  <span class="min-w-0 truncate font-medium text-zinc-900">{{ $result['name'] }}</span>
                                                  <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['category'] }}</span>
                                                 <span class="tabular-nums">{{ format_qty($result['stock_level']) }}</span>
                                                 <span class="tabular-nums">₱{{ number_format($result['price'], 2) }}</span>
-                                                <span class="text-xs text-zinc-500">{{ $result['class'] }}</span>
-                                                <span class="text-xs text-zinc-500">{{ $result['size'] }}</span>
+                                                <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['class'] }}</span>
+                                                <span class="min-w-0 truncate text-xs text-zinc-500">{{ $result['size'] }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -442,7 +442,7 @@ class extends Component {
                             <div class="px-4 py-3 text-right">Action</div>
                         </div>
 
-                        <div class="divide-y divide-zinc-200">
+                        <div class="divide-y divide-zinc-200 max-h-96 overflow-y-auto">
                             @forelse($items as $item)
                                 <div wire:key="{{ $item['id'] }}"
                                      wire:click="editItem({{ $loop->index }})"
