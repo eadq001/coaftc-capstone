@@ -36,7 +36,7 @@ class Login extends Component
                 Cache::put('kicked:'.$oldSessionId, true, now()->addMinutes(30));
             }
 
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('coaftc-sys/dashboard');
         }
 
         $this->addError('loginFailed', 'Invalid email and password.');
