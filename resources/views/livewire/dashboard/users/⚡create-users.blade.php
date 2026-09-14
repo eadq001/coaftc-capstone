@@ -13,7 +13,7 @@ use Livewire\Component;
 use Illuminate\Support\Str;
 use Symfony\Component\Mailer\Exception\TransportException;
 
-new #[Layout('layouts::dashboard', ['title' => 'Users'])]
+new #[Layout('layouts::dashboard', ['title' => 'COAFTC'])]
 class extends Component {
 
     #[Validate('required')]
