@@ -3,20 +3,44 @@
 use App\Models\ActivityLog;
 use App\Models\Category;
 use App\Models\Subcategory;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 new class extends Component {
 
+    #[Validate('min:0')]
     public string $subcategory_name = '';
 
     public string $successMessage = '';
 
+    public function subcategoryCheck(): bool
+    {
+        $result = Subcategory::where('subcategory_name', 'LIKE', '%' . $this->subcategory_name . '%')->exists();
+        if ($result) {
+            $this->addError('subcategory_name', 'Subcategory already exist');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function updatedSubcategoryName(): void
+    {
+        $this->subcategoryCheck();
+    }
+
     public function save(): void
     {
+        if ($this->subcategoryCheck()) {
+            return;
+        }
+
         $validated = $this->validate([
             'subcategory_name' => 'required|min:4|string'
         ]);
 
+        strtoupper($validated['subcategory_name']);
         $this->reset('subcategory_name');
 
         $subcategory = Subcategory::create($validated);
@@ -42,7 +66,7 @@ new class extends Component {
         <p class="text-center">Add Product Subcategory</p>
         <flux:field>
             <flux:label class="mb-0.5!">Subcategory Name</flux:label>
-            <flux:input type="text" wire:model="subcategory_name" placeholder="Subcategory Name"/>
+            <flux:input type="text" wire:model.live.debounce.500ms="subcategory_name" placeholder="Subcategory Name"/>
             <flux:error name="subcategory_name"/>
         </flux:field>
 
