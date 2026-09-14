@@ -2,20 +2,38 @@
 
 use App\Models\ActivityLog;
 use App\Models\Category;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 new class extends Component {
 
+    #[Validate('min:0')]
     public string $category_name = '';
 
     public string $successMessage = '';
 
+    public function categoryCheck()
+    {
+        $result = Category::where('category_name', 'LIKE', '%' . $this->category_name . '%')->exists();
+        if ($result) {
+            $this->addError('category_name', 'Category already exist');
+            return true;
+        }
+    }
+    public function updatedCategoryName(): void
+    {
+        $this->categoryCheck();
+    }
     public function save(): void
     {
+        if ($this->categoryCheck()) {
+            return;
+        }
+
         $validated = $this->validate([
             'category_name' => 'required|min:5|string'
         ]);
-
+        $validated['category_name'] = ucfirst($validated['category_name']);
         $this->reset('category_name');
 
         $category = Category::create($validated);
@@ -41,7 +59,7 @@ new class extends Component {
         <p class="text-center">Add Product Category</p>
         <flux:field>
             <flux:label class="mb-0.5!">Category Name</flux:label>
-            <flux:input type="text" wire:model="category_name" placeholder="Category Name"/>
+            <flux:input type="text" wire:model.live.debounce.500ms="category_name" placeholder="Category Name"/>
             <flux:error name="category_name"/>
         </flux:field>
 

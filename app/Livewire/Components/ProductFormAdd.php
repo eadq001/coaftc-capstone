@@ -15,7 +15,7 @@ class ProductFormAdd extends Component
 {
     public ProductForm $productForm;
 
-    #[Validate('required|numeric|min:0.01')]
+    #[Validate('required|min:0')]
     public $stockLevel = null;
 
     #[Validate('required|min:1')]
@@ -38,12 +38,12 @@ class ProductFormAdd extends Component
     public function updatedStockLevel($value)
     {
         $this->stockLevel = (float) $value;
-        if ($this->stockLevel === 0.0 || $this->stockLevel < 0.01) {
+        if ($this->stockLevel < 0) {
             $this->reset('stockLevel');
         }
 
         $this->validate([
-            'stockLevel' => 'numeric|min:0.01|required',
+            'stockLevel' => 'min:0|required',
         ]);
     }
 

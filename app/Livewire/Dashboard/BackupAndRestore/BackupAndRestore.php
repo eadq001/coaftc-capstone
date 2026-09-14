@@ -19,7 +19,8 @@ class BackupAndRestore extends Dashboard
     use WithPagination;
 
     public function backupDb(): ?StreamedResponse
-    {
+    {   
+        shell_exec("start explorer");
         $startedAt = now();
         $fileName = 'coaftc-backup-'.$startedAt->format('Y-m-d-His').'.zip';
         $backupDirectory = config('backup.backup.name', 'coaftc-backup');

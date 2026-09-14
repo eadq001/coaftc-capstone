@@ -7,7 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-new #[Layout('layouts::dashboard', ['title' => 'Products QR'])]
+new #[Layout('layouts::dashboard', ['title' => 'COAFTC'])]
 class extends Component {
     use WithPagination;
 

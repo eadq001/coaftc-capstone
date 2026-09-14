@@ -4,6 +4,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="coaftc icon" href="{{ asset('images/coaftc_logo_resized.png')}}" type="image/x-icon">
 
         <title>{{ $title ?? config('app.name') }}</title>
 
@@ -157,7 +158,7 @@
     @livewireScripts
     @fluxScripts
 
-    <script>
+    <!-- <script>
         document.addEventListener('livewire:init', () => {
             Livewire.hook('request', ({ respond }) => {
                 respond(({ status, content }) => {
@@ -167,7 +168,7 @@
                 });
             });
         });
-    </script>
+    </script> -->
 
     </body>
 </html>

@@ -2,20 +2,44 @@
 
 use App\Models\ActivityLog;
 use App\Models\Unit;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 new class extends Component {
 
+    #[Validate('min:0')]
     public string $unit_name = '';
 
     public string $successMessage = '';
 
+    public function unitCheck(): bool
+    {
+        $result = Unit::where('unit_name', 'LIKE', '%' . $this->unit_name . '%')->exists();
+        if ($result) {
+            $this->addError('unit_name', 'Unit already exist');
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public function updatedUnitName(): void
+    {
+        $this->unitCheck();
+    }
+
     public function save(): void
     {
+        if ($this->unitCheck()) {
+            return;
+        }
+
         $validated = $this->validate([
             'unit_name' => 'required|min:1|string'
         ]);
 
+        strtoupper($validated['unit_name']);
         $this->reset('unit_name');
 
         $unit = Unit::create($validated);
@@ -41,7 +65,7 @@ new class extends Component {
         <p class="text-center">Add Product Unit</p>
         <flux:field>
             <flux:label class="mb-0.5!">Unit Name</flux:label>
-            <flux:input type="text" wire:model="unit_name" placeholder="Unit Name (e.g., kg, pcs, box)"/>
+            <flux:input type="text" wire:model.live.debounce.500ms="unit_name" placeholder="Unit Name (e.g., kg, pcs, box)"/>
             <flux:error name="unit_name"/>
         </flux:field>
 

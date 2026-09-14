@@ -6,7 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use Livewire\Component;
 
-new #[Layout('layouts::dashboard', ['title' => 'Edit Profile'])]
+new #[Layout('layouts::dashboard', ['title' => 'COAFTC'])]
 class extends Component
 {
     #[Validate]
