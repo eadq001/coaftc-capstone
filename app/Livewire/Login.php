@@ -17,6 +17,11 @@ class Login extends Component
 
     public bool $remember = false;
 
+    // public function mount(): void
+    // {
+    //     dd(DB::connection()->getDatabaseName(), DB::getDefaultConnection());
+    // }
+
     public function login()
     {
         $user = $this->validate();
